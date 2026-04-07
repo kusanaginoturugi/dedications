@@ -1,0 +1,46 @@
+<% content_for :title, "注文一覧" %>
+
+<section class="page-head">
+  <div>
+    <h2>注文一覧</h2>
+    <p class="section-lead">FAX 1枚ごとに登録した注文の一覧です。</p>
+  </div>
+  <%= link_to "新しい注文を入力", new_order_path, class: "primary-link" %>
+</section>
+
+<section class="card">
+  <% if @orders.any? %>
+    <div class="table-wrap">
+      <table class="stack-on-mobile">
+        <thead>
+          <tr>
+            <th>ページ</th>
+            <th>注文書種類</th>
+            <th>伝道会</th>
+            <th>入金</th>
+            <th>本数合計</th>
+            <th>金額合計</th>
+            <th>入力者</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr>
+              <td data-label="ページ"><%= order.page_number %></td>
+              <td data-label="注文書種類"><%= order.form_label %></td>
+              <td data-label="伝道会"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
+              <td data-label="入金"><%= order.paid? ? "入金済" : "未入金" %></td>
+              <td data-label="本数合計"><%= order.page_total_quantity %> 本</td>
+              <td data-label="金額合計"><%= number_to_currency(order.page_total_amount, unit: "¥", precision: 0) %></td>
+              <td data-label="入力者"><%= order.user.email %></td>
+              <td data-label="詳細"><%= link_to "詳細", order_path(order), class: "secondary-link" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p>まだ注文は登録されていません。</p>
+  <% end %>
+</section>

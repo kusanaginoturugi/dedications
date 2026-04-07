@@ -1,0 +1,137 @@
+<% content_for :title, "注文入力" %>
+
+<section class="page-head">
+  <div>
+    <h2>注文入力</h2>
+    <p class="section-lead">FAX 1枚分をそのまま入力します。伝道会コードは新コードで選択します。</p>
+  </div>
+</section>
+
+<section
+  class="card"
+  data-order-form
+  data-form-definitions="<%= json_escape(Order::FORM_DEFINITIONS.to_json) %>"
+  data-congregations-url="<%= congregations_path %>"
+>
+  <%= form_with model: @order, class: "stack-form" do |form| %>
+    <% if @order.errors.any? %>
+      <div class="error-box">
+        <h3>入力内容を確認してください</h3>
+        <ul>
+          <% @order.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-top-grid">
+      <div class="field">
+        <%= form.label :page_number, "ページ番号" %>
+        <%= form.number_field :page_number, min: 1, required: true %>
+      </div>
+
+      <div class="field checkbox-field toggle-field">
+        <span class="field-label">入金状態</span>
+        <label class="toggle-label">
+          <%= form.check_box :paid %>
+          <span>入金済</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="two-column-grid">
+      <div class="field">
+        <%= form.label :form_type, "注文書の種類" %>
+        <%= form.select :form_type, Order.form_options, {}, data: { form_type_select: true } %>
+      </div>
+
+      <div class="field">
+        <label for="congregation-code-search">伝道会コード（新コード）</label>
+        <input
+          id="congregation-code-search"
+          type="text"
+          value="<%= @order.congregation&.code %>"
+          placeholder="2桁以上で絞り込み"
+          autocomplete="off"
+          data-congregation-search-input
+        >
+        <%= form.hidden_field :congregation_id, data: { congregation_search_target: "hidden" } %>
+        <div class="selected-congregation" data-selected-congregation>
+          <% if @order.congregation %>
+            <button type="button" class="search-result active"><%= "#{@order.congregation.code} #{@order.congregation.name}" %></button>
+          <% else %>
+            <span>未選択</span>
+          <% end %>
+        </div>
+        <div class="search-results" data-congregation-results></div>
+      </div>
+
+      <div class="field">
+        <%= form.label :contact_name, "担当者" %>
+        <%= form.text_field :contact_name %>
+      </div>
+
+      <div class="field">
+        <%= form.label :phone, "電話" %>
+        <%= form.telephone_field :phone %>
+      </div>
+    </div>
+
+    <section class="detail-section">
+      <div class="detail-head">
+        <h3>明細</h3>
+        <p class="section-lead" data-form-description></p>
+      </div>
+
+      <div class="table-wrap">
+        <table class="stack-on-mobile detail-table">
+          <colgroup>
+            <col class="detail-col-name">
+            <col class="detail-col-wish">
+            <col class="detail-col-quantity">
+            <col class="detail-col-number">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>奉納者氏名</th>
+              <th>願事</th>
+              <th>本数</th>
+              <th>番号</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= form.fields_for :order_items do |item_fields| %>
+              <tr>
+                <td data-label="奉納者氏名">
+                  <%= item_fields.hidden_field :position %>
+                  <%= item_fields.hidden_field :amount, value: item_fields.object.amount %>
+                  <%= item_fields.text_field :donor_name, placeholder: "奉納者氏名", class: "detail-input" %>
+                </td>
+                <td data-label="願事">
+                  <%= item_fields.text_field :wish, placeholder: "願事", class: "detail-input" %>
+                </td>
+                <td data-label="本数">
+                  <%= item_fields.number_field :quantity, min: 0, step: 1, class: "numeric-input detail-input", data: { quantity_input: true } %>
+                </td>
+                <td data-label="番号">
+                  <%= item_fields.text_field :entry_number, placeholder: "番号", class: "detail-input detail-input-number" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3">ページ合計</th>
+              <th><span data-total-quantity>0</span> 本 / ¥<span data-total-amount>0</span></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <div class="form-actions">
+      <%= form.submit "注文を登録", class: "primary-button" %>
+    </div>
+  <% end %>
+</section>

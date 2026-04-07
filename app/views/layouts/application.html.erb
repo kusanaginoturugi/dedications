@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Dedications" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">八大明王護摩供</p>
+          <h1>FAX注文入力</h1>
+        </div>
+        <% if signed_in? %>
+          <nav class="header-nav">
+            <%= link_to "一覧", orders_path, class: "secondary-link" %>
+            <%= link_to "新規入力", new_order_path, class: "primary-link" %>
+            <%= button_to "サインアウト", session_path, method: :delete, class: "ghost-button" %>
+          </nav>
+        <% end %>
+      </header>
+
+      <% flash.each do |type, message| %>
+        <p class="flash <%= type %>"><%= message %></p>
+      <% end %>
+
+      <main>
+        <%= yield %>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+one:
+  page_number: 1
+  form_type: wish_fulfillment_staff
+  paid: false
+  contact_name: 田中花子
+  phone: "03-1111-2222"
+  user: admin
+  congregation: tokyo

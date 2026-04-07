@@ -1,0 +1,9 @@
+tokyo:
+  code: "31301"
+  old_code: "1301"
+  name: 東京準総壇
+
+osaka:
+  code: "52701"
+  old_code: "2701"
+  name: 大阪準総壇

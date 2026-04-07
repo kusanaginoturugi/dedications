@@ -1,0 +1,16 @@
+/.bundle
+/.codex
+/.~lock*
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+!/tmp/pids/
+/tmp/pids/*
+!/tmp/pids/.keep
+/storage/*.sqlite3
+/storage/*.sqlite3-*
+/storage/*
+!/storage/.keep
+/vendor/bundle
+/vendor/cache
