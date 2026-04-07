@@ -1,4 +1,4 @@
-csv_path = Rails.root.join("伝道会番号.csv")
+csv_path = Rails.root.join("資料", "伝道会番号.csv")
 
 File.foreach(csv_path).with_index do |line, index|
   next if index.zero?
