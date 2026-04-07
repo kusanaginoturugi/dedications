@@ -1,0 +1,20 @@
+[tools]
+ruby = "3.4.8"
+
+[env]
+BUNDLE_PATH = "vendor/bundle"
+
+[tasks.setup]
+description = "Install gems and prepare the database"
+run = [
+  "bundle install",
+  "bin/rails db:create db:migrate db:seed"
+]
+
+[tasks.server]
+description = "Start the Rails server"
+run = "bin/rails server"
+
+[tasks.test]
+description = "Run the test suite"
+run = "bin/rails test"

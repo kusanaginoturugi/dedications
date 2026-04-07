@@ -10,6 +10,14 @@ bin/rails db:create db:migrate db:seed
 bin/rails server
 ```
 
+`mise` を使う場合:
+
+```bash
+mise install
+mise run setup
+mise run server
+```
+
 ## 初期ログイン
 
 - Email: `admin@example.com`
@@ -35,3 +43,5 @@ bin/rails server
 ```bash
 bin/rails test
 ```
+
+`mise` 経由なら `mise run test` でも実行できます。
