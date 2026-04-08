@@ -92,6 +92,45 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "注文編集"
   end
 
+  test "rejects duplicate page number within same form type on create" do
+    sign_in_as(users(:admin))
+
+    assert_no_difference("Order.count") do
+      post orders_path, params: {
+        order: {
+          page_number: orders(:one).page_number,
+          fax_received_on: "2026-04-10",
+          form_type: orders(:one).form_type,
+          paid: "0",
+          congregation_id: congregations(:osaka).id,
+          serial_number_start: 30,
+          serial_number_end: 32
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "ページ番号は同じ注文書種類ですでに使われています"
+  end
+
+  test "allows same page number for different form type" do
+    sign_in_as(users(:admin))
+
+    assert_difference("Order.count", 1) do
+      post orders_path, params: {
+        order: {
+          page_number: orders(:one).page_number,
+          fax_received_on: "2026-04-10",
+          form_type: "sanki_reiboku",
+          paid: "0",
+          congregation_id: congregations(:osaka).id,
+          serial_number_start: 30,
+          serial_number_end: 32
+        }
+      }
+    end
+  end
+
   test "updates an order" do
     sign_in_as(users(:admin))
 
@@ -111,5 +150,24 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     orders(:one).reload
     assert_equal 9, orders(:one).page_number
     assert_equal 200, orders(:one).serial_number_start
+  end
+
+  test "rejects duplicate page number within same form type on update" do
+    sign_in_as(users(:admin))
+
+    patch order_path(orders(:one)), params: {
+      order: {
+        page_number: orders(:two).page_number,
+        fax_received_on: orders(:one).fax_received_on,
+        form_type: orders(:one).form_type,
+        paid: orders(:one).paid,
+        congregation_id: orders(:one).congregation_id,
+        serial_number_start: orders(:one).serial_number_start,
+        serial_number_end: orders(:one).serial_number_end
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "ページ番号は同じ注文書種類ですでに使われています"
   end
 end

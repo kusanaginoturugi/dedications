@@ -13,6 +13,17 @@
 
 <section class="card">
   <% if @order_summaries.any? %>
+    <div class="summary-totals summary-totals-overall">
+      <div class="summary-total-card">
+        <span class="summary-total-label">合計本数</span>
+        <strong><%= @order_summaries.sum { |summary| summary[:total_quantity] } %></strong>
+      </div>
+      <div class="summary-total-card">
+        <span class="summary-total-label">合計金額</span>
+        <strong><%= number_to_currency(@order_summaries.sum { |summary| summary[:total_amount] }, unit: "¥", precision: 0) %></strong>
+      </div>
+    </div>
+
     <% @order_summaries.each do |summary| %>
       <section class="summary-group">
         <h3 class="summary-title"><%= summary[:label] %></h3>

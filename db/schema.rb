@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_08_022000) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_08_023000) do
   create_table "congregations", force: :cascade do |t|
     t.string "code", null: false
     t.string "old_code"
@@ -33,6 +33,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_08_022000) do
     t.integer "serial_number_end"
     t.index ["congregation_id", "page_number"], name: "index_orders_on_congregation_id_and_page_number"
     t.index ["congregation_id"], name: "index_orders_on_congregation_id"
+    t.index ["form_type", "page_number"], name: "index_orders_on_form_type_and_page_number", unique: true
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 

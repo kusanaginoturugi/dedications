@@ -1,15 +1,15 @@
 class Order < ApplicationRecord
   FORM_DEFINITIONS = {
     "wish_fulfillment_staff" => {
-      label: "八大明王如意棒代理奉納",
+      label: "八大明王如意棒",
       unit_price: 2000
     },
     "sankai_ryuge_pillar" => {
-      label: "三會龍華之御柱代理奉納",
+      label: "三會龍華之御柱",
       unit_price: 500
     },
     "sanki_reiboku" => {
-      label: "三期滅劫之霊木代理奉納",
+      label: "三期滅劫之霊木",
       unit_price: 800
     }
   }.freeze
@@ -25,6 +25,7 @@ class Order < ApplicationRecord
   validates :serial_number_start, :serial_number_end,
     numericality: { only_integer: true, allow_nil: true }
   validate :serial_number_range_is_valid
+  validate :page_number_is_unique_within_form_type
 
   def self.form_options
     FORM_DEFINITIONS.map { |key, definition| [ definition.fetch(:label), key ] }
@@ -67,5 +68,12 @@ class Order < ApplicationRecord
     return if serial_number_end >= serial_number_start
 
     errors.add(:serial_number_end, "は通し番号(開始)以上にしてください")
+  end
+
+  def page_number_is_unique_within_form_type
+    return if page_number.blank? || form_type.blank?
+    return unless self.class.where(form_type:, page_number:).where.not(id: id).exists?
+
+    errors.add(:page_number, "は同じ注文書種類ですでに使われています")
   end
 end

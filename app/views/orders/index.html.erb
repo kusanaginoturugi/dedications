@@ -31,6 +31,17 @@
           <p><%= orders.size %>件</p>
         </header>
 
+        <div class="summary-totals">
+          <div class="summary-total-card">
+            <span class="summary-total-label">合計本数</span>
+            <strong><%= orders.sum { |order| order.total_quantity.to_i } %></strong>
+          </div>
+          <div class="summary-total-card">
+            <span class="summary-total-label">合計金額</span>
+            <strong><%= number_to_currency(orders.sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></strong>
+          </div>
+        </div>
+
         <div class="table-wrap">
           <table class="stack-on-mobile orders-table">
             <colgroup>

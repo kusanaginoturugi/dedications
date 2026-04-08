@@ -1,0 +1,10 @@
+ja:
+  date:
+    formats:
+      default: "%Y-%m-%d"
+  errors:
+    format: "%{attribute}%{message}"
+  activerecord:
+    attributes:
+      order:
+        page_number: ページ番号
