@@ -1,13 +1,14 @@
 class OrdersController < ApplicationController
   before_action :require_sign_in!
   before_action :set_order, only: [ :show, :edit, :update ]
+  helper_method :page_sort_direction, :next_page_sort_direction, :page_sort_arrow
 
   def index
-    @orders = Order.includes(:congregation, :user).order(page_number: :desc, created_at: :desc)
+    @orders = Order.includes(:congregation, :user).order(page_number: page_sort_direction, created_at: :desc)
   end
 
   def summary
-    orders = Order.includes(:congregation, :user).order(:page_number, :created_at)
+    orders = Order.includes(:congregation, :user).order(page_number: page_sort_direction, created_at: :desc)
     @order_summaries = Order::FORM_DEFINITIONS.keys.filter_map do |form_type|
       matches = orders.select { |order| order.form_type == form_type }
       next if matches.empty?
@@ -23,7 +24,7 @@ class OrdersController < ApplicationController
   end
 
   def personal_summary
-    @orders = Order.includes(:congregation, :user).order(created_at: :desc, id: :desc)
+    @orders = Order.includes(:congregation, :user).order(page_number: page_sort_direction, created_at: :desc)
     @user_summaries = @orders.group_by(&:user).map do |user, orders|
       {
         user:,
@@ -73,6 +74,18 @@ class OrdersController < ApplicationController
   def selected_form_type
     form_type = params.dig(:order, :form_type).presence || params[:form_type].presence
     Order::FORM_DEFINITIONS.key?(form_type) ? form_type : Order::FORM_DEFINITIONS.keys.first
+  end
+
+  def page_sort_direction
+    params[:page_sort] == "asc" ? :asc : :desc
+  end
+
+  def next_page_sort_direction
+    page_sort_direction == :asc ? "desc" : "asc"
+  end
+
+  def page_sort_arrow
+    page_sort_direction == :asc ? " ▲" : " ▼"
   end
 
   def order_params

@@ -16,6 +16,15 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, orders(:one).form_label
   end
 
+  test "sorts orders by page ascending" do
+    sign_in_as(users(:admin))
+
+    get orders_path, params: { page_sort: "asc" }
+
+    assert_response :success
+    assert_operator response.body.index(">1<"), :<, response.body.index(">15<")
+  end
+
   test "shows order summary" do
     sign_in_as(users(:admin))
 
@@ -26,6 +35,15 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, orders(:one).form_label
   end
 
+  test "sorts summary by page ascending" do
+    sign_in_as(users(:admin))
+
+    get summary_orders_path, params: { page_sort: "asc" }
+
+    assert_response :success
+    assert_operator response.body.index(">1<"), :<, response.body.index(">15<")
+  end
+
   test "shows personal summary" do
     sign_in_as(users(:admin))
 
@@ -34,6 +52,15 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "個別集計"
     assert_includes response.body, users(:admin).display_name
+  end
+
+  test "sorts personal summary by page ascending" do
+    sign_in_as(users(:admin))
+
+    get personal_summary_orders_path, params: { page_sort: "asc" }
+
+    assert_response :success
+    assert_operator response.body.index(">1<"), :<, response.body.index(">15<")
   end
 
   test "creates an order" do

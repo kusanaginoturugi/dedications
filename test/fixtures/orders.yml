@@ -7,3 +7,13 @@ one:
   serial_number_end: 15
   user: admin
   congregation: tokyo
+
+two:
+  page_number: 15
+  fax_received_on: 2026-04-09
+  form_type: wish_fulfillment_staff
+  paid: true
+  serial_number_start: 20
+  serial_number_end: 24
+  user: admin
+  congregation: tokyo

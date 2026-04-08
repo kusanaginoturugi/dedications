@@ -44,7 +44,7 @@
             </colgroup>
             <thead>
               <tr>
-                <th>ページ</th>
+                <th><%= link_to "ページ#{page_sort_arrow}", url_for(page_sort: next_page_sort_direction), class: "sort-link" %></th>
                 <th>受信日</th>
                 <th>伝道会</th>
                 <th>本数</th>

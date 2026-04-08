@@ -40,7 +40,7 @@
             </colgroup>
             <thead>
               <tr>
-                <th>ページ番号</th>
+                <th><%= link_to "ページ番号#{page_sort_arrow}", url_for(page_sort: next_page_sort_direction), class: "sort-link" %></th>
                 <th>伝道会名</th>
                 <th>通し番号</th>
                 <th>本数</th>

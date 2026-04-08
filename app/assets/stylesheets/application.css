@@ -470,6 +470,13 @@ tfoot td {
   background: rgba(143, 45, 31, 0.05);
 }
 
+.sort-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-weight: 700;
+}
+
 .selected-congregation,
 .search-results {
   display: flex;

@@ -27,6 +27,7 @@
     <div class="table-wrap">
       <table class="stack-on-mobile personal-summary-table">
         <colgroup>
+          <col class="orders-page-column">
           <col>
           <col class="orders-date-column">
           <col>
@@ -35,6 +36,7 @@
         </colgroup>
         <thead>
           <tr>
+            <th><%= link_to "ページ#{page_sort_arrow}", url_for(page_sort: next_page_sort_direction), class: "sort-link" %></th>
             <th>入力者</th>
             <th>入力日</th>
             <th>種類</th>
@@ -45,6 +47,7 @@
         <tbody>
           <% @orders.each do |order| %>
             <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の注文を編集">
+              <td data-label="ページ"><%= order.page_number %></td>
               <td data-label="入力者"><%= order.user.display_name %></td>
               <td data-label="入力日"><%= order.created_at.strftime("%-m.%-d") %></td>
               <td data-label="種類"><%= order.form_label %></td>
