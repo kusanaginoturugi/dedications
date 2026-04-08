@@ -18,6 +18,8 @@ end
 default_password = ENV.fetch("DEFAULT_PASSWORD", "password123")
 
 User.find_or_create_by!(email: "admin@example.com") do |user|
+  user.name = "管理者"
+  user.is_admin = true
   user.password = default_password
   user.password_confirmation = default_password
 end

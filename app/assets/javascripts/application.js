@@ -1,30 +1,29 @@
 document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("[data-href]").forEach((element) => {
+    element.addEventListener("click", (event) => {
+      if (event.target.closest("a, button, input, select, textarea, label")) return;
+      window.location.href = element.dataset.href;
+    });
+
+    element.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        window.location.href = element.dataset.href;
+      }
+    });
+  });
+
   const container = document.querySelector("[data-order-form]");
   if (!container) return;
 
-  const definitions = JSON.parse(container.dataset.formDefinitions);
   const formTypeSelect = container.querySelector("[data-form-type-select='true']");
-  const quantityInputs = Array.from(container.querySelectorAll("[data-quantity-input='true']"));
-  const amountInputs = Array.from(container.querySelectorAll("input[name*='[amount]']"));
-  const totalQuantity = container.querySelector("[data-total-quantity]");
-  const totalAmount = container.querySelector("[data-total-amount]");
-  const formDescription = container.querySelector("[data-form-description]");
-  const selectedFormType = formTypeSelect.value;
-
+  const quantityCalcInputs = Array.from(container.querySelectorAll("[data-quantity-calc-input='true']"));
+  const totalQuantityDisplay = container.querySelector("[data-total-quantity-display]");
+  const totalAmountDisplay = container.querySelector("[data-total-amount-display]");
   const searchInput = container.querySelector("[data-congregation-search-input]");
   const hiddenCongregationInput = container.querySelector("[data-congregation-search-target='hidden']");
   const searchResults = container.querySelector("[data-congregation-results]");
   const selectedCongregation = container.querySelector("[data-selected-congregation]");
-
-  const formatNumber = (value) => new Intl.NumberFormat("ja-JP").format(value);
-  const definition = definitions[selectedFormType];
-
-  const updateTotals = () => {
-    const quantity = quantityInputs.reduce((sum, input) => sum + Number(input.value || 0), 0);
-    const amount = amountInputs.reduce((sum, input) => sum + Number(input.value || 0), 0);
-    totalQuantity.textContent = formatNumber(quantity);
-    totalAmount.textContent = formatNumber(amount);
-  };
 
   const renderSelection = (item) => {
     selectedCongregation.innerHTML = item ?
@@ -32,15 +31,27 @@ document.addEventListener("DOMContentLoaded", () => {
       "<span>未選択</span>";
   };
 
-  const applyAutoAmounts = () => {
-    quantityInputs.forEach((input, index) => {
-      const amount = Number(input.value || 0) * definition.unit_price;
-      amountInputs[index].value = amount;
-    });
-    updateTotals();
-  };
+  const formatCurrency = (value) => `¥${new Intl.NumberFormat("ja-JP").format(value)}`;
 
-  formDescription.textContent = `固定項目: ${definition.label} / 既定単価: ¥${formatNumber(definition.unit_price)}`;
+  const unitPrice = () => Number(totalAmountDisplay?.dataset.unitPrice || 0);
+
+  const updateTotalQuantity = () => {
+    if (!totalQuantityDisplay || quantityCalcInputs.length < 2) return;
+
+    const [startInput, endInput] = quantityCalcInputs;
+    const start = Number(startInput.value);
+    const end = Number(endInput.value);
+
+    if (startInput.value === "" || endInput.value === "" || Number.isNaN(start) || Number.isNaN(end)) {
+      totalQuantityDisplay.textContent = "未計算";
+      if (totalAmountDisplay) totalAmountDisplay.textContent = "未計算";
+      return;
+    }
+
+    const quantity = end - start + 1;
+    totalQuantityDisplay.textContent = `${quantity} 本`;
+    if (totalAmountDisplay) totalAmountDisplay.textContent = formatCurrency(quantity * unitPrice());
+  };
 
   let lastSearchToken = 0;
 
@@ -79,13 +90,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  quantityInputs.forEach((input) => input.addEventListener("input", applyAutoAmounts));
-  amountInputs.forEach((input) => input.addEventListener("input", updateTotals));
   formTypeSelect.addEventListener("change", () => {
     const url = new URL(window.location.href);
     url.searchParams.set("form_type", formTypeSelect.value);
     window.location.href = url.toString();
   });
 
-  applyAutoAmounts();
+  quantityCalcInputs.forEach((input) => input.addEventListener("input", updateTotalQuantity));
+  updateTotalQuantity();
 });

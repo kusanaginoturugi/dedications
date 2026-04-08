@@ -53,8 +53,7 @@ textarea {
 
 .app-header h1,
 .page-head h2,
-.card h2,
-.detail-head h3 {
+.card h2 {
   margin: 0;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
 }
@@ -69,6 +68,13 @@ textarea {
   display: flex;
   gap: 0.75rem;
   align-items: center;
+}
+
+.page-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .card {
@@ -87,6 +93,81 @@ textarea {
 .stack-form {
   display: grid;
   gap: 1rem;
+}
+
+.sheet-grid {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.sheet-row {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.sheet-row-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sheet-pair {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.8fr) minmax(0, 1fr);
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255, 253, 248, 0.92);
+}
+
+.sheet-pair-wide {
+  grid-template-columns: minmax(8rem, 0.7fr) minmax(0, 1.8fr);
+}
+
+.sheet-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  background: rgba(143, 45, 31, 0.07);
+  padding: 1.15rem 1rem;
+}
+
+.sheet-value {
+  display: grid;
+  align-content: center;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 1.15rem 1rem;
+}
+
+.sheet-readonly {
+  font-weight: 600;
+}
+
+.compact-field {
+  gap: 0;
+}
+
+.compact-field input,
+.compact-field select {
+  min-height: 3rem;
+}
+
+.congregation-field {
+  gap: 0.5rem;
+}
+
+.sheet-range {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sheet-range-separator {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  text-align: center;
 }
 
 .form-top-grid,
@@ -115,6 +196,16 @@ textarea {
   border-radius: 12px;
   padding: 0.75rem 0.9rem;
   background: #fff;
+}
+
+.derived-value {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(143, 45, 31, 0.04);
 }
 
 .field input:focus,
@@ -153,7 +244,6 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: #fff;
-  white-space: nowrap;
   justify-content: flex-start;
 }
 
@@ -164,6 +254,24 @@ textarea {
 
 .toggle-label span {
   line-height: 1;
+}
+
+.payment-toggle {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  white-space: normal;
+}
+
+.payment-toggle-text {
+  font-weight: 700;
+}
+
+.payment-note {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.4;
 }
 
 .primary-link,
@@ -228,10 +336,124 @@ textarea {
   overflow-x: auto;
 }
 
+.order-group + .order-group {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.summary-group + .summary-group {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+.summary-title {
+  margin: 0 0 1rem;
+  text-align: center;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-size: 1.15rem;
+}
+
+.summary-totals {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.summary-total-card {
+  min-width: 8rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  background: rgba(143, 45, 31, 0.05);
+  text-align: center;
+}
+
+.personal-summary-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.personal-summary-card {
+  text-align: left;
+}
+
+.personal-summary-card h3 {
+  margin: 0 0 0.8rem;
+  font-size: 1rem;
+}
+
+.personal-summary-card p {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.35rem 0 0;
+}
+
+.personal-summary-card span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.summary-total-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.order-group-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.order-group-header h3 {
+  margin: 0;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-size: 1.25rem;
+}
+
+.order-group-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover td,
+.clickable-row:focus-visible td {
+  background: rgba(143, 45, 31, 0.06);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+}
+
+.orders-page-column {
+  width: 5.5rem;
+}
+
+.orders-date-column {
+  width: 7rem;
+}
+
+.orders-quantity-column {
+  width: 5.5rem;
+}
+
+.orders-amount-column {
+  width: 7.5rem;
 }
 
 th,
@@ -264,52 +486,6 @@ tfoot td {
   min-width: 5rem;
 }
 
-.detail-table {
-  table-layout: fixed;
-}
-
-.detail-input {
-  min-height: 44px;
-}
-
-.detail-input-number {
-  max-width: 5.5rem;
-}
-
-.detail-table .detail-col-name {
-  width: 41%;
-}
-
-.detail-table .detail-col-wish {
-  width: 41%;
-}
-
-.detail-table .detail-col-quantity {
-  width: 7rem;
-}
-
-.detail-table .detail-col-number {
-  width: 6.5rem;
-}
-
-.detail-table .numeric-input {
-  min-width: 0;
-  max-width: 5rem;
-}
-
-.detail-table th,
-.detail-table td {
-  padding: 0.65rem 0.5rem;
-}
-
-.detail-table tbody td {
-  vertical-align: middle;
-}
-
-.detail-table tfoot th {
-  font-weight: 700;
-}
-
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -331,6 +507,11 @@ tfoot td {
   margin: 0.35rem 0 0;
 }
 
+.status-unpaid {
+  color: var(--error);
+  font-weight: 700;
+}
+
 @media (max-width: 800px) {
   .app-header,
   .page-head {
@@ -339,11 +520,46 @@ tfoot td {
   }
 
   .header-nav,
-  .form-top-grid,
-  .two-column-grid,
-  .detail-grid {
+  .page-actions,
+  .detail-grid,
+  .summary-totals {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .sheet-grid {
+    gap: 0.75rem;
+    background: transparent;
+  }
+
+  .sheet-row,
+  .sheet-row-two {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .sheet-label {
+    justify-content: flex-start;
+    padding: 0.9rem;
+  }
+
+  .sheet-pair,
+  .sheet-pair-wide {
+    grid-template-columns: 1fr;
+    border-radius: 12px;
+  }
+
+  .sheet-range,
+  .payment-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .sheet-value {
+    padding: 0.9rem;
+  }
+
+  .sheet-range-separator {
+    display: none;
   }
 
   .app-shell {

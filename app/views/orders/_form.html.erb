@@ -1,0 +1,138 @@
+<section
+  class="card"
+  data-order-form
+  data-congregations-url="<%= congregations_path %>"
+>
+  <%= form_with model: order, class: "stack-form" do |form| %>
+    <% if order.errors.any? %>
+      <div class="error-box">
+        <h3>入力内容を確認してください</h3>
+        <ul>
+          <% order.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="sheet-grid">
+      <div class="sheet-row sheet-row-two">
+        <div class="sheet-pair">
+          <div class="sheet-label">入力者名</div>
+          <div class="sheet-value sheet-readonly"><%= order.user&.display_name || current_user.display_name %></div>
+        </div>
+        <div class="sheet-pair">
+          <div class="sheet-label">入力日</div>
+          <div class="sheet-value sheet-readonly"><%= l(order.created_at&.to_date || Date.current) %></div>
+        </div>
+      </div>
+
+      <div class="sheet-row">
+        <div class="sheet-pair sheet-pair-wide">
+          <div class="sheet-label">道具の種類</div>
+          <div class="sheet-value">
+            <div class="field compact-field">
+              <%= form.select :form_type, Order.form_options, {}, data: { form_type_select: true } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet-row sheet-row-two">
+        <div class="sheet-pair">
+          <div class="sheet-label">伝道会名</div>
+          <div class="sheet-value">
+            <div class="field compact-field congregation-field">
+              <input
+                id="congregation-code-search"
+                type="text"
+                value="<%= order.congregation&.code %>"
+                placeholder="2桁以上で絞り込み"
+                autocomplete="off"
+                data-congregation-search-input
+              >
+              <%= form.hidden_field :congregation_id, data: { congregation_search_target: "hidden" } %>
+              <div class="selected-congregation" data-selected-congregation>
+                <% if order.congregation %>
+                  <button type="button" class="search-result active"><%= "#{order.congregation.code} #{order.congregation.name}" %></button>
+                <% else %>
+                  <span>未選択</span>
+                <% end %>
+              </div>
+              <div class="search-results" data-congregation-results></div>
+            </div>
+          </div>
+        </div>
+        <div class="sheet-pair">
+          <div class="sheet-label">FAX受信日</div>
+          <div class="sheet-value">
+            <div class="field compact-field">
+              <%= form.date_field :fax_received_on %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet-row sheet-row-two">
+        <div class="sheet-pair">
+          <div class="sheet-label">ページ番号</div>
+          <div class="sheet-value">
+            <div class="field compact-field">
+              <%= form.number_field :page_number, min: 1, required: true %>
+            </div>
+          </div>
+        </div>
+        <div class="sheet-pair">
+          <div class="sheet-label">通し番号</div>
+          <div class="sheet-value sheet-range">
+            <div class="field compact-field">
+              <%= form.number_field :serial_number_start, min: 0, step: 1, data: { quantity_calc_input: true } %>
+            </div>
+            <span class="sheet-range-separator">〜</span>
+            <div class="field compact-field">
+              <%= form.number_field :serial_number_end, min: 0, step: 1, data: { quantity_calc_input: true } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet-row sheet-row-two">
+        <div class="sheet-pair">
+          <div class="sheet-label">合計本数</div>
+          <div class="sheet-value">
+            <div class="derived-value" data-total-quantity-display>
+              <%= order.total_quantity.present? ? "#{order.total_quantity} 本" : "未計算" %>
+            </div>
+          </div>
+        </div>
+        <div class="sheet-pair">
+          <div class="sheet-label">合計金額</div>
+          <div class="sheet-value">
+            <div class="derived-value" data-total-amount-display data-unit-price="<%= order.form_definition.fetch(:unit_price) %>">
+              <%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "未計算" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet-row">
+        <div class="sheet-pair sheet-pair-wide">
+          <div class="sheet-label">入金状態</div>
+          <div class="sheet-value">
+            <div class="field compact-field checkbox-field toggle-field">
+              <label class="toggle-label payment-toggle">
+                <%= form.check_box :paid %>
+                <span class="payment-toggle-text">入金済み</span>
+                <span class="payment-note">入金済にしない場合は、未入金として扱います。</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <%= form.submit submit_label, class: "primary-button" %>
+    </div>
+  <% end %>
+</section>

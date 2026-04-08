@@ -33,6 +33,9 @@
           <nav class="header-nav">
             <%= link_to "一覧", orders_path, class: "secondary-link" %>
             <%= link_to "新規入力", new_order_path, class: "primary-link" %>
+            <% if current_user.is_admin? %>
+              <%= link_to "ユーザー管理", users_path, class: "secondary-link" %>
+            <% end %>
             <%= button_to "サインアウト", session_path, method: :delete, class: "ghost-button" %>
           </nav>
         <% end %>

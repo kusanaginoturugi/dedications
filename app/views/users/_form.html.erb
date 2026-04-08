@@ -1,0 +1,48 @@
+<section class="card">
+  <%= form_with model: user, class: "stack-form" do |form| %>
+    <% if user.errors.any? %>
+      <div class="error-box">
+        <h3>入力内容を確認してください</h3>
+        <ul>
+          <% user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="two-column-grid">
+      <div class="field">
+        <%= form.label :name, "名前" %>
+        <%= form.text_field :name, required: true %>
+      </div>
+
+      <div class="field">
+        <%= form.label :email, "メールアドレス" %>
+        <%= form.email_field :email, required: true %>
+      </div>
+
+      <div class="field checkbox-field toggle-field full-width">
+        <span class="field-label">権限</span>
+        <label class="toggle-label">
+          <%= form.check_box :is_admin %>
+          <span>管理者</span>
+        </label>
+      </div>
+
+      <div class="field">
+        <%= form.label :password, password_required ? "パスワード" : "新しいパスワード" %>
+        <%= form.password_field :password, autocomplete: "new-password", required: password_required %>
+      </div>
+
+      <div class="field">
+        <%= form.label :password_confirmation, password_required ? "パスワード(確認)" : "新しいパスワード(確認)" %>
+        <%= form.password_field :password_confirmation, autocomplete: "new-password", required: password_required %>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <%= form.submit submit_label, class: "primary-button" %>
+    </div>
+  <% end %>
+</section>

@@ -1,0 +1,11 @@
+<% content_for :title, "ユーザー編集" %>
+
+<section class="page-head">
+  <div>
+    <h2>ユーザー編集</h2>
+    <p class="section-lead">ユーザー情報と管理者権限を更新します。</p>
+  </div>
+  <%= link_to "ユーザー一覧へ戻る", users_path, class: "secondary-link" %>
+</section>
+
+<%= render "form", user: @user, submit_label: "ユーザーを更新", password_required: false %>

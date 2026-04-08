@@ -19,4 +19,10 @@ class ApplicationController < ActionController::Base
 
     redirect_to new_session_path, alert: "サインインが必要です。"
   end
+
+  def require_admin!
+    return if current_user&.is_admin?
+
+    redirect_to orders_path, alert: "管理者のみ利用できます。"
+  end
 end

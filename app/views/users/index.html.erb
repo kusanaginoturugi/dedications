@@ -1,0 +1,32 @@
+<% content_for :title, "ユーザー一覧" %>
+
+<section class="page-head">
+  <div>
+    <h2>ユーザー一覧</h2>
+    <p class="section-lead">管理者のみユーザー情報を編集できます。</p>
+  </div>
+  <%= link_to "ユーザー追加", new_user_path, class: "primary-link" %>
+</section>
+
+<section class="card">
+  <div class="table-wrap">
+    <table class="stack-on-mobile">
+      <thead>
+        <tr>
+          <th>名前</th>
+          <th>メールアドレス</th>
+          <th>権限</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr class="clickable-row" data-href="<%= edit_user_path(user) %>" tabindex="0" role="link" aria-label="<%= user.display_name %>を編集">
+            <td data-label="名前"><%= user.display_name %></td>
+            <td data-label="メールアドレス"><%= user.email %></td>
+            <td data-label="権限"><%= user.is_admin? ? "管理者" : "一般" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

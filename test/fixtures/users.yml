@@ -1,7 +1,11 @@
 admin:
+  name: 管理者
+  is_admin: true
   email: admin@example.com
   password_digest: <%= BCrypt::Password.create("password123") %>
 
 operator:
+  name: 一般利用者
+  is_admin: false
   email: operator@example.com
   password_digest: <%= BCrypt::Password.create("password123") %>

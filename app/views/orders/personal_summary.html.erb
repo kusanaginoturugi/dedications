@@ -1,0 +1,63 @@
+<% content_for :title, "個別集計" %>
+
+<section class="page-head">
+  <div>
+    <h2>個別集計</h2>
+    <p class="section-lead">入力者ごとの実績と、注文明細を時系列で確認します。</p>
+  </div>
+  <div class="page-actions">
+    <%= link_to "注文一覧", orders_path, class: "secondary-link" %>
+    <%= link_to "種類別集計", summary_orders_path, class: "secondary-link" %>
+  </div>
+</section>
+
+<section class="card">
+  <% if @orders.any? %>
+    <section class="personal-summary-overview">
+      <% @user_summaries.each do |summary| %>
+        <article class="summary-total-card personal-summary-card">
+          <h3><%= summary[:user].display_name %></h3>
+          <p><span>件数</span><strong><%= summary[:order_count] %>件</strong></p>
+          <p><span>金額</span><strong><%= number_to_currency(summary[:total_amount], unit: "¥", precision: 0) %></strong></p>
+          <p><span>未入金</span><strong class="<%= summary[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= summary[:unpaid_count] %>件</strong></p>
+        </article>
+      <% end %>
+    </section>
+
+    <div class="table-wrap">
+      <table class="stack-on-mobile personal-summary-table">
+        <colgroup>
+          <col>
+          <col class="orders-date-column">
+          <col>
+          <col class="orders-amount-column">
+          <col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>入力者</th>
+            <th>入力日</th>
+            <th>種類</th>
+            <th>金額</th>
+            <th>入金状態</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の注文を編集">
+              <td data-label="入力者"><%= order.user.display_name %></td>
+              <td data-label="入力日"><%= order.created_at.strftime("%-m.%-d") %></td>
+              <td data-label="種類"><%= order.form_label %></td>
+              <td data-label="金額"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
+              <td data-label="入金状態">
+                <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済み" : "未入金" %></span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p>まだ注文は登録されていません。</p>
+  <% end %>
+</section>

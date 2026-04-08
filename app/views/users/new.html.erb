@@ -1,0 +1,11 @@
+<% content_for :title, "ユーザー追加" %>
+
+<section class="page-head">
+  <div>
+    <h2>ユーザー追加</h2>
+    <p class="section-lead">新しい利用者を登録します。</p>
+  </div>
+  <%= link_to "ユーザー一覧へ戻る", users_path, class: "secondary-link" %>
+</section>
+
+<%= render "form", user: @user, submit_label: "ユーザーを作成", password_required: true %>
