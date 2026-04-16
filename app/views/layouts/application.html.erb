@@ -31,11 +31,34 @@
         </div>
         <% if signed_in? %>
           <nav class="header-nav">
-            <%= link_to "一覧", orders_path, class: "secondary-link" %>
-            <%= link_to "新規入力", new_order_path, class: "primary-link" %>
-            <% if current_user.is_admin? %>
-              <%= link_to "ユーザー管理", users_path, class: "secondary-link" %>
-            <% end %>
+            <details class="menu-tree">
+              <summary class="secondary-link">メニュー</summary>
+              <div class="menu-tree-panel">
+                <section>
+                  <h3>注文</h3>
+                  <%= link_to "注文一覧", orders_path %>
+                  <%= link_to "FAX注文入力", new_order_path %>
+                </section>
+                <section>
+                  <h3>集計</h3>
+                  <%= link_to "注文集計", summary_orders_path %>
+                  <%= link_to "個別集計", personal_summary_orders_path %>
+                </section>
+                <section>
+                  <h3>帳票</h3>
+                  <%= link_to "前夜祭・当日", pre_event_reports_path %>
+                  <%= link_to "代理・在庫", proxy_inventory_reports_path %>
+                  <%= link_to "各種代理奉納", dedication_counts_reports_path %>
+                </section>
+                <% if current_user.is_admin? %>
+                  <section>
+                    <h3>管理</h3>
+                    <%= link_to "ユーザー一覧", users_path %>
+                    <%= link_to "ユーザー追加", new_user_path %>
+                  </section>
+                <% end %>
+              </div>
+            </details>
             <%= button_to "サインアウト", session_path, method: :delete, class: "ghost-button" %>
           </nav>
         <% end %>

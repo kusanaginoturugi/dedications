@@ -1,0 +1,42 @@
+<% content_for :title, "帳票: 前夜祭・当日" %>
+
+<section class="page-head">
+  <div>
+    <h2>帳票: 前夜祭・当日</h2>
+    <p class="section-lead">還付.ods の「前夜祭・当日」シート相当です。</p>
+  </div>
+</section>
+
+<section class="card">
+  <p class="report-note">本システムは代理奉納入力が対象のため、この帳票の数値は現時点では 0 で出力しています。</p>
+  <div class="table-wrap">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>道具名</th>
+          <th>奉納料</th>
+          <th>奉納数</th>
+          <th>売上</th>
+          <th>還付金</th>
+          <th>聖院還付分</th>
+          <th>弥勒寺</th>
+          <th>弥勒寺入金分</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @rows.each do |row| %>
+          <tr>
+            <td><%= row[:label] %></td>
+            <td><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
+            <td><%= row[:quantity] %></td>
+            <td><%= number_to_currency(row[:sales], unit: "¥", precision: 0) %></td>
+            <td><%= number_to_currency(row[:refund_unit], unit: "¥", precision: 0) %></td>
+            <td><%= number_to_currency(row[:seiin_amount], unit: "¥", precision: 0) %></td>
+            <td><%= number_to_currency(row[:miroku_unit], unit: "¥", precision: 0) %></td>
+            <td><%= number_to_currency(row[:miroku_amount], unit: "¥", precision: 0) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,57 @@
+<% content_for :title, "帳票: 各種代理奉納" %>
+
+<section class="page-head">
+  <div>
+    <h2>帳票: 各種代理奉納</h2>
+    <p class="section-lead">伝道会ごとの入金済本数、未入金本数、合計本数を表示します。</p>
+  </div>
+</section>
+
+<section class="card">
+  <div class="counts-sheet-grid">
+    <section>
+      <table class="report-table report-table-compact">
+        <thead>
+          <tr>
+            <th>伝道会</th>
+            <th>入金済本数</th>
+            <th>未入金本数</th>
+            <th>合計本数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @left_rows.each do |row| %>
+            <tr>
+              <td><%= "#{row[:congregation].code} #{row[:congregation].name}" %></td>
+              <td><%= row[:paid_count] %></td>
+              <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
+              <td><%= row[:total_count] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <table class="report-table report-table-compact">
+        <thead>
+          <tr>
+            <th>伝道会</th>
+            <th>入金済本数</th>
+            <th>未入金本数</th>
+            <th>合計本数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @right_rows.each do |row| %>
+            <tr>
+              <td><%= "#{row[:congregation].code} #{row[:congregation].name}" %></td>
+              <td><%= row[:paid_count] %></td>
+              <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
+              <td><%= row[:total_count] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</section>

@@ -16,6 +16,9 @@ Rails.application.routes.draw do
       get :personal_summary
     end
   end
+  get "reports/pre_event", to: "reports#pre_event", as: :pre_event_reports
+  get "reports/proxy_inventory", to: "reports#proxy_inventory", as: :proxy_inventory_reports
+  get "reports/dedication_counts", to: "reports#dedication_counts", as: :dedication_counts_reports
   resources :congregations, only: :index
   resources :users, only: [ :index, :new, :create, :edit, :update ]
 

@@ -70,6 +70,48 @@ textarea {
   align-items: center;
 }
 
+.menu-tree {
+  position: relative;
+}
+
+.menu-tree summary {
+  list-style: none;
+}
+
+.menu-tree summary::-webkit-details-marker {
+  display: none;
+}
+
+.menu-tree-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 260px;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 12px 30px rgba(45, 36, 29, 0.12);
+  display: grid;
+  gap: 0.9rem;
+  z-index: 10;
+}
+
+.menu-tree-panel h3 {
+  margin: 0 0 0.35rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.menu-tree-panel section {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.menu-tree-panel a {
+  padding: 0.15rem 0;
+}
+
 .page-actions {
   display: flex;
   gap: 0.75rem;
@@ -346,6 +388,23 @@ textarea {
   overflow-x: auto;
 }
 
+.report-note {
+  margin: 0 0 1rem;
+  color: var(--muted);
+}
+
+.counts-sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.report-table-compact td,
+.report-table-compact th {
+  padding: 0.6rem 0.5rem;
+  font-size: 0.95rem;
+}
+
 .order-group + .order-group {
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -550,6 +609,16 @@ tfoot td {
   .detail-grid,
   .summary-totals {
     display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .menu-tree-panel {
+    position: static;
+    min-width: 0;
+    margin-top: 0.5rem;
+  }
+
+  .counts-sheet-grid {
     grid-template-columns: 1fr;
   }
 

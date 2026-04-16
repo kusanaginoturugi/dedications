@@ -2,15 +2,24 @@ class Order < ApplicationRecord
   FORM_DEFINITIONS = {
     "wish_fulfillment_staff" => {
       label: "八大明王如意棒",
-      unit_price: 2000
+      unit_price: 2000,
+      refund_unit: 800,
+      miroku_unit: 1200,
+      report_label: "明王如意棒"
     },
     "sankai_ryuge_pillar" => {
       label: "三會龍華之御柱",
-      unit_price: 500
+      unit_price: 500,
+      refund_unit: 150,
+      miroku_unit: 350,
+      report_label: "三會龍華之御柱"
     },
     "sanki_reiboku" => {
       label: "三期滅劫之霊木",
-      unit_price: 800
+      unit_price: 800,
+      refund_unit: 100,
+      miroku_unit: 700,
+      report_label: "三期滅劫之霊木"
     }
   }.freeze
 

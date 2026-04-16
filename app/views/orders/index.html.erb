@@ -5,14 +5,6 @@
     <h2>注文一覧</h2>
     <p class="section-lead">FAX 1枚ごとに登録した注文の一覧です。</p>
   </div>
-  <div class="page-actions">
-    <% if current_user.is_admin? %>
-      <%= link_to "ユーザー管理", users_path, class: "secondary-link" %>
-    <% end %>
-    <%= link_to "集計画面", summary_orders_path, class: "secondary-link" %>
-    <%= link_to "個別集計", personal_summary_orders_path, class: "secondary-link" %>
-    <%= link_to "新しい注文を入力", new_order_path, class: "primary-link" %>
-  </div>
 </section>
 
 <section class="card">
