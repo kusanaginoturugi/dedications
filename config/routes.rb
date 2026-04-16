@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resource :session, only: [ :new, :create, :destroy ]
-  resources :orders, only: [ :index, :new, :create, :show, :edit, :update ] do
+  resources :orders, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
     collection do
       get :summary
       get :personal_summary

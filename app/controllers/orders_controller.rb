@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   before_action :require_sign_in!
-  before_action :set_order, only: [ :show, :edit, :update ]
+  before_action :set_order, only: [ :show, :edit, :update, :destroy ]
   helper_method :page_sort_direction, :next_page_sort_direction, :page_sort_arrow
 
   def index
@@ -36,7 +36,7 @@ class OrdersController < ApplicationController
   end
 
   def new
-    @order = current_user.orders.build(form_type: selected_form_type)
+    @order = current_user.orders.build(form_type: selected_form_type, fax_received_on: Date.current)
   end
 
   def create
@@ -63,6 +63,11 @@ class OrdersController < ApplicationController
       flash.now[:alert] = "入力内容を確認してください。"
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @order.destroy!
+    redirect_to orders_path, notice: "注文を削除しました。"
   end
 
   private

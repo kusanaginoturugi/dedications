@@ -277,6 +277,7 @@ textarea {
 .primary-link,
 .secondary-link,
 .primary-button,
+.danger-button,
 .ghost-button,
 .search-result {
   display: inline-flex;
@@ -297,6 +298,15 @@ textarea {
 .primary-link:hover,
 .primary-button:hover {
   background: var(--accent-strong);
+}
+
+.danger-button {
+  background: var(--error);
+  color: #fff;
+}
+
+.danger-button:hover {
+  background: #702121;
 }
 
 .secondary-link,
@@ -500,6 +510,11 @@ tfoot td {
 .form-actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.form-actions-split {
+  justify-content: space-between;
+  align-items: center;
 }
 
 .detail-grid {

@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const formatCurrency = (value) => `¥${new Intl.NumberFormat("ja-JP").format(value)}`;
-
-  const unitPrice = () => Number(totalAmountDisplay?.dataset.unitPrice || 0);
+  const unitPrices = JSON.parse(container.dataset.unitPrices || "{}");
+  const unitPrice = () => Number(unitPrices[formTypeSelect.value] || totalAmountDisplay?.dataset.unitPrice || 0);
 
   const updateTotalQuantity = () => {
     if (!totalQuantityDisplay || quantityCalcInputs.length < 2) return;
@@ -90,11 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  formTypeSelect.addEventListener("change", () => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("form_type", formTypeSelect.value);
-    window.location.href = url.toString();
-  });
+  formTypeSelect.addEventListener("change", updateTotalQuantity);
 
   quantityCalcInputs.forEach((input) => input.addEventListener("input", updateTotalQuantity));
   updateTotalQuantity();

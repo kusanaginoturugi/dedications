@@ -49,7 +49,7 @@
             <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の注文を編集">
               <td data-label="ページ"><%= order.page_number %></td>
               <td data-label="入力者"><%= order.user.display_name %></td>
-              <td data-label="入力日"><%= order.created_at.strftime("%-m.%-d") %></td>
+              <td data-label="入力日"><%= l(order.created_at.to_date) %></td>
               <td data-label="種類"><%= order.form_label %></td>
               <td data-label="金額"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
               <td data-label="入金状態">

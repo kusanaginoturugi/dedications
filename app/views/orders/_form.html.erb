@@ -2,6 +2,7 @@
   class="card"
   data-order-form
   data-congregations-url="<%= congregations_path %>"
+  data-unit-prices="<%= Order::FORM_DEFINITIONS.transform_values { |definition| definition.fetch(:unit_price) }.to_json %>"
 >
   <%= form_with model: order, class: "stack-form" do |form| %>
     <% if order.errors.any? %>
@@ -131,7 +132,10 @@
       </div>
     </div>
 
-    <div class="form-actions">
+    <div class="form-actions <%= order.persisted? ? "form-actions-split" : "" %>">
+      <% if order.persisted? %>
+        <%= button_to "削除", order_path(order), method: :delete, class: "danger-button", form: { data: { turbo_confirm: "この注文を削除します。よろしいですか？" } } %>
+      <% end %>
       <%= form.submit submit_label, class: "primary-button" %>
     </div>
   <% end %>

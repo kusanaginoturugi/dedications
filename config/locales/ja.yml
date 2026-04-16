@@ -1,7 +1,7 @@
 ja:
   date:
     formats:
-      default: "%Y-%m-%d"
+      default: "%Y/%m/%d"
   errors:
     format: "%{attribute}%{message}"
   activerecord:

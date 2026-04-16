@@ -20,7 +20,7 @@
     </div>
     <div>
       <dt>ファックス受信日</dt>
-      <dd><%= @order.fax_received_on&.strftime("%Y-%m-%d") || "未入力" %></dd>
+      <dd><%= @order.fax_received_on ? l(@order.fax_received_on) : "未入力" %></dd>
     </div>
     <div>
       <dt>伝道会</dt>

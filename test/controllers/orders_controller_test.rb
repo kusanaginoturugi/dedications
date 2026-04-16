@@ -16,6 +16,15 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, orders(:one).form_label
   end
 
+  test "new order defaults fax received on to today" do
+    sign_in_as(users(:admin))
+
+    get new_order_path
+
+    assert_response :success
+    assert_includes response.body, "value=\"#{Date.current}\""
+  end
+
   test "sorts orders by page ascending" do
     sign_in_as(users(:admin))
 
@@ -90,6 +99,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, "注文編集"
+    assert_includes response.body, "削除"
   end
 
   test "rejects duplicate page number within same form type on create" do
@@ -169,5 +179,15 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_includes response.body, "ページ番号は同じ注文書種類ですでに使われています"
+  end
+
+  test "destroys an order" do
+    sign_in_as(users(:admin))
+
+    assert_difference("Order.count", -1) do
+      delete order_path(orders(:one))
+    end
+
+    assert_redirected_to orders_path
   end
 end
