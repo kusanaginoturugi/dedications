@@ -45,3 +45,22 @@ bin/rails test
 ```
 
 `mise` 経由なら `mise run test` でも実行できます。
+
+## 自動デプロイ
+
+`main` への push で GitHub Actions から本番デプロイできます。
+
+前提:
+
+- サーバ配置先: `/home/ubuntu/dedications`
+- systemd サービス: `dedications.service`
+- アセット出力先: `/home/ubuntu/dedications/public/assets`
+- サーバ上で `sudo systemctl restart dedications.service` が通ること
+
+必要な GitHub Secrets:
+
+- `EC2_HOST`
+- `EC2_PORT`
+- `EC2_SSH_KEY`
+
+デプロイ処理本体は `scripts/deploy.sh` です。
