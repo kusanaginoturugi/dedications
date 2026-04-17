@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euxo pipefail
 
 APP_ROOT="/home/ubuntu/dedications"
 RUBY_BIN="/home/ubuntu/.local/share/mise/installs/ruby/3.4.8/bin"
@@ -19,5 +19,5 @@ bundle install --deployment --without development test
 bin/rails db:migrate
 bin/rails assets:precompile
 
-sudo systemctl restart dedications.service
-sudo systemctl is-active --quiet dedications.service
+sudo -n systemctl restart dedications.service
+sudo -n systemctl is-active --quiet dedications.service
