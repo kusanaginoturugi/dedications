@@ -15,7 +15,9 @@ export BUNDLE_PATH="$APP_ROOT/vendor/bundle"
 git fetch origin
 git pull --ff-only origin main
 
-bundle install --deployment --without development test
+bundle config set deployment true
+bundle config set without 'development test'
+bundle install
 bin/rails db:migrate
 bin/rails assets:precompile
 
