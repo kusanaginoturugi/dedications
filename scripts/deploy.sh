@@ -12,6 +12,8 @@ export RAILS_ENV="production"
 export BUNDLE_GEMFILE="$APP_ROOT/Gemfile"
 export BUNDLE_PATH="$APP_ROOT/vendor/bundle"
 
+git config core.fileMode false
+
 git fetch origin
 git pull --ff-only origin main
 

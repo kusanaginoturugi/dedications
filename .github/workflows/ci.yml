@@ -89,7 +89,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/dedications
-            git fetch origin
-            git pull --ff-only origin main
-            chmod +x scripts/deploy.sh
             /home/ubuntu/dedications/scripts/deploy.sh
