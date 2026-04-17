@@ -86,7 +86,6 @@ jobs:
           port: ${{ secrets.EC2_PORT }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          script_stop: true
           script: |
             cd /home/ubuntu/dedications
             git fetch origin
