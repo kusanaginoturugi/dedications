@@ -89,4 +89,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/dedications
+            git config core.fileMode false
+            git checkout -- scripts/deploy.sh
             /home/ubuntu/dedications/scripts/deploy.sh
