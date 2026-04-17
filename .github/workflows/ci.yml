@@ -90,5 +90,6 @@ jobs:
           script: |
             cd /home/ubuntu/dedications
             git config core.fileMode false
-            git checkout -- scripts/deploy.sh
+            git fetch origin
+            git checkout origin/main -- scripts/deploy.sh
             bash /home/ubuntu/dedications/scripts/deploy.sh
