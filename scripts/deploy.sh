@@ -21,5 +21,5 @@ bundle install
 bin/rails db:migrate
 bin/rails assets:precompile
 
-sudo -n systemctl restart dedications.service
-sudo -n systemctl is-active --quiet dedications.service
+sudo -n /usr/bin/systemctl restart dedications.service
+sudo -n /usr/bin/systemctl is-active dedications.service
