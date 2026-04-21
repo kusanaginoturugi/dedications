@@ -33,6 +33,6 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, "帳票: 各種代理奉納"
-    assert_includes response.body, congregations(:tokyo).name
+    assert_includes response.body, "新潟公壇"
   end
 end
