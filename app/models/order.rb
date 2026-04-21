@@ -34,6 +34,7 @@ class Order < ApplicationRecord
   validates :serial_number_start, :serial_number_end,
     numericality: { only_integer: true, allow_nil: true }
   validate :serial_number_range_is_valid
+  validate :serial_number_range_is_not_taken
   validate :page_number_is_unique_within_form_type
 
   def self.form_options
@@ -77,6 +78,19 @@ class Order < ApplicationRecord
     return if serial_number_end >= serial_number_start
 
     errors.add(:serial_number_end, "は通し番号(開始)以上にしてください")
+  end
+
+  def serial_number_range_is_not_taken
+    return if form_type.blank? || serial_number_start.blank? || serial_number_end.blank?
+
+    scope = self.class.where(form_type: form_type)
+    scope = scope.where.not(id: id) if id.present?
+
+    overlap_exists = scope.where("serial_number_start <= ? AND serial_number_end >= ?", serial_number_end, serial_number_start).exists?
+
+    if overlap_exists
+      errors.add(:base, "通し番号は同じ注文書種類ですでに使われています。")
+    end
   end
 
   def page_number_is_unique_within_form_type

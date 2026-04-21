@@ -183,6 +183,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.2-arm-linux-musl)
       racc (~> 1.4)
+    nokogiri (1.19.2-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.19.2-x86_64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.19.2-x86_64-linux-musl)
@@ -313,6 +315,7 @@ GEM
     sqlite3 (2.9.2-aarch64-linux-musl)
     sqlite3 (2.9.2-arm-linux-gnu)
     sqlite3 (2.9.2-arm-linux-musl)
+    sqlite3 (2.9.2-arm64-darwin)
     sqlite3 (2.9.2-x86_64-linux-gnu)
     sqlite3 (2.9.2-x86_64-linux-musl)
     sshkit (1.25.0)
@@ -328,6 +331,7 @@ GEM
     thor (1.5.0)
     thruster (0.1.20)
     thruster (0.1.20-aarch64-linux)
+    thruster (0.1.20-arm64-darwin)
     thruster (0.1.20-x86_64-linux)
     timeout (0.6.1)
     tsort (0.2.0)
@@ -360,6 +364,7 @@ PLATFORMS
   aarch64-linux-musl
   arm-linux-gnu
   arm-linux-musl
+  arm64-darwin-23
   x86_64-linux-gnu
   x86_64-linux-musl
 
@@ -453,6 +458,7 @@ CHECKSUMS
   nokogiri (1.19.2-aarch64-linux-musl) sha256=7f6b4b0202d507326841a4f790294bf75098aef50c7173443812e3ac5cb06515
   nokogiri (1.19.2-arm-linux-gnu) sha256=b7fa1139016f3dc850bda1260988f0d749934a939d04ef2da13bec060d7d5081
   nokogiri (1.19.2-arm-linux-musl) sha256=61114d44f6742ff72194a1b3020967201e2eb982814778d130f6471c11f9828c
+  nokogiri (1.19.2-arm64-darwin) sha256=58d8ea2e31a967b843b70487a44c14c8ba1866daa1b9da9be9dbdf1b43dee205
   nokogiri (1.19.2-x86_64-linux-gnu) sha256=fa8feca882b73e871a9845f3817a72e9734c8e974bdc4fbad6e4bc6e8076b94f
   nokogiri (1.19.2-x86_64-linux-musl) sha256=93128448e61a9383a30baef041bf1f5817e22f297a1d400521e90294445069a8
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
@@ -497,6 +503,7 @@ CHECKSUMS
   sqlite3 (2.9.2-aarch64-linux-musl) sha256=4feff91fb8c2b13688da34b5627c9d1ed9cedb3ee87a7114ec82209147f07a6d
   sqlite3 (2.9.2-arm-linux-gnu) sha256=1ee2eb06b5301aaf5ce343a6e88d99ac932d95202d7b350f0e7b6d8d588580d7
   sqlite3 (2.9.2-arm-linux-musl) sha256=8ca0de6aceede968de0394e22e95d549834c4d8e318f69a92a52f049878a0057
+  sqlite3 (2.9.2-arm64-darwin) sha256=d15bd9609a05f9d54930babe039585efc8cadd57517c15b64ec7dfa75158a5e9
   sqlite3 (2.9.2-x86_64-linux-gnu) sha256=dce83ffcb7e72f9f7aeb6e5404f15d277a45332fe18ccce8a8b3ed51e8d23aee
   sqlite3 (2.9.2-x86_64-linux-musl) sha256=e8dd906a613f13b60f6d47ae9dda376384d9de1ab3f7e3f2fdf2fd18a871a2d7
   sshkit (1.25.0) sha256=c8c6543cdb60f91f1d277306d585dd11b6a064cb44eab0972827e4311ff96744
@@ -505,6 +512,7 @@ CHECKSUMS
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
   thruster (0.1.20) sha256=c05f2fbcae527bbe093a6e6d84fb12d9d680617e7c162325d9b97e8e9d4b5201
   thruster (0.1.20-aarch64-linux) sha256=754f1701061235235165dde31e7a3bc87ec88066a02981ff4241fcda0d76d397
+  thruster (0.1.20-arm64-darwin) sha256=630cf8c273f562063b92ea5ccd7a721d7ba6130cc422c823727f4744f6d0770e
   thruster (0.1.20-x86_64-linux) sha256=d579f252bf67aee6ba6d957e48f566b72e019d7657ba2f267a5db1e4d91d2479
   timeout (0.6.1) sha256=78f57368a7e7bbadec56971f78a3f5ecbcfb59b7fcbb0a3ed6ddc08a5094accb
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
