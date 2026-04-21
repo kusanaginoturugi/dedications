@@ -22,7 +22,10 @@
         <tbody>
           <% @left_rows.each do |row| %>
             <tr>
-              <td><%= "#{row[:congregation].code} #{row[:congregation].name}" %></td>
+              <td>
+                <%= row[:congregation].code %><br>
+                <%= row[:congregation].name %>
+              </td>
               <td><%= row[:paid_count] %></td>
               <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
               <td><%= row[:total_count] %></td>
@@ -44,7 +47,10 @@
         <tbody>
           <% @right_rows.each do |row| %>
             <tr>
-              <td><%= "#{row[:congregation].code} #{row[:congregation].name}" %></td>
+              <td>
+                <%= row[:congregation].code %><br>
+                <%= row[:congregation].name %>
+              </td>
               <td><%= row[:paid_count] %></td>
               <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
               <td><%= row[:total_count] %></td>
