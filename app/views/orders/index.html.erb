@@ -65,7 +65,7 @@
                   <td data-label="本数"><%= order.total_quantity.present? ? "#{order.total_quantity} 本" : "-" %></td>
                   <td data-label="金額"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
                   <td data-label="入金">
-                    <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済" : "未入金" %></span>
+                    <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済み" : "未入金" %></span>
                   </td>
                   <td data-label="入力者"><%= order.user.display_name %></td>
                 </tr>

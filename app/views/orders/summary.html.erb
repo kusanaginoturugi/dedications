@@ -19,6 +19,16 @@
             <strong><%= summary[:total_quantity] %></strong>
           </div>
           <div class="summary-total-card">
+            <span class="summary-total-label">入金済み</span>
+            <strong><%= summary[:paid_quantity] %> 本</strong>
+            <small><%= number_to_currency(summary[:paid_amount], unit: "¥", precision: 0) %></small>
+          </div>
+          <div class="summary-total-card">
+            <span class="summary-total-label">未入金</span>
+            <strong class="<%= summary[:unpaid_quantity].positive? ? "status-unpaid" : "" %>"><%= summary[:unpaid_quantity] %> 本</strong>
+            <small class="<%= summary[:unpaid_amount].positive? ? "status-unpaid" : "" %>"><%= number_to_currency(summary[:unpaid_amount], unit: "¥", precision: 0) %></small>
+          </div>
+          <div class="summary-total-card">
             <span class="summary-total-label">合計金額</span>
             <strong><%= number_to_currency(summary[:total_amount], unit: "¥", precision: 0) %></strong>
           </div>

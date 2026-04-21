@@ -17,6 +17,10 @@ class OrdersController < ApplicationController
         form_type:,
         label: Order.form_definition_for(form_type).fetch(:label),
         total_quantity: matches.sum { |order| order.total_quantity.to_i },
+        paid_quantity: matches.select(&:paid?).sum { |order| order.total_quantity.to_i },
+        paid_amount: matches.select(&:paid?).sum { |order| order.total_amount.to_i },
+        unpaid_quantity: matches.reject(&:paid?).sum { |order| order.total_quantity.to_i },
+        unpaid_amount: matches.reject(&:paid?).sum { |order| order.total_amount.to_i },
         total_amount: matches.sum { |order| order.total_amount.to_i },
         orders: matches
       }
