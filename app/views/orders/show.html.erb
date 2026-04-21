@@ -5,7 +5,10 @@
     <h2>注文詳細</h2>
     <p class="section-lead">FAX 1枚分の入力内容です。</p>
   </div>
-  <%= link_to "一覧へ戻る", orders_path, class: "secondary-link" %>
+  <div class="page-head-actions">
+    <%= link_to "新規登録", new_order_path, class: "secondary-link" %>
+    <%= link_to "一覧へ戻る", orders_path, class: "secondary-link" %>
+  </div>
 </section>
 
 <section class="card">
