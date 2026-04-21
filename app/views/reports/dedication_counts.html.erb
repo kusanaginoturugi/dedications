@@ -21,15 +21,21 @@
         </thead>
         <tbody>
           <% @left_rows.each do |row| %>
-            <tr>
-              <td>
-                <%= row[:congregation].code %><br>
-                <%= row[:congregation].name %>
-              </td>
-              <td><%= row[:paid_count] %></td>
-              <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
-              <td><%= row[:total_count] %></td>
-            </tr>
+            <% if row[:is_blank] %>
+              <tr class="blank-row"><td colspan="4">&nbsp;</td></tr>
+            <% else %>
+              <tr>
+                <td>
+                  <% unless row[:code].to_s.start_with?("99") || row[:code] == "9000" %>
+                    <%= row[:code] %><br>
+                  <% end %>
+                  <%= row[:name] %>
+                </td>
+                <td><%= row[:paid_count] %></td>
+                <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
+                <td><%= row[:total_count] %></td>
+              </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>
@@ -46,15 +52,21 @@
         </thead>
         <tbody>
           <% @right_rows.each do |row| %>
-            <tr>
-              <td>
-                <%= row[:congregation].code %><br>
-                <%= row[:congregation].name %>
-              </td>
-              <td><%= row[:paid_count] %></td>
-              <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
-              <td><%= row[:total_count] %></td>
-            </tr>
+            <% if row[:is_blank] %>
+              <tr class="blank-row"><td colspan="4">&nbsp;</td></tr>
+            <% else %>
+              <tr>
+                <td>
+                  <% unless row[:code].to_s.start_with?("99") || row[:code] == "9000" %>
+                    <%= row[:code] %><br>
+                  <% end %>
+                  <%= row[:name] %>
+                </td>
+                <td><%= row[:paid_count] %></td>
+                <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
+                <td><%= row[:total_count] %></td>
+              </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>

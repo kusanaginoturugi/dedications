@@ -49,19 +49,68 @@ class ReportsController < ApplicationController
   end
 
   def dedication_counts
-    rows = Congregation.order(:code).map do |congregation|
-      orders = Order.where(congregation:)
+    # 左列の定義
+    left_codes = [
+      "10121", "10122", "10131", "10141",
+      :blank,
+      "20201", "20301", "20401", "20501", "20603", "20605", "20606", "20701",
+      :blank,
+      "31101", "31201", "31305", "31304", "31303", "31407", "32204", "32205", "31901",
+      :blank,
+      "92001", "41505", "41605", "42153", "42154", "42152", "42110", "42111", "42303", "42304", "42305", "42403", "42404", "42411", "42410", "42407", "42408"
+    ]
+
+    # 右列の定義
+    right_codes = [
+      "52501", "52601", "52703", "52702", "52801", "52802", "52901",
+      :blank,
+      "63101", "63201", "63302", "63401", "63501", "63601", "63602", "63702", "63703", "63801", "63804", "63803", "63901", "63902",
+      :blank,
+      "74001", "74101", "74201", "74310", "74502", "74504", "74503", "74605", "74606",
+      :blank,
+      "84702", "84703",
+      :blank,
+      "9000", "99000", "99001" # 弥勒寺, 聖治命院, 加賀御神水 (仮のコード)
+    ]
+
+    # 名称変更の定義
+    name_overrides = {
+      "41505" => "新潟公壇",
+      "41605" => "北陸公壇",
+      "9000" => "弥勒寺",
+      "99000" => "聖治命院(モンゴル)",
+      "99001" => "(株)加賀御神水"
+    }
+
+    # データを組み立てる補助メソッド
+    build_row = ->(code) {
+      if code == :blank
+        return { is_blank: true }
+      end
+
+      congregation = Congregation.find_by(code: code)
+      # データベースにない場合も、名称変更があれば特別枠として扱う（弥勒寺など）
+      if !congregation && name_overrides.key?(code)
+        congregation = Congregation.new(code: code, name: name_overrides[code])
+      end
+
+      return nil unless congregation
+
+      orders = Order.where(congregation: congregation)
       paid_count = orders.select(&:paid?).sum { |order| order.total_quantity.to_i }
       unpaid_count = orders.reject(&:paid?).sum { |order| order.total_quantity.to_i }
+
       {
-        congregation:,
-        paid_count:,
-        unpaid_count:,
+        is_blank: false,
+        code: congregation.code,
+        name: name_overrides[congregation.code] || congregation.name,
+        paid_count: paid_count,
+        unpaid_count: unpaid_count,
         total_count: paid_count + unpaid_count
       }
-    end
-    midpoint = (rows.length / 2.0).ceil
-    @left_rows = rows.first(midpoint)
-    @right_rows = rows.drop(midpoint)
+    }
+
+    @left_rows = left_codes.map { |c| build_row.call(c) }.compact
+    @right_rows = right_codes.map { |c| build_row.call(c) }.compact
   end
 end
