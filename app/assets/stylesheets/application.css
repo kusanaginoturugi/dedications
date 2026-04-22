@@ -111,6 +111,12 @@ textarea {
   gap: 0.3rem;
 }
 
+.menu-sub-items {
+  display: grid;
+  gap: 0.25rem;
+  padding-left: 0.75rem;
+}
+
 .menu-tree-panel a {
   padding: 0.15rem 0;
 }
