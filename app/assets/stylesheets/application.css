@@ -596,8 +596,9 @@ tfoot td {
 }
 
 .status-unpaid {
-  color: var(--error);
-  font-weight: 700;
+  color: #d32f2f;
+  font-weight: 800;
+  font-size: 1.1em;
 }
 
 .text-right {
