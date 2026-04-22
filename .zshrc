@@ -1,3 +1,0 @@
-export GEMINI_API_KEY="AIzaSyCjrCevJzGrTu9nUU6sNudApg-d3gENIuE"
-export GEMINI_API_KEY="AIzaSyCjrCevJzGrTu9nUU6sNudApg-d3gENIuE"
-export GEMINI_API_KEY="AIzaSyCjrCevJzGrTu9nUU6sNudApg-d3gENIuE"
