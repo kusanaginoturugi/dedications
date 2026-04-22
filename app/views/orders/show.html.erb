@@ -45,15 +45,25 @@
       </div>
     </div>
 
-    <%# 4行目: ページ番号、通し番号 %>
+    <%# 4行目: ページ番号、通し番号(始)、通し番号(終) %>
     <div class="sheet-row sheet-row-two">
       <div class="sheet-pair">
         <div class="sheet-label">ページ番号</div>
         <div class="sheet-value sheet-readonly"><%= @order.page_number %></div>
       </div>
       <div class="sheet-pair">
-        <div class="sheet-label">通し番号</div>
-        <div class="sheet-value sheet-readonly"><%= @order.serial_number_range_label || "-" %></div>
+        <div class="sheet-label">通し番号(始)</div>
+        <div class="sheet-value sheet-readonly"><%= @order.serial_number_start.presence || "-" %></div>
+      </div>
+    </div>
+
+    <div class="sheet-row sheet-row-two">
+      <div class="sheet-pair">
+        <div class="sheet-label">通し番号(終)</div>
+        <div class="sheet-value sheet-readonly"><%= @order.serial_number_end.presence || "-" %></div>
+      </div>
+      <%# 空白を埋めるためのダミー枠 %>
+      <div class="sheet-pair" style="border: none; background: transparent;">
       </div>
     </div>
 
