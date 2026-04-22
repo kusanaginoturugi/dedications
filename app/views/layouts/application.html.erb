@@ -47,7 +47,12 @@
                   <h3>帳票</h3>
                   <%= link_to "前夜祭・当日", pre_event_reports_path %>
                   <%= link_to "代理・在庫", proxy_inventory_reports_path %>
-                  <%= link_to "各種代理奉納", dedication_counts_reports_path %>
+                  <%= link_to "各種代理奉納（合計）", dedication_counts_reports_path %>
+                  <div class="menu-sub-items">
+                    <%= link_to "・八大明王如意棒", dedication_counts_by_type_reports_path(form_type: "wish_fulfillment_staff") %>
+                    <%= link_to "・三會龍華之御柱", dedication_counts_by_type_reports_path(form_type: "sankai_ryuge_pillar") %>
+                    <%= link_to "・三期滅劫之霊木", dedication_counts_by_type_reports_path(form_type: "sanki_reiboku") %>
+                  </div>
                 </section>
                 <% if current_user.is_admin? %>
                   <section>

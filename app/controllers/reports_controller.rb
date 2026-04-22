@@ -49,6 +49,11 @@ class ReportsController < ApplicationController
   end
 
   def dedication_counts
+    @form_type = params[:form_type]
+    if @form_type.present?
+      @form_label = Order.form_definition_for(@form_type).fetch(:label)
+    end
+
     # 左列の定義
     left_codes = [
       "10121", "10122", "10131", "10141",

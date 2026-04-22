@@ -1,8 +1,9 @@
-<% content_for :title, "帳票: 各種代理奉納" %>
+<% report_title = @form_label ? @form_label : "各種代理奉納（合計）" %>
+<% content_for :title, "帳票: #{report_title}" %>
 
 <section class="page-head">
   <div>
-    <h2>帳票: 各種代理奉納</h2>
+    <h2>帳票: <%= report_title %></h2>
     <p class="section-lead">伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。</p>
   </div>
 </section>
