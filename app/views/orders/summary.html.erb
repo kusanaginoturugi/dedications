@@ -7,75 +7,72 @@
   </div>
 </section>
 
-<section class="card">
-  <% if @order_summaries.any? %>
-    <% @order_summaries.each do |summary| %>
-      <section class="summary-group">
-        <h3 class="summary-title"><%= summary[:label].html_safe %></h3>
+<% if @order_summaries.any? %>
+  <% @order_summaries.each do |summary| %>
+    <section class="card summary-group" style="margin-bottom: 2rem;">
+      <h3 class="summary-title"><%= summary[:label].html_safe %></h3>
 
-        <div class="summary-totals">
-          <div class="summary-total-card">
-            <span class="summary-total-label">合計本数</span>
-            <strong><%= summary[:total_quantity] %></strong>
-          </div>
-          <div class="summary-total-card">
-            <span class="summary-total-label">入金済み</span>
-            <strong><%= summary[:paid_quantity] %> 本</strong>
-            <small><%= number_to_currency(summary[:paid_amount], unit: "¥", precision: 0) %></small>
-          </div>
-          <div class="summary-total-card">
-            <span class="summary-total-label">未入金</span>
-            <strong class="<%= summary[:unpaid_quantity].positive? ? "status-unpaid" : "" %>"><%= summary[:unpaid_quantity] %> 本</strong>
-            <small class="<%= summary[:unpaid_amount].positive? ? "status-unpaid" : "" %>"><%= number_to_currency(summary[:unpaid_amount], unit: "¥", precision: 0) %></small>
-          </div>
-          <div class="summary-total-card">
-            <span class="summary-total-label">合計金額</span>
-            <strong><%= number_to_currency(summary[:total_amount], unit: "¥", precision: 0) %></strong>
-          </div>
+      <div class="summary-totals">
+        <div class="summary-total-card text-right">
+          <span class="summary-total-label">合計本数</span>
+          <strong><%= summary[:total_quantity] %></strong>
         </div>
+        <div class="summary-total-card text-right">
+          <span class="summary-total-label">入金済み</span>
+          <strong><%= summary[:paid_quantity] %> 本</strong>
+          <small><%= number_to_currency(summary[:paid_amount], unit: "¥", precision: 0) %></small>
+        </div>
+        <div class="summary-total-card text-right">
+          <span class="summary-total-label">未入金</span>
+          <strong class="<%= summary[:unpaid_quantity].positive? ? "status-unpaid" : "" %>"><%= summary[:unpaid_quantity] %> 本</strong>
+          <small class="<%= summary[:unpaid_amount].positive? ? "status-unpaid" : "" %>"><%= number_to_currency(summary[:unpaid_amount], unit: "¥", precision: 0) %></small>
+        </div>
+        <div class="summary-total-card text-right">
+          <span class="summary-total-label">合計金額</span>
+          <strong><%= number_to_currency(summary[:total_amount], unit: "¥", precision: 0) %></strong>
+        </div>
+      </div>
 
-        <div class="table-wrap">
-          <table class="summary-table stack-on-mobile">
-            <colgroup>
-              <col class="orders-page-column">
-              <col>
-              <col>
-              <col class="orders-quantity-column">
-              <col class="orders-amount-column">
-              <col>
-            </colgroup>
-            <thead>
-              <tr>
-                <th><%= link_to "ページ番号#{sort_arrow('page_number')}", url_for(sort: 'page_number', direction: next_direction('page_number')), class: "sort-link" %></th>
-                <th>伝道会名</th>
-                <th>通し番号</th>
-                <th>本数</th>
-                <th>合計金額</th>
-                <th>入金状態</th>
+      <div class="table-wrap">
+        <table class="summary-table stack-on-mobile">
+          <colgroup>
+            <col class="orders-page-column">
+            <col>
+            <col>
+            <col class="orders-quantity-column">
+            <col class="orders-amount-column">
+            <col>
+          </colgroup>
+          <thead>
+            <tr>
+              <th><%= link_to "ページ番号#{sort_arrow('page_number')}", url_for(sort: 'page_number', direction: next_direction('page_number')), class: "sort-link" %></th>
+              <th>伝道会名</th>
+              <th>通し番号</th>
+              <th class="text-right">本数</th>
+              <th class="text-right">合計金額</th>
+              <th>入金状態</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% summary[:orders].each do |order| %>
+              <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の申込を編集">
+                <td data-label="ページ番号"><%= order.page_number %></td>
+                <td data-label="伝道会名"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
+                <td data-label="通し番号"><%= order.serial_number_range_label || "-" %></td>
+                <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? order.total_quantity : "-" %></td>
+                <td data-label="合計金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
+                <td data-label="入金状態">
+                  <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済み" : "未入金" %></span>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <% summary[:orders].each do |order| %>
-                <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の注文を編集">
-                  <td data-label="ページ番号"><%= order.page_number %></td>
-                  <td data-label="伝道会名"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
-                  <td data-label="通し番号"><%= order.serial_number_range_label || "-" %></td>
-                  <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? order.total_quantity : "-" %></td>
-                  <td data-label="合計金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
-                  <td data-label="入金状態">
-                    <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済み" : "未入金" %></span>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    <% end %>
-  <% else %>
-    <p>まだ注文は登録されていません。</p>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
   <% end %>
-</section>
-�いません。</p>
-  <% end %>
-</section>
+<% else %>
+  <section class="card">
+    <p>まだ申込は登録されていません。</p>
+  </section>
+<% end %>
