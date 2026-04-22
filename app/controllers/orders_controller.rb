@@ -8,7 +8,7 @@ class OrdersController < ApplicationController
   end
 
   def summary
-    orders = current_event.orders.includes(:congregation, :user).order(sort_column => sort_direction)
+    orders = scoped_orders.includes(:congregation, :user).order(sort_column => sort_direction)
     @order_summaries = Order::FORM_DEFINITIONS.keys.filter_map do |form_type|
       matches = orders.select { |order| order.form_type == form_type }
       next if matches.empty?
@@ -40,11 +40,15 @@ class OrdersController < ApplicationController
   end
 
   def new
-    @order = current_user.orders.build(form_type: selected_form_type, fax_received_on: Date.current)
+    @order = current_user.orders.build(
+      form_type: selected_form_type,
+      fax_received_on: Date.current,
+      event: current_event
+    )
   end
 
   def create
-    @order = current_user.orders.build(order_params)
+    @order = current_user.orders.build(order_params.merge(event: current_event))
 
     if @order.save
       redirect_to @order, notice: "申込を登録しました。"
@@ -78,6 +82,12 @@ class OrdersController < ApplicationController
 
   def set_order
     @order = Order.includes(:congregation, :user).find(params[:id])
+  end
+
+  def scoped_orders
+    return Order.all unless current_event
+
+    Order.where(event: current_event).or(Order.where(event_id: nil))
   end
 
   def selected_form_type
@@ -125,10 +135,6 @@ class OrdersController < ApplicationController
       :serial_number_start,
       :serial_number_end,
       :offerer_name
-    )
-  end
-end
-e
     )
   end
 end

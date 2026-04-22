@@ -30,7 +30,7 @@ class ReportsController < ApplicationController
 
   def proxy_inventory
     @rows = Order::FORM_DEFINITIONS.map do |form_type, definition|
-      quantity = current_event.orders.where(form_type:).sum { |order| order.total_quantity.to_i }
+      quantity = scoped_orders.where(form_type:).sum { |order| order.total_quantity.to_i }
       {
         label: definition.fetch(:report_label),
         unit_price: definition.fetch(:unit_price),
@@ -104,8 +104,10 @@ class ReportsController < ApplicationController
 
       return nil unless congregation
 
-      orders = current_event.orders.where(congregation: congregation)
+      orders = scoped_orders.where(congregation: congregation)
       orders = orders.where(form_type: @form_type) if @form_type.present?
+      paid_count = orders.select(&:paid?).sum { |order| order.total_quantity.to_i }
+      unpaid_count = orders.reject(&:paid?).sum { |order| order.total_quantity.to_i }
 
       {
         is_blank: false,
@@ -124,7 +126,7 @@ class ReportsController < ApplicationController
       format.html
       format.csv do
         filename = "#{@form_label || '各種代理奉納合計'}_#{Date.current.strftime('%Y%m%d')}.csv"
-        send_data generate_dedication_counts_csv, filename: filename, type: 'text/csv; charset=shift_jis'
+        send_data generate_dedication_counts_csv, filename: filename, type: "text/csv; charset=shift_jis"
       end
     end
   end
@@ -146,7 +148,10 @@ class ReportsController < ApplicationController
       end
     end.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
   end
+
+  def scoped_orders
+    return Order.all unless current_event
+
+    Order.where(event: current_event).or(Order.where(event_id: nil))
+  end
 end
-d
-end
-d
