@@ -10,26 +10,28 @@
 <% if @order_summaries.any? %>
   <% @order_summaries.each do |summary| %>
     <section class="card summary-group" style="margin-bottom: 2rem;">
-      <h3 class="summary-title"><%= summary[:label].html_safe %></h3>
+      <div class="summary-header" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <h3 class="summary-title" style="margin-bottom: 0;"><%= summary[:label].html_safe %></h3>
 
-      <div class="summary-totals">
-        <div class="summary-total-card text-right">
-          <span class="summary-total-label">合計本数</span>
-          <strong><%= summary[:total_quantity] %></strong>
-        </div>
-        <div class="summary-total-card text-right">
-          <span class="summary-total-label">入金済み</span>
-          <strong><%= summary[:paid_quantity] %> 本</strong>
-          <small><%= number_to_currency(summary[:paid_amount], unit: "¥", precision: 0) %></small>
-        </div>
-        <div class="summary-total-card text-right">
-          <span class="summary-total-label">未入金</span>
-          <strong class="<%= summary[:unpaid_quantity].positive? ? "status-unpaid" : "" %>"><%= summary[:unpaid_quantity] %> 本</strong>
-          <small class="<%= summary[:unpaid_amount].positive? ? "status-unpaid" : "" %>"><%= number_to_currency(summary[:unpaid_amount], unit: "¥", precision: 0) %></small>
-        </div>
-        <div class="summary-total-card text-right">
-          <span class="summary-total-label">合計金額</span>
-          <strong><%= number_to_currency(summary[:total_amount], unit: "¥", precision: 0) %></strong>
+        <div class="summary-totals" style="margin-bottom: 0;">
+          <div class="summary-total-card text-right">
+            <span class="summary-total-label">合計本数</span>
+            <strong><%= summary[:total_quantity] %></strong>
+          </div>
+          <div class="summary-total-card text-right">
+            <span class="summary-total-label">入金済み</span>
+            <strong><%= summary[:paid_quantity] %> 本</strong>
+            <small><%= number_to_currency(summary[:paid_amount], unit: "¥", precision: 0) %></small>
+          </div>
+          <div class="summary-total-card text-right">
+            <span class="summary-total-label">未入金</span>
+            <strong class="<%= summary[:unpaid_quantity].positive? ? "status-unpaid" : "" %>"><%= summary[:unpaid_quantity] %> 本</strong>
+            <small class="<%= summary[:unpaid_amount].positive? ? "status-unpaid" : "" %>"><%= number_to_currency(summary[:unpaid_amount], unit: "¥", precision: 0) %></small>
+          </div>
+          <div class="summary-total-card text-right">
+            <span class="summary-total-label">合計金額</span>
+            <strong><%= number_to_currency(summary[:total_amount], unit: "¥", precision: 0) %></strong>
+          </div>
         </div>
       </div>
 
