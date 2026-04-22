@@ -422,9 +422,13 @@ textarea {
 
 .summary-title {
   margin: 0 0 1rem;
-  text-align: center;
+  text-align: left;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--accent-strong);
+  padding-left: 0.5rem;
+  border-left: 4px solid var(--accent);
 }
 
 .summary-totals {
