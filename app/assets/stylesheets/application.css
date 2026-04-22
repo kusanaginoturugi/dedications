@@ -357,30 +357,67 @@ textarea {
 }
 
 .payment-toggle {
-  display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr);
+  display: flex;
   align-items: center;
   gap: 0.75rem;
-  white-space: normal;
   cursor: pointer;
+  position: relative;
 }
 
+/* 標準のチェックボックスを隠す */
 .payment-toggle input[type="checkbox"] {
-  width: 1.4rem;
-  height: 1.4rem;
-  border: 2px solid var(--muted);
-  border-radius: 4px;
+  position: absolute;
+  opacity: 0;
   cursor: pointer;
-  accent-color: var(--accent-strong);
+  height: 0;
+  width: 0;
 }
 
-.payment-toggle:hover input[type="checkbox"] {
+/* 自作のチェックボックス（枠） */
+.checkmark {
+  height: 1.8rem;
+  width: 1.8rem;
+  background-color: #fff;
+  border: 2px solid var(--muted);
+  border-radius: 6px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s;
+}
+
+/* ホバー時に枠を少し濃くする */
+.payment-toggle:hover input ~ .checkmark {
   border-color: var(--accent-strong);
+}
+
+/* チェックが入った時の背景色 */
+.payment-toggle input:checked ~ .checkmark {
+  background-color: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+/* チェックマーク（白いL字の線） */
+.checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 0.55rem;
+  top: 0.2rem;
+  width: 0.5rem;
+  height: 1rem;
+  border: solid white;
+  border-width: 0 4px 4px 0; /* 太い線にする */
+  transform: rotate(45deg);
+}
+
+/* チェックが入ったらマークを表示 */
+.payment-toggle input:checked ~ .checkmark::after {
+  display: block;
 }
 
 .payment-toggle-text {
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: var(--ink);
 }
 
