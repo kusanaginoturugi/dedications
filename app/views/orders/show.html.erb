@@ -12,42 +12,77 @@
 </section>
 
 <section class="card">
-  <dl class="detail-grid">
-    <div>
-      <dt>ページ番号</dt>
-      <dd><%= @order.page_number %></dd>
+  <div class="sheet-grid">
+    <%# 1行目: 入力者名、入力日 %>
+    <div class="sheet-row sheet-row-two">
+      <div class="sheet-pair">
+        <div class="sheet-label">入力者名</div>
+        <div class="sheet-value sheet-readonly"><%= @order.user.display_name %></div>
+      </div>
+      <div class="sheet-pair">
+        <div class="sheet-label">入力日</div>
+        <div class="sheet-value sheet-readonly"><%= l(@order.created_at.to_date) %></div>
+      </div>
     </div>
-    <div>
-      <dt>注文書種類</dt>
-      <dd><%= @order.form_label %></dd>
+
+    <%# 2行目: 道具の種類 %>
+    <div class="sheet-row">
+      <div class="sheet-pair sheet-pair-wide">
+        <div class="sheet-label">道具の種類</div>
+        <div class="sheet-value sheet-readonly"><%= @order.form_label %></div>
+      </div>
     </div>
-    <div>
-      <dt>ファックス受信日</dt>
-      <dd><%= @order.fax_received_on ? l(@order.fax_received_on) : "未入力" %></dd>
+
+    <%# 3行目: 伝道会名、FAX受信日 %>
+    <div class="sheet-row sheet-row-two">
+      <div class="sheet-pair">
+        <div class="sheet-label">伝道会名</div>
+        <div class="sheet-value sheet-readonly"><%= "#{@order.congregation.code} #{@order.congregation.name}" %></div>
+      </div>
+      <div class="sheet-pair">
+        <div class="sheet-label">FAX受信日</div>
+        <div class="sheet-value sheet-readonly"><%= @order.fax_received_on ? l(@order.fax_received_on) : "-" %></div>
+      </div>
     </div>
-    <div>
-      <dt>伝道会</dt>
-      <dd><%= "#{@order.congregation.code} #{@order.congregation.name}" %></dd>
+
+    <%# 4行目: ページ番号、通し番号 %>
+    <div class="sheet-row sheet-row-two">
+      <div class="sheet-pair">
+        <div class="sheet-label">ページ番号</div>
+        <div class="sheet-value sheet-readonly"><%= @order.page_number %></div>
+      </div>
+      <div class="sheet-pair">
+        <div class="sheet-label">通し番号</div>
+        <div class="sheet-value sheet-readonly"><%= @order.serial_number_range_label || "-" %></div>
+      </div>
     </div>
-    <div>
-      <dt>入金状態</dt>
-      <dd><%= @order.paid? ? "入金済み" : "未入金" %></dd>
+
+    <%# 5行目: 合計本数、合計金額 %>
+    <div class="sheet-row sheet-row-two">
+      <div class="sheet-pair">
+        <div class="sheet-label">合計本数</div>
+        <div class="sheet-value sheet-readonly"><%= @order.total_quantity.present? ? "#{@order.total_quantity} 本" : "-" %></div>
+      </div>
+      <div class="sheet-pair">
+        <div class="sheet-label">合計金額</div>
+        <div class="sheet-value sheet-readonly"><%= @order.total_amount.present? ? number_to_currency(@order.total_amount, unit: "¥", precision: 0) : "-" %></div>
+      </div>
     </div>
-    <div>
-      <dt>通し番号(開始)</dt>
-      <dd><%= @order.serial_number_start.presence || "未入力" %></dd>
+
+    <%# 6行目: 入金状態 %>
+    <div class="sheet-row">
+      <div class="sheet-pair sheet-pair-wide">
+        <div class="sheet-label">入金状態</div>
+        <div class="sheet-value sheet-readonly">
+          <span class="<%= @order.paid? ? "status-paid" : "status-unpaid" %>">
+            <%= @order.paid? ? "入金済み" : "未入金" %>
+          </span>
+        </div>
+      </div>
     </div>
-    <div>
-      <dt>通し番号(終了)</dt>
-      <dd><%= @order.serial_number_end.presence || "未入力" %></dd>
-    </div>
-    <div>
-      <dt>本数</dt>
-      <dd><%= @order.total_quantity.present? ? "#{@order.total_quantity} 本" : "未計算" %></dd>
-    </div>
-    <div>
-      <dt>金額</dt>
-      <dd><%= @order.total_amount.present? ? number_to_currency(@order.total_amount, unit: "¥", precision: 0) : "未計算" %></dd>
-    </div>
-  </dl>
+  </div>
+
+  <div class="form-actions">
+    <%= link_to "編集する", edit_order_path(@order), class: "primary-button" %>
+  </div>
 </section>
