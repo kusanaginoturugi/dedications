@@ -9,19 +9,19 @@
 
 <section class="card">
   <div class="summary-totals summary-totals-overall">
-    <div class="summary-total-card">
-      <span class="summary-total-label">総本数</span>
+    <div class="summary-total-card text-right">
+      <span class="summary-total-label">合計本数</span>
       <strong><%= @proxy_totals[:quantity] %></strong>
     </div>
-    <div class="summary-total-card">
-      <span class="summary-total-label">総売上</span>
+    <div class="summary-total-card text-right">
+      <span class="summary-total-label">合計売上</span>
       <strong><%= number_to_currency(@proxy_totals[:sales], unit: "¥", precision: 0) %></strong>
     </div>
-    <div class="summary-total-card">
+    <div class="summary-total-card text-right">
       <span class="summary-total-label">聖院還付合計</span>
       <strong><%= number_to_currency(@proxy_totals[:seiin_amount], unit: "¥", precision: 0) %></strong>
     </div>
-    <div class="summary-total-card">
+    <div class="summary-total-card text-right">
       <span class="summary-total-label">弥勒寺分合計</span>
       <strong><%= number_to_currency(@proxy_totals[:miroku_amount], unit: "¥", precision: 0) %></strong>
     </div>
@@ -32,29 +32,51 @@
       <thead>
         <tr>
           <th>道具名</th>
-          <th>奉納料</th>
-          <th>奉納数</th>
-          <th>売上</th>
-          <th>還付金</th>
-          <th>聖院還付分</th>
-          <th>弥勒寺</th>
-          <th>弥勒寺入金分</th>
+          <th class="text-right">奉納料</th>
+          <th class="text-right">奉納数</th>
+          <th class="text-right">売上</th>
+          <th class="text-right">還付金</th>
+          <th class="text-right">聖院還付分</th>
+          <th class="text-right">弥勒寺</th>
+          <th class="text-right">弥勒寺入金分</th>
         </tr>
       </thead>
       <tbody>
         <% @rows.each do |row| %>
           <tr>
             <td><%= row[:label] %></td>
-            <td><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
-            <td><%= row[:quantity] %></td>
-            <td><%= number_to_currency(row[:sales], unit: "¥", precision: 0) %></td>
-            <td><%= number_to_currency(row[:refund_unit], unit: "¥", precision: 0) %></td>
-            <td><%= number_to_currency(row[:seiin_amount], unit: "¥", precision: 0) %></td>
-            <td><%= number_to_currency(row[:miroku_unit], unit: "¥", precision: 0) %></td>
-            <td><%= number_to_currency(row[:miroku_amount], unit: "¥", precision: 0) %></td>
+            <td class="text-right"><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
+            <td class="text-right"><%= row[:quantity] %></td>
+            <td class="text-right"><%= number_to_currency(row[:sales], unit: "¥", precision: 0) %></td>
+            <td class="text-right"><%= number_to_currency(row[:refund_unit], unit: "¥", precision: 0) %></td>
+            <td class="text-right"><%= number_to_currency(row[:seiin_amount], unit: "¥", precision: 0) %></td>
+            <td class="text-right"><%= number_to_currency(row[:miroku_unit], unit: "¥", precision: 0) %></td>
+            <td class="text-right"><%= number_to_currency(row[:miroku_amount], unit: "¥", precision: 0) %></td>
           </tr>
         <% end %>
       </tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td>合計</td>
+          <td>-</td>
+          <td class="text-right"><%= @proxy_totals[:quantity] %></td>
+          <td class="text-right"><%= number_to_currency(@proxy_totals[:sales], unit: "¥", precision: 0) %></td>
+          <td>-</td>
+          <td class="text-right"><%= number_to_currency(@proxy_totals[:seiin_amount], unit: "¥", precision: 0) %></td>
+          <td>-</td>
+          <td class="text-right"><%= number_to_currency(@proxy_totals[:miroku_amount], unit: "¥", precision: 0) %></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </section>
+
+<style>
+.total-row {
+  font-weight: 800;
+  background: var(--accent-soft);
+}
+.total-row td {
+  border-top: 2px solid var(--accent);
+}
+</style>

@@ -11,8 +11,8 @@
   <% if @orders.any? %>
     <section class="personal-summary-overview">
       <% @user_summaries.each do |summary| %>
-        <article class="summary-total-card personal-summary-card">
-          <h3><%= summary[:user].display_name %></h3>
+        <article class="summary-total-card personal-summary-card text-right">
+          <h3 style="text-align: left;"><%= summary[:user].display_name %></h3>
           <p><span>件数</span><strong><%= summary[:order_count] %>件</strong></p>
           <p><span>金額</span><strong><%= number_to_currency(summary[:total_amount], unit: "¥", precision: 0) %></strong></p>
           <p><span>未入金</span><strong class="<%= summary[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= summary[:unpaid_count] %>件</strong></p>
@@ -56,3 +56,4 @@
     <p>まだ申込は登録されていません。</p>
   <% end %>
 </section>
+

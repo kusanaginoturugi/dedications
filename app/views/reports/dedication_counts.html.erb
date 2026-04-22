@@ -15,9 +15,9 @@
         <thead>
           <tr>
             <th>伝道会</th>
-            <th>入金済み本数</th>
-            <th>未入金本数</th>
-            <th>合計本数</th>
+            <th class="text-right">入金済み本数</th>
+            <th class="text-right">未入金本数</th>
+            <th class="text-right">合計本数</th>
           </tr>
         </thead>
         <tbody>
@@ -32,9 +32,9 @@
                   <% end %>
                   <%= row[:name].html_safe %>
                 </td>
-                <td><%= row[:paid_count] %></td>
-                <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
-                <td><%= row[:total_count] %></td>
+                <td class="text-right"><%= row[:paid_count] %></td>
+                <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
+                <td class="text-right"><%= row[:total_count] %></td>
               </tr>
             <% end %>
           <% end %>
@@ -46,9 +46,9 @@
         <thead>
           <tr>
             <th>伝道会</th>
-            <th>入金済み本数</th>
-            <th>未入金本数</th>
-            <th>合計本数</th>
+            <th class="text-right">入金済み本数</th>
+            <th class="text-right">未入金本数</th>
+            <th class="text-right">合計本数</th>
           </tr>
         </thead>
         <tbody>
@@ -63,9 +63,9 @@
                   <% end %>
                   <%= row[:name].html_safe %>
                 </td>
-                <td><%= row[:paid_count] %></td>
-                <td class="<%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
-                <td><%= row[:total_count] %></td>
+                <td class="text-right"><%= row[:paid_count] %></td>
+                <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
+                <td class="text-right"><%= row[:total_count] %></td>
               </tr>
             <% end %>
           <% end %>

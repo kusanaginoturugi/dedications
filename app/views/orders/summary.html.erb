@@ -60,8 +60,8 @@
                   <td data-label="ページ番号"><%= order.page_number %></td>
                   <td data-label="伝道会名"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
                   <td data-label="通し番号"><%= order.serial_number_range_label || "-" %></td>
-                  <td data-label="本数"><%= order.total_quantity.present? ? order.total_quantity : "-" %></td>
-                  <td data-label="合計金額"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
+                  <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? order.total_quantity : "-" %></td>
+                  <td data-label="合計金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
                   <td data-label="入金状態">
                     <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済み" : "未入金" %></span>
                   </td>
@@ -74,5 +74,8 @@
     <% end %>
   <% else %>
     <p>まだ注文は登録されていません。</p>
+  <% end %>
+</section>
+�いません。</p>
   <% end %>
 </section>
