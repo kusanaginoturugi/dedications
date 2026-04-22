@@ -122,12 +122,16 @@
         <div class="sheet-pair">
           <div class="sheet-label">入金状態</div>
           <div class="sheet-value">
-            <div class="field compact-field checkbox-field toggle-field">
-              <label class="toggle-label payment-toggle">
-                <%= form.check_box :paid %>
-                <span class="checkmark"></span>
-                <span class="payment-toggle-text">入金済み</span>
-                <span class="payment-note">入金済み（チェックあり）にしない場合は、未入金として扱います。</span>
+            <div class="payment-choices">
+              <label class="payment-choice">
+                <%= form.radio_button :paid, true %>
+                <span class="payment-check"></span>
+                <span class="payment-choice-text">入金済み</span>
+              </label>
+              <label class="payment-choice">
+                <%= form.radio_button :paid, false %>
+                <span class="payment-check"></span>
+                <span class="payment-choice-text">未入金</span>
               </label>
             </div>
           </div>
