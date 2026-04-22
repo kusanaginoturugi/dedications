@@ -25,11 +25,11 @@
       </div>
     </div>
 
-    <%# 2行目: 道具の種類 %>
+    <%# 2行目: 種類 %>
     <div class="sheet-row">
       <div class="sheet-pair sheet-pair-wide">
-        <div class="sheet-label">申込道具の種類</div>
-        <div class="sheet-value sheet-readonly"><%= @order.form_label %></div>
+        <div class="sheet-label">種類</div>
+        <div class="sheet-value sheet-readonly"><%= @order.form_label.gsub("\n", "") %></div>
       </div>
     </div>
 
