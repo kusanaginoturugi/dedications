@@ -62,7 +62,7 @@ class OrdersController < ApplicationController
 
   def update
     if @order.update(order_params)
-      redirect_to orders_path, notice: "注文を更新しました。"
+      redirect_to orders_path, notice: "申込を更新しました。"
     else
       flash.now[:alert] = "入力内容を確認してください。"
       render :edit, status: :unprocessable_entity

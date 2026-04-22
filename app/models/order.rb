@@ -97,6 +97,6 @@ class Order < ApplicationRecord
     return if page_number.blank? || form_type.blank?
     return unless self.class.where(form_type:, page_number:).where.not(id: id).exists?
 
-    errors.add(:page_number, "は同じ注文書種類ですでに使われています")
+    errors.add(:page_number, "は同じ申込書種類ですでに使われています")
   end
 end

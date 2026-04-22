@@ -1,11 +1,11 @@
-<% content_for :title, "注文編集" %>
+<% content_for :title, "申込編集" %>
 
 <section class="page-head">
   <div>
-    <h2>注文編集</h2>
-    <p class="section-lead">登録済みの注文内容を編集します。</p>
+    <h2>申込編集</h2>
+    <p class="section-lead">登録済みの申込内容を編集します。</p>
   </div>
   <%= link_to "一覧へ戻る", orders_path, class: "secondary-link" %>
 </section>
 
-<%= render "form", order: @order, submit_label: "注文を更新" %>
+<%= render "form", order: @order, submit_label: "申込を更新" %>
