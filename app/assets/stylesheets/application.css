@@ -1,14 +1,14 @@
 :root {
-  --bg: #f2f5f7;
+  --bg: #f0f4f8; /* 薄いブルー */
   --panel: #ffffff;
-  --ink: #525c66;
-  --muted: #8fa0ab;
-  --line: #dbe4eb;
-  --accent: #bda3a3;
-  --accent-strong: #a68b8b;
-  --accent-soft: #f7eded;
-  --success: #a3bdad;
-  --error: #bda3a3;
+  --ink: #37474f; /* 濃いブルーグレー */
+  --muted: #78909c;
+  --line: #d1d9e6;
+  --accent: #b39ddb; /* パステルラベンダー */
+  --accent-strong: #9575cd; /* くすみラベンダー */
+  --accent-soft: #fce4ec; /* ソフトピンク */
+  --success: #81c784;
+  --error: #d32f2f; /* ハッキリした赤 */
 }
 
 * {

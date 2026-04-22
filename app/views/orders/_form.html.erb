@@ -20,7 +20,11 @@
       <div class="sheet-row sheet-row-two">
         <div class="sheet-pair">
           <div class="sheet-label">奉納者名</div>
-          <div class="sheet-value sheet-readonly"><%= order.user&.display_name || current_user.display_name %></div>
+          <div class="sheet-value">
+            <div class="field compact-field">
+              <%= form.text_field :offerer_name, placeholder: "氏名を入力" %>
+            </div>
+          </div>
         </div>
         <div class="sheet-pair">
           <div class="sheet-label">入力日</div>
