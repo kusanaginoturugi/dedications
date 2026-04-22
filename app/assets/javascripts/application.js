@@ -1,4 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // メニューの外側をクリックしたら閉じる
+  document.addEventListener("click", (event) => {
+    const menuTree = document.querySelector(".menu-tree");
+    if (!menuTree) return;
+
+    if (!menuTree.contains(event.target)) {
+      menuTree.removeAttribute("open");
+    }
+  });
+
   document.querySelectorAll("[data-href]").forEach((element) => {
     element.addEventListener("click", (event) => {
       if (event.target.closest("a, button, input, select, textarea, label")) return;
