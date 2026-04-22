@@ -42,6 +42,10 @@
       </table>
     </section>
     <section>
+      <div class="report-actions no-print" style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <%= link_to "CSV", url_for(format: :csv), class: "secondary-button", style: "padding: 0.25rem 0.75rem; font-size: 0.85rem;" %>
+        <button type="button" class="secondary-button" onclick="window.print()" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;">PDF</button>
+      </div>
       <table class="report-table report-table-compact">
         <thead>
           <tr>

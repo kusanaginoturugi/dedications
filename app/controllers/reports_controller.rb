@@ -1,3 +1,5 @@
+require "csv"
+
 class ReportsController < ApplicationController
   PRE_EVENT_ITEMS = [
     { label: "弥勒収円大護摩板", unit_price: 4000, refund_unit: 2000, miroku_unit: 2000 },
@@ -117,5 +119,31 @@ class ReportsController < ApplicationController
 
     @left_rows = left_codes.map { |c| build_row.call(c) }.compact
     @right_rows = right_codes.map { |c| build_row.call(c) }.compact
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        filename = "#{@form_label || '各種代理奉納合計'}_#{Date.current.strftime('%Y%m%d')}.csv"
+        send_data generate_dedication_counts_csv, filename: filename, type: 'text/csv; charset=shift_jis'
+      end
+    end
+  end
+
+  private
+
+  def generate_dedication_counts_csv
+    CSV.generate do |csv|
+      csv << [ "コード", "伝道会名", "入金済み本数", "未入金本数", "合計本数" ]
+      (@left_rows + @right_rows).each do |row|
+        next if row[:is_blank]
+        csv << [
+          row[:code],
+          row[:name].gsub("<br>", " "),
+          row[:paid_count],
+          row[:unpaid_count],
+          row[:total_count]
+        ]
+      end
+    end.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
   end
 end

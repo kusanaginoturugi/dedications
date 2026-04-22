@@ -613,7 +613,22 @@ tfoot td {
   text-align: right;
 }
 
-@media (max-width: 800px) {
+@media print {
+  .no-print,
+  .app-header,
+  .page-head-actions,
+  .form-actions {
+    display: none !important;
+  }
+  .app-shell {
+    padding: 0;
+  }
+  .card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+}
   .app-header,
   .page-head {
     flex-direction: column;
