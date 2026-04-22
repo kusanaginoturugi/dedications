@@ -11,7 +11,7 @@
   <% if @order_summaries.any? %>
     <% @order_summaries.each do |summary| %>
       <section class="summary-group">
-        <h3 class="summary-title"><%= summary[:label] %></h3>
+        <h3 class="summary-title"><%= summary[:label].html_safe %></h3>
 
         <div class="summary-totals">
           <div class="summary-total-card">
@@ -76,6 +76,6 @@
     <p>まだ注文は登録されていません。</p>
   <% end %>
 </section>
-�いません。</p>
+�いません。</p>
   <% end %>
 </section>

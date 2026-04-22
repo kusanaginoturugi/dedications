@@ -44,7 +44,7 @@
       <tbody>
         <% @rows.each do |row| %>
           <tr>
-            <td><%= row[:label] %></td>
+            <td><%= row[:label].html_safe %></td>
             <td class="text-right"><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
             <td class="text-right"><%= row[:quantity] %></td>
             <td class="text-right"><%= number_to_currency(row[:sales], unit: "¥", precision: 0) %></td>

@@ -19,7 +19,7 @@
     <% grouped_orders.each do |label, orders| %>
       <section class="order-group">
         <header class="order-group-header">
-          <h3><%= label %></h3>
+          <h3><%= label.html_safe %></h3>
           <p><%= orders.size %>件</p>
         </header>
 

@@ -41,7 +41,7 @@
               <td data-label="奉納者名"><%= order.offerer_name.presence || "-" %></td>
               <td data-label="入力日"><%= l(order.created_at.to_date) %></td>
               <td data-label="FAX受信日"><%= order.fax_received_on ? l(order.fax_received_on) : "-" %></td>
-              <td data-label="種類"><%= order.form_label %></td>
+              <td data-label="種類"><%= order.form_label.html_safe %></td>
               <td data-label="本数"><%= order.total_quantity.present? ? "#{order.total_quantity} 本" : "-" %></td>
               <td data-label="金額"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
               <td data-label="入金状態">
