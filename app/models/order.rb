@@ -28,6 +28,7 @@ class Order < ApplicationRecord
 
   belongs_to :user
   belongs_to :congregation
+  belongs_to :event, optional: true
 
   normalizes :form_type, with: ->(value) { value.to_s.strip.presence }
 
