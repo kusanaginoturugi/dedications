@@ -66,34 +66,34 @@
       <div class="sheet-pair" style="border: none; background: transparent;">
       </div>
     </div>
+<%# 6行目: 合計本数、合計金額 %>
+<div class="sheet-row sheet-row-two">
+  <div class="sheet-pair">
+    <div class="sheet-label">合計本数</div>
+    <div class="sheet-value sheet-readonly"><%= @order.total_quantity.present? ? "#{@order.total_quantity} 本" : "-" %></div>
+  </div>
+  <div class="sheet-pair">
+    <div class="sheet-label">合計金額</div>
+    <div class="sheet-value sheet-readonly"><%= @order.total_amount.present? ? number_to_currency(@order.total_amount, unit: "¥", precision: 0) : "-" %></div>
+  </div>
+</div>
 
-    <%# 5行目: 合計本数、合計金額 %>
-    <div class="sheet-row sheet-row-two">
-      <div class="sheet-pair">
-        <div class="sheet-label">合計本数</div>
-        <div class="sheet-value sheet-readonly"><%= @order.total_quantity.present? ? "#{@order.total_quantity} 本" : "-" %></div>
-      </div>
-      <div class="sheet-pair">
-        <div class="sheet-label">合計金額</div>
-        <div class="sheet-value sheet-readonly"><%= @order.total_amount.present? ? number_to_currency(@order.total_amount, unit: "¥", precision: 0) : "-" %></div>
-      </div>
+<%# 7行目: 入金状態、入力者名 %>
+<div class="sheet-row sheet-row-two">
+  <div class="sheet-pair">
+    <div class="sheet-label">入金状態</div>
+    <div class="sheet-value sheet-readonly">
+      <span class="<%= @order.paid? ? "status-paid" : "status-unpaid" %>">
+        <%= @order.paid? ? "入金済み" : "未入金" %>
+      </span>
     </div>
-
-    <%# 6行目: 入金状態、奉納者名 %>
-    <div class="sheet-row sheet-row-two">
-      <div class="sheet-pair">
-        <div class="sheet-label">入金状態</div>
-        <div class="sheet-value sheet-readonly">
-          <span class="<%= @order.paid? ? "status-paid" : "status-unpaid" %>">
-            <%= @order.paid? ? "入金済み" : "未入金" %>
-          </span>
-        </div>
-      </div>
-      <div class="sheet-pair">
-        <div class="sheet-label">入力者名</div>
-        <div class="sheet-value sheet-readonly"><%= @order.offerer_name.presence || "-" %></div>
-      </div>
-    </div>
+  </div>
+  <div class="sheet-pair">
+    <div class="sheet-label">入力者名</div>
+    <div class="sheet-value sheet-readonly">管理者</div>
+  </div>
+</div>
+</div>
   </div>
 
   <div class="form-actions">
