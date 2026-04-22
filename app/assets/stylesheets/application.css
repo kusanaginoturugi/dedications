@@ -683,6 +683,19 @@ tfoot td {
   text-align: right;
 }
 
+.form-two-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .form-two-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media print {
   .no-print,
   .app-header,
