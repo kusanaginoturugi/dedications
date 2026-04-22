@@ -105,7 +105,8 @@ class OrdersController < ApplicationController
       :paid,
       :congregation_id,
       :serial_number_start,
-      :serial_number_end
+      :serial_number_end,
+      :offerer_name
     )
   end
 end

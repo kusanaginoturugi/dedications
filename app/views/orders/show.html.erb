@@ -69,15 +69,19 @@
       </div>
     </div>
 
-    <%# 6行目: 入金状態 %>
-    <div class="sheet-row">
-      <div class="sheet-pair sheet-pair-wide">
+    <%# 6行目: 入金状態、奉納者名 %>
+    <div class="sheet-row sheet-row-two">
+      <div class="sheet-pair">
         <div class="sheet-label">入金状態</div>
         <div class="sheet-value sheet-readonly">
           <span class="<%= @order.paid? ? "status-paid" : "status-unpaid" %>">
             <%= @order.paid? ? "入金済み" : "未入金" %>
           </span>
         </div>
+      </div>
+      <div class="sheet-pair">
+        <div class="sheet-label">奉納者名</div>
+        <div class="sheet-value sheet-readonly"><%= @order.offerer_name.presence || "-" %></div>
       </div>
     </div>
   </div>
