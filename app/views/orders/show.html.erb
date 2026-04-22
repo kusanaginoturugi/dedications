@@ -46,16 +46,11 @@
       </div>
     </div>
 
-    <%# 右列 (7-12) %>
+    <%# 右列 (7-11) %>
     <div class="sheet-grid">
       <div class="sheet-pair">
-        <div class="sheet-label">通し番号(始)</div>
-        <div class="sheet-value sheet-readonly"><%= @order.serial_number_start.presence || "-" %></div>
-      </div>
-
-      <div class="sheet-pair">
-        <div class="sheet-label">通し番号(終)</div>
-        <div class="sheet-value sheet-readonly"><%= @order.serial_number_end.presence || "-" %></div>
+        <div class="sheet-label">通し番号</div>
+        <div class="sheet-value sheet-readonly"><%= @order.serial_number_range_label || "-" %></div>
       </div>
 
       <div class="sheet-pair">

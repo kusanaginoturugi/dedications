@@ -89,17 +89,12 @@
       <%# 右列 (7-12) %>
       <div class="sheet-grid">
         <div class="sheet-pair">
-          <div class="sheet-label">通し番号(始)</div>
-          <div class="sheet-value">
+          <div class="sheet-label">通し番号</div>
+          <div class="sheet-value sheet-range">
             <div class="field compact-field">
               <%= form.number_field :serial_number_start, min: 0, step: 1, data: { quantity_calc_input: true } %>
             </div>
-          </div>
-        </div>
-
-        <div class="sheet-pair">
-          <div class="sheet-label">通し番号(終)</div>
-          <div class="sheet-value">
+            <span class="sheet-range-separator">〜</span>
             <div class="field compact-field">
               <%= form.number_field :serial_number_end, min: 0, step: 1, data: { quantity_calc_input: true } %>
             </div>
