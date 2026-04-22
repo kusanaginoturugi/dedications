@@ -1,14 +1,16 @@
 :root {
-  --bg: #eef1ec;
-  --panel: #fffdf9;
-  --ink: #4d5550;
-  --muted: #7f8a82;
-  --line: #d8ddd6;
-  --accent: #a8bfae;
-  --accent-strong: #7f9d88;
-  --accent-soft: #e7efe8;
-  --success: #7ea287;
+  --bg: #edf2fb;
+  --panel: #fffdfd;
+  --ink: #495567;
+  --muted: #7d88a0;
+  --line: #d7dfef;
+  --accent: #b7a6d9;
+  --accent-strong: #907fc0;
+  --accent-soft: #f3e6f2;
+  --success: #7f97be;
   --error: #b46a6a;
+  --sheet-row-height: 2.35rem;
+  --sheet-control-height: 1.35rem;
 }
 
 * {
@@ -19,7 +21,7 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    radial-gradient(circle at top right, rgba(127, 157, 136, 0.14), transparent 24rem),
+    radial-gradient(circle at top right, rgba(183, 166, 217, 0.18), transparent 24rem),
     linear-gradient(180deg, #faf7f1 0%, var(--bg) 100%);
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
 }
@@ -39,7 +41,7 @@ textarea {
 .app-shell {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 0.75rem 1rem 1.5rem;
 }
 
 .app-header,
@@ -48,7 +50,7 @@ textarea {
   justify-content: space-between;
   align-items: end;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.6rem;
 }
 
 .app-header h1,
@@ -60,7 +62,7 @@ textarea {
 
 .eyebrow,
 .section-lead {
-  margin: 0.25rem 0 0;
+  margin: 0.1rem 0 0;
   color: var(--muted);
 }
 
@@ -132,7 +134,7 @@ textarea {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 18px;
-  padding: 1.5rem;
+  padding: 0.6rem;
   box-shadow: 0 12px 30px rgba(45, 36, 29, 0.06);
 }
 
@@ -143,17 +145,35 @@ textarea {
 
 .stack-form {
   display: grid;
-  gap: 1rem;
+  gap: 0.35rem;
+}
+
+[data-order-form] .sheet-value {
+  padding: 0;
+}
+
+[data-order-form] .sheet-readonly {
+  padding: 0.15rem 0.3rem;
+}
+
+.order-form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.order-form-column {
+  display: grid;
+  gap: 0.12rem;
 }
 
 .sheet-grid {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.12rem;
 }
 
 .sheet-row {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.12rem;
 }
 
 .sheet-row-two {
@@ -165,7 +185,7 @@ textarea {
   grid-template-columns: minmax(8rem, 0.8fr) minmax(0, 1fr);
   min-width: 0;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 10px;
   overflow: hidden;
   background: rgba(255, 252, 247, 0.92);
 }
@@ -180,14 +200,17 @@ textarea {
   justify-content: center;
   color: var(--ink);
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  background: rgba(168, 191, 174, 0.22);
-  padding: 1.15rem 1rem;
+  background: rgba(183, 166, 217, 0.12);
+  min-height: var(--sheet-row-height);
+  padding: 0.15rem 0.65rem;
 }
 
 .sheet-value {
-  display: block;
+  display: flex;
+  align-items: center;
   min-width: 0;
-  padding: 1.15rem 1rem;
+  min-height: var(--sheet-row-height);
+  padding: 0.08rem 0.3rem;
   white-space: pre-wrap;
 }
 
@@ -201,11 +224,11 @@ textarea {
 
 .compact-field input,
 .compact-field select {
-  min-height: 3rem;
+  min-height: 0;
 }
 
 .congregation-field {
-  gap: 0.5rem;
+  gap: 0.2rem;
 }
 
 .sheet-range {
@@ -234,34 +257,60 @@ textarea {
 
 .field {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.08rem;
   min-width: 0;
+  width: 100%;
+}
+
+[data-order-form] .field,
+[data-order-form] .derived-value,
+[data-order-form] .toggle-label {
+  width: 100%;
+  margin: 0;
 }
 
 .field input,
 .field select,
 .field textarea {
   width: 100%;
+  height: var(--sheet-control-height);
+  min-height: 0;
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  padding: 0 0.35rem;
   background: #fff;
+  line-height: 1;
+  font-size: 0.95rem;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+[data-order-form] .field input,
+[data-order-form] .field select,
+[data-order-form] .field textarea,
+[data-order-form] .derived-value,
+[data-order-form] .toggle-label {
+  border-radius: 0;
+  border-width: 0;
+  min-height: var(--sheet-row-height);
+  height: var(--sheet-row-height);
 }
 
 .derived-value {
-  min-height: 52px;
+  min-height: var(--sheet-control-height);
   display: flex;
   align-items: center;
-  padding: 0.75rem 0.9rem;
+  width: 100%;
+  padding: 0.2rem 0.55rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(168, 191, 174, 0.12);
+  border-radius: 10px;
+  background: rgba(183, 166, 217, 0.07);
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  outline: 2px solid rgba(127, 157, 136, 0.28);
+  outline: 2px solid rgba(144, 127, 192, 0.22);
   border-color: var(--accent);
 }
 
@@ -289,12 +338,13 @@ textarea {
 }
 
 .toggle-label {
-  min-height: 52px;
-  padding: 0.75rem 0.9rem;
+  min-height: var(--sheet-control-height);
+  padding: 0.2rem 0.55rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 10px;
   background: #fff;
   justify-content: flex-start;
+  width: 100%;
 }
 
 .toggle-label input {
@@ -310,7 +360,7 @@ textarea {
   display: grid;
   grid-template-columns: auto auto minmax(0, 1fr);
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.12rem;
   white-space: normal;
 }
 
@@ -320,8 +370,8 @@ textarea {
 
 .payment-note {
   color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.4;
+  font-size: 0.68rem;
+  line-height: 1;
 }
 
 .primary-link,
@@ -334,7 +384,7 @@ textarea {
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  padding: 0.7rem 1rem;
+  padding: 0.4rem 0.8rem;
   border: 1px solid transparent;
   cursor: pointer;
 }
@@ -377,7 +427,7 @@ textarea {
 }
 
 .flash.notice {
-  background: rgba(126, 162, 135, 0.16);
+  background: rgba(127, 151, 190, 0.14);
   color: var(--success);
 }
 
@@ -451,7 +501,7 @@ textarea {
   min-width: 8rem;
   padding: 0.85rem 1rem;
   border: 1px solid var(--line);
-  background: rgba(168, 191, 174, 0.12);
+  background: rgba(183, 166, 217, 0.07);
   text-align: center;
 }
 
@@ -520,7 +570,7 @@ textarea {
 
 .clickable-row:hover td,
 .clickable-row:focus-visible td {
-  background: rgba(168, 191, 174, 0.14);
+  background: rgba(183, 166, 217, 0.08);
 }
 
 table {
@@ -556,7 +606,7 @@ td {
 thead th,
 tfoot th,
 tfoot td {
-  background: rgba(168, 191, 174, 0.12);
+  background: rgba(183, 166, 217, 0.07);
 }
 
 .sort-link {
@@ -564,17 +614,31 @@ tfoot td {
   align-items: center;
   gap: 0.2rem;
   font-weight: 700;
+  position: relative;
+  padding-right: 1.2rem;
+}
+
+.sort-link::after {
+  content: " ⇅";
+  position: absolute;
+  right: 0;
+  opacity: 0.3;
+  font-size: 0.8rem;
+}
+
+.sort-link:hover::after {
+  opacity: 0.6;
 }
 
 .selected-congregation,
 .search-results {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .selected-congregation {
-  min-height: 2.8rem;
+  min-height: 0;
   align-items: center;
 }
 
@@ -585,6 +649,7 @@ tfoot td {
 .form-actions {
   display: flex;
   justify-content: flex-end;
+  margin-top: 0.25rem;
 }
 
 .form-actions-split {
@@ -660,13 +725,16 @@ tfoot td {
     grid-template-columns: 1fr;
   }
 
-  .sheet-grid {
+  .sheet-grid,
+  .order-form-grid,
+  .order-form-column {
     gap: 0.75rem;
     background: transparent;
   }
 
   .sheet-row,
-  .sheet-row-two {
+  .sheet-row-two,
+  .order-form-grid {
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }

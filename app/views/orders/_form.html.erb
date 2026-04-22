@@ -16,8 +16,8 @@
       </div>
     <% end %>
 
-    <div class="sheet-grid">
-      <div class="sheet-row sheet-row-two">
+    <div class="sheet-grid order-form-grid">
+      <div class="order-form-column">
         <div class="sheet-pair">
           <div class="sheet-label">奉納者</div>
           <div class="sheet-value">
@@ -26,15 +26,8 @@
             </div>
           </div>
         </div>
-        <div class="sheet-pair">
-          <div class="sheet-label">入力日</div>
-          <div class="sheet-value sheet-readonly"><%= l(order.created_at&.to_date || Date.current) %></div>
-        </div>
-      </div>
 
-      <%# 2行目: 種類 %>
-      <div class="sheet-row">
-        <div class="sheet-pair sheet-pair-wide">
+        <div class="sheet-pair">
           <div class="sheet-label">種類</div>
           <div class="sheet-value">
             <div class="field compact-field">
@@ -42,10 +35,7 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <%# 3行目: 伝道会名、FAX受信日 %>
-      <div class="sheet-row sheet-row-two">
         <div class="sheet-pair">
           <div class="sheet-label">伝道会名</div>
           <div class="sheet-value">
@@ -70,18 +60,7 @@
             </div>
           </div>
         </div>
-        <div class="sheet-pair">
-          <div class="sheet-label">FAX受信日</div>
-          <div class="sheet-value">
-            <div class="field compact-field">
-              <%= form.date_field :fax_received_on %>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <%# 4行目: ページ番号、通し番号(始) %>
-      <div class="sheet-row sheet-row-two">
         <div class="sheet-pair">
           <div class="sheet-label">ページ番号</div>
           <div class="sheet-value">
@@ -90,18 +69,7 @@
             </div>
           </div>
         </div>
-        <div class="sheet-pair">
-          <div class="sheet-label">通し番号(始)</div>
-          <div class="sheet-value">
-            <div class="field compact-field">
-              <%= form.number_field :serial_number_start, min: 0, step: 1, data: { quantity_calc_input: true } %>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <%# 5行目: 通し番号(終) %>
-      <div class="sheet-row sheet-row-two">
         <div class="sheet-pair">
           <div class="sheet-label">通し番号(終)</div>
           <div class="sheet-value">
@@ -110,11 +78,7 @@
             </div>
           </div>
         </div>
-        <div class="sheet-pair" style="border: none; background: transparent;">
-        </div>
-      </div>
 
-      <div class="sheet-row sheet-row-two">
         <div class="sheet-pair">
           <div class="sheet-label">合計本数</div>
           <div class="sheet-value">
@@ -123,6 +87,32 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="order-form-column">
+        <div class="sheet-pair">
+          <div class="sheet-label">入力日</div>
+          <div class="sheet-value sheet-readonly"><%= l(order.created_at&.to_date || Date.current) %></div>
+        </div>
+
+        <div class="sheet-pair">
+          <div class="sheet-label">FAX受信日</div>
+          <div class="sheet-value">
+            <div class="field compact-field">
+              <%= form.date_field :fax_received_on %>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-pair">
+          <div class="sheet-label">通し番号(始)</div>
+          <div class="sheet-value">
+            <div class="field compact-field">
+              <%= form.number_field :serial_number_start, min: 0, step: 1, data: { quantity_calc_input: true } %>
+            </div>
+          </div>
+        </div>
+
         <div class="sheet-pair">
           <div class="sheet-label">合計金額</div>
           <div class="sheet-value">
@@ -131,9 +121,7 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="sheet-row sheet-row-two">
         <div class="sheet-pair">
           <div class="sheet-label">入金状態</div>
           <div class="sheet-value">
@@ -146,6 +134,7 @@
             </div>
           </div>
         </div>
+
         <div class="sheet-pair">
           <div class="sheet-label">入力者</div>
           <div class="sheet-value sheet-readonly">管理者</div>
