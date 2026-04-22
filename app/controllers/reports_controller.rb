@@ -28,7 +28,7 @@ class ReportsController < ApplicationController
 
   def proxy_inventory
     @rows = Order::FORM_DEFINITIONS.map do |form_type, definition|
-      quantity = Order.where(form_type:).sum { |order| order.total_quantity.to_i }
+      quantity = current_event.orders.where(form_type:).sum { |order| order.total_quantity.to_i }
       {
         label: definition.fetch(:report_label),
         unit_price: definition.fetch(:unit_price),
@@ -102,9 +102,8 @@ class ReportsController < ApplicationController
 
       return nil unless congregation
 
-      orders = Order.where(congregation: congregation)
-      paid_count = orders.select(&:paid?).sum { |order| order.total_quantity.to_i }
-      unpaid_count = orders.reject(&:paid?).sum { |order| order.total_quantity.to_i }
+      orders = current_event.orders.where(congregation: congregation)
+      orders = orders.where(form_type: @form_type) if @form_type.present?
 
       {
         is_blank: false,

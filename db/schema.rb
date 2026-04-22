@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_22_023716) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_22_053540) do
   create_table "congregations", force: :cascade do |t|
     t.string "code", null: false
     t.string "old_code"
@@ -18,6 +18,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_22_023716) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_congregations_on_code", unique: true
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string "name"
+    t.boolean "is_active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "orders", force: :cascade do |t|
@@ -32,8 +39,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_22_023716) do
     t.integer "serial_number_start"
     t.integer "serial_number_end"
     t.string "offerer_name"
+    t.integer "event_id", null: false
     t.index ["congregation_id", "page_number"], name: "index_orders_on_congregation_id_and_page_number"
     t.index ["congregation_id"], name: "index_orders_on_congregation_id"
+    t.index ["event_id"], name: "index_orders_on_event_id"
     t.index ["form_type", "page_number"], name: "index_orders_on_form_type_and_page_number", unique: true
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
@@ -49,5 +58,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_22_023716) do
   end
 
   add_foreign_key "orders", "congregations"
+  add_foreign_key "orders", "events"
   add_foreign_key "orders", "users"
 end

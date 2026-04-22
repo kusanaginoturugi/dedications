@@ -8,7 +8,7 @@ class OrdersController < ApplicationController
   end
 
   def summary
-    orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
+    orders = current_event.orders.includes(:congregation, :user).order(sort_column => sort_direction)
     @order_summaries = Order::FORM_DEFINITIONS.keys.filter_map do |form_type|
       matches = orders.select { |order| order.form_type == form_type }
       next if matches.empty?
@@ -125,6 +125,10 @@ class OrdersController < ApplicationController
       :serial_number_start,
       :serial_number_end,
       :offerer_name
+    )
+  end
+end
+e
     )
   end
 end
