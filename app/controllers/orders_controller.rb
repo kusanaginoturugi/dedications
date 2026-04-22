@@ -1,14 +1,14 @@
 class OrdersController < ApplicationController
   before_action :require_sign_in!
   before_action :set_order, only: [ :show, :edit, :update, :destroy ]
-  helper_method :page_sort_direction, :next_page_sort_direction, :page_sort_arrow
+  helper_method :sort_column, :sort_direction, :sort_arrow, :next_direction
 
   def index
-    @orders = Order.includes(:congregation, :user).order(page_number: page_sort_direction, created_at: :desc)
+    @orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
   end
 
   def summary
-    orders = Order.includes(:congregation, :user).order(page_number: page_sort_direction, created_at: :desc)
+    orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
     @order_summaries = Order::FORM_DEFINITIONS.keys.filter_map do |form_type|
       matches = orders.select { |order| order.form_type == form_type }
       next if matches.empty?
@@ -28,7 +28,7 @@ class OrdersController < ApplicationController
   end
 
   def personal_summary
-    @orders = Order.includes(:congregation, :user).order(page_number: page_sort_direction, created_at: :desc)
+    @orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
     @user_summaries = @orders.group_by(&:user).map do |user, orders|
       {
         user:,
@@ -47,7 +47,7 @@ class OrdersController < ApplicationController
     @order = current_user.orders.build(order_params)
 
     if @order.save
-      redirect_to @order, notice: "注文を登録しました。"
+      redirect_to @order, notice: "申込を登録しました。"
     else
       flash.now[:alert] = "入力内容を確認してください。"
       render :new, status: :unprocessable_entity
@@ -71,7 +71,7 @@ class OrdersController < ApplicationController
 
   def destroy
     @order.destroy!
-    redirect_to orders_path, notice: "注文を削除しました。"
+    redirect_to orders_path, notice: "申込を削除しました。"
   end
 
   private
@@ -85,16 +85,34 @@ class OrdersController < ApplicationController
     Order::FORM_DEFINITIONS.key?(form_type) ? form_type : Order::FORM_DEFINITIONS.keys.first
   end
 
-  def page_sort_direction
-    params[:page_sort] == "asc" ? :asc : :desc
+  def sort_column
+    # 並べ替え可能な項目リスト（データベース上の名前）
+    columns = {
+      "番号" => "page_number",
+      "奉納者名" => "offerer_name",
+      "入力日" => "created_at",
+      "FAX受信日" => "fax_received_on",
+      "種類" => "form_type",
+      "本数" => "serial_number_end - serial_number_start", # 合計本数
+      "金額" => "total_amount",
+      "入金状態" => "paid"
+    }
+    # 特殊な計算が必要な項目は簡易化、またはデフォルトの page_number にします
+    valid_columns = %w[page_number offerer_name created_at fax_received_on form_type paid]
+    valid_columns.include?(params[:sort]) ? params[:sort] : "page_number"
   end
 
-  def next_page_sort_direction
-    page_sort_direction == :asc ? "desc" : "asc"
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
   end
 
-  def page_sort_arrow
-    page_sort_direction == :asc ? " ▲" : " ▼"
+  def sort_arrow(column)
+    return "" unless sort_column == column
+    sort_direction == "asc" ? " ▲" : " ▼"
+  end
+
+  def next_direction(column)
+    (sort_column == column && sort_direction == "asc") ? "desc" : "asc"
   end
 
   def order_params
