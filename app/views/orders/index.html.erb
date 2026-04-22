@@ -62,6 +62,7 @@
                   <td data-label="ページ"><%= order.page_number %></td>
                   <td data-label="受信日"><%= order.fax_received_on ? l(order.fax_received_on) : "-" %></td>
                   <td data-label="伝道会名"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
+                  <td data-label="種類"><%= order.form_label.html_safe %></td>
                   <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? "#{order.total_quantity} 本" : "-" %></td>
                   <td data-label="金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
                   <td data-label="入金状態">

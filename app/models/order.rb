@@ -2,6 +2,7 @@ class Order < ApplicationRecord
   FORM_DEFINITIONS = {
     "wish_fulfillment_staff" => {
       label: "八大明王如意棒",
+      plain_label: "八大明王如意棒",
       unit_price: 2000,
       refund_unit: 800,
       miroku_unit: 1200,
@@ -9,6 +10,7 @@ class Order < ApplicationRecord
     },
     "sankai_ryuge_pillar" => {
       label: "三會龍華<br>之御柱",
+      plain_label: "三會龍華之御柱",
       unit_price: 500,
       refund_unit: 150,
       miroku_unit: 350,
@@ -16,6 +18,7 @@ class Order < ApplicationRecord
     },
     "sanki_reiboku" => {
       label: "三期滅劫<br>之霊木",
+      plain_label: "三期滅劫之霊木",
       unit_price: 800,
       refund_unit: 100,
       miroku_unit: 700,
@@ -38,7 +41,7 @@ class Order < ApplicationRecord
   validate :page_number_is_unique_within_form_type
 
   def self.form_options
-    FORM_DEFINITIONS.map { |key, definition| [ definition.fetch(:label), key ] }
+    FORM_DEFINITIONS.map { |key, definition| [ definition.fetch(:plain_label), key ] }
   end
 
   def self.form_definition_for(form_type)
@@ -51,6 +54,10 @@ class Order < ApplicationRecord
 
   def form_label
     form_definition.fetch(:label)
+  end
+
+  def plain_form_label
+    form_definition.fetch(:plain_label)
   end
 
   def total_quantity
