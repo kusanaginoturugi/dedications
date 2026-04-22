@@ -628,6 +628,8 @@ tfoot td {
     padding: 0;
   }
 }
+
+@media (max-width: 768px) {
   .app-header,
   .page-head {
     flex-direction: column;
@@ -755,10 +757,6 @@ tfoot td {
   }
 
   .detail-input-number {
-    max-width: none;
-  }
-}
-put-number {
     max-width: none;
   }
 }
