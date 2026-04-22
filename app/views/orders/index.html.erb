@@ -53,10 +53,9 @@
                 <th class="text-right">本数</th>
                 <th class="text-right">金額</th>
                 <th>入金状態</th>
-                <th>入力者</th>
-              </tr>
-              </thead>
-              <tbody>
+                <th>奉納者名</th>
+                </tr>
+                </thead>              <tbody>
               <% orders.each do |order| %>
                 <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の申込を編集">
                   <td data-label="ページ"><%= order.page_number %></td>
@@ -79,3 +78,4 @@
     <p>まだ注文は登録されていません。</p>
   <% end %>
 </section>
+ection>
