@@ -496,7 +496,11 @@ textarea {
 .order-group-header h3 {
   margin: 0;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  font-size: 1.25rem;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-strong);
+  border-left: 6px solid var(--accent);
+  padding-left: 0.75rem;
 }
 
 .order-group-header p {
