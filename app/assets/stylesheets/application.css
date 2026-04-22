@@ -536,8 +536,8 @@ th,
 td {
   border-bottom: 1px solid var(--line);
   text-align: left;
-  padding: 0.8rem 0.6rem;
-  vertical-align: top;
+  padding: 1rem 1.2rem;
+  vertical-align: middle;
 }
 
 thead th,
