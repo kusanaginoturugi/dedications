@@ -179,11 +179,10 @@ textarea {
 }
 
 .sheet-value {
-  display: grid;
-  align-content: center;
-  gap: 0.45rem;
+  display: block;
   min-width: 0;
   padding: 1.15rem 1rem;
+  white-space: pre-wrap;
 }
 
 .sheet-readonly {
@@ -756,6 +755,10 @@ tfoot td {
   }
 
   .detail-input-number {
+    max-width: none;
+  }
+}
+put-number {
     max-width: none;
   }
 }

@@ -11,7 +11,7 @@
   <% @order_summaries.each do |summary| %>
     <section class="card summary-group" style="margin-bottom: 2rem;">
       <div class="summary-header" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-        <h3 class="summary-title" style="margin-bottom: 0;"><%= summary[:label].html_safe %></h3>
+        <h3 class="summary-title" style="margin-bottom: 0;"><%= summary[:label] %></h3>
 
         <div class="summary-totals" style="margin-bottom: 0;">
           <div class="summary-total-card text-right">

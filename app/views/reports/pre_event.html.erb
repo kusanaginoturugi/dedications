@@ -28,7 +28,7 @@
               data-unit-price="<%= row[:unit_price] %>"
               data-refund-unit="<%= row[:refund_unit] %>"
               data-miroku-unit="<%= row[:miroku_unit] %>">
-            <td><%= row[:label].html_safe %></td>
+            <td><%= row[:label] %></td>
             <td class="text-right"><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
             <td>
               <input type="number" min="0" value="0" class="report-input" data-quantity-input>

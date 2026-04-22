@@ -9,20 +9,20 @@ class Order < ApplicationRecord
       report_label: "明王如意棒"
     },
     "sankai_ryuge_pillar" => {
-      label: "三會龍華<br>之御柱",
+      label: "三會龍華\n之御柱",
       plain_label: "三會龍華之御柱",
       unit_price: 500,
       refund_unit: 150,
       miroku_unit: 350,
-      report_label: "三會龍華<br>之御柱"
+      report_label: "三會龍華\n之御柱"
     },
     "sanki_reiboku" => {
-      label: "三期滅劫<br>之霊木",
+      label: "三期滅劫\n之霊木",
       plain_label: "三期滅劫之霊木",
       unit_price: 800,
       refund_unit: 100,
       miroku_unit: 700,
-      report_label: "三期滅劫<br>之霊木"
+      report_label: "三期滅劫\n之霊木"
     }
   }.freeze
 

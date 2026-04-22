@@ -30,7 +30,7 @@
                   <% unless row[:code].to_s.start_with?("99") || row[:code] == "9000" %>
                     <%= row[:code] %><br>
                   <% end %>
-                  <%= row[:name].html_safe %>
+                  <%= row[:name] %>
                 </td>
                 <td class="text-right"><%= row[:paid_count] %></td>
                 <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
@@ -65,7 +65,7 @@
                   <% unless row[:code].to_s.start_with?("99") || row[:code] == "9000" %>
                     <%= row[:code] %><br>
                   <% end %>
-                  <%= row[:name].html_safe %>
+                  <%= row[:name] %>
                 </td>
                 <td class="text-right"><%= row[:paid_count] %></td>
                 <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>

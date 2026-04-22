@@ -2,17 +2,17 @@ require "csv"
 
 class ReportsController < ApplicationController
   PRE_EVENT_ITEMS = [
-    { label: "弥勒収円<br>大護摩板", plain_label: "弥勒収円大護摩板", unit_price: 4000, refund_unit: 2000, miroku_unit: 2000 },
-    { label: "各種平定<br>之御柱", plain_label: "各種平定之御柱", unit_price: 2000, refund_unit: 300, miroku_unit: 1700 },
-    { label: "三期滅劫<br>之霊木", plain_label: "三期滅劫之霊木", unit_price: 800, refund_unit: 100, miroku_unit: 700 },
-    { label: "三會龍華<br>之御柱", plain_label: "三會龍華之御柱", unit_price: 500, refund_unit: 150, miroku_unit: 350 },
+    { label: "弥勒収円\n大護摩板", plain_label: "弥勒収円大護摩板", unit_price: 4000, refund_unit: 2000, miroku_unit: 2000 },
+    { label: "各種平定\n之御柱", plain_label: "各種平定之御柱", unit_price: 2000, refund_unit: 300, miroku_unit: 1700 },
+    { label: "三期滅劫\n之霊木", plain_label: "三期滅劫之霊木", unit_price: 800, refund_unit: 100, miroku_unit: 700 },
+    { label: "三會龍華\n之御柱", plain_label: "三會龍華之御柱", unit_price: 500, refund_unit: 150, miroku_unit: 350 },
     { label: "その他のハッピーポール", plain_label: "その他のハッピーポール", unit_price: 500, refund_unit: 150, miroku_unit: 350 },
     { label: "灶君護摩木・収天護摩木", plain_label: "灶君護摩木・収天護摩木", unit_price: 200, refund_unit: 60, miroku_unit: 140 },
     { label: "地護摩木", plain_label: "地護摩木", unit_price: 100, refund_unit: 50, miroku_unit: 50 },
     { label: "天地免劫<br>護摩木", plain_label: "天地免劫護摩木", unit_price: 100, refund_unit: 40, miroku_unit: 60 },
     { label: "原佛子結集の護摩木", plain_label: "原佛子結集の護摩木", unit_price: 40, refund_unit: 0, miroku_unit: 40 },
     { label: "おかげ符", plain_label: "おかげ符", unit_price: 100, refund_unit: 40, miroku_unit: 60 },
-    { label: "仙丹茶<br>（禄存五聖杯）", plain_label: "仙丹茶（禄存五聖杯）", unit_price: 300, refund_unit: 0, miroku_unit: 300 },
+    { label: "仙丹茶\n（禄存五聖杯）", plain_label: "仙丹茶（禄存五聖杯）", unit_price: 300, refund_unit: 0, miroku_unit: 300 },
     { label: "特別祈祷", plain_label: "特別祈祷", unit_price: 5000, refund_unit: 1000, miroku_unit: 4000 },
     { label: "明王如意棒", plain_label: "明王如意棒", unit_price: 2000, refund_unit: 800, miroku_unit: 1200 },
     { label: "八大明王札", plain_label: "八大明王札", unit_price: 600, refund_unit: 600, miroku_unit: 0 },
@@ -147,3 +147,6 @@ class ReportsController < ApplicationController
     end.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
   end
 end
+d
+end
+d
