@@ -31,10 +31,10 @@ class OrderTest < ActiveSupport::TestCase
       serial_number_end: @existing_order.serial_number_end
     )
     assert_not order.valid?
-    assert_includes order.errors[:base], "通し番号は同じ注文書種類ですでに使われています。"
+    assert_includes order.errors[:base], "通し番号は同じ申込書種類ですでに使われています。"
   end
 
-  test "同じ注文書種類で通し番号が一部重複（開始側）する場合は無効であること" do
+  test "同じ申込書種類で通し番号が一部重複（開始側）する場合は無効であること" do
     order = Order.new(
       user: users(:admin),
       congregation: congregations(:tokyo),
@@ -70,7 +70,7 @@ class OrderTest < ActiveSupport::TestCase
     assert_not order.valid?
   end
 
-  test "異なる注文書種類であれば同じ通し番号でも有効であること" do
+  test "異なる申込書種類であれば同じ通し番号でも有効であること" do
     order = Order.new(
       user: users(:admin),
       congregation: congregations(:tokyo),

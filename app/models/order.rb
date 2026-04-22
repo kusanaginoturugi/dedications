@@ -97,7 +97,7 @@ class Order < ApplicationRecord
     overlap_exists = scope.where("serial_number_start <= ? AND serial_number_end >= ?", serial_number_end, serial_number_start).exists?
 
     if overlap_exists
-      errors.add(:base, "通し番号は同じ注文書種類ですでに使われています。")
+      errors.add(:base, "通し番号は同じ申込書種類ですでに使われています。")
     end
   end
 
