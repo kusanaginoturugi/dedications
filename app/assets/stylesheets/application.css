@@ -98,9 +98,12 @@ textarea {
 }
 
 .menu-tree-panel h3 {
-  margin: 0 0 0.35rem;
-  color: var(--muted);
-  font-size: 0.9rem;
+  margin: 0.5rem 0 0.5rem;
+  color: var(--accent);
+  font-size: 1.05rem;
+  font-weight: 800;
+  border-bottom: 2px solid var(--accent-soft);
+  padding-bottom: 0.25rem;
 }
 
 .menu-tree-panel section {
