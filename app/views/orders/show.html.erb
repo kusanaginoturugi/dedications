@@ -32,40 +32,25 @@
         <div class="sheet-value sheet-readonly"><%= @order.form_label.gsub("\n", "") %></div>
       </div>
     </div>
+<%# 4行目: ページ番号、FAX受信日 %>
+<div class="sheet-row sheet-row-two">
+  <div class="sheet-pair">
+    <div class="sheet-label">ページ番号</div>
+    <div class="sheet-value sheet-readonly"><%= @order.page_number %></div>
+  </div>
+  <div class="sheet-pair">
+    <div class="sheet-label">FAX受信日</div>
+    <div class="sheet-value sheet-readonly"><%= @order.fax_received_on ? l(@order.fax_received_on) : "-" %></div>
+  </div>
+</div>
 
-    <%# 3行目: 伝道会名、FAX受信日 %>
-    <div class="sheet-row sheet-row-two">
-      <div class="sheet-pair">
-        <div class="sheet-label">伝道会名</div>
-        <div class="sheet-value sheet-readonly"><%= "#{@order.congregation.code} #{@order.congregation.name}" %></div>
-      </div>
-      <div class="sheet-pair">
-        <div class="sheet-label">FAX受信日</div>
-        <div class="sheet-value sheet-readonly"><%= @order.fax_received_on ? l(@order.fax_received_on) : "-" %></div>
-      </div>
-    </div>
-
-    <%# 4行目: ページ番号、通し番号(始) %>
-    <div class="sheet-row sheet-row-two">
-      <div class="sheet-pair">
-        <div class="sheet-label">ページ番号</div>
-        <div class="sheet-value sheet-readonly"><%= @order.page_number %></div>
-      </div>
-      <div class="sheet-pair">
-        <div class="sheet-label">通し番号(始)</div>
-        <div class="sheet-value sheet-readonly"><%= @order.serial_number_start.presence || "-" %></div>
-      </div>
-    </div>
-
-    <%# 5行目: 通し番号(終) %>
-    <div class="sheet-row sheet-row-two">
-      <div class="sheet-pair">
-        <div class="sheet-label">通し番号(終)</div>
-        <div class="sheet-value sheet-readonly"><%= @order.serial_number_end.presence || "-" %></div>
-      </div>
-      <div class="sheet-pair" style="border: none; background: transparent;">
-      </div>
-    </div>
+<%# 5行目: 通し番号（1つの枠に統合） %>
+<div class="sheet-row">
+  <div class="sheet-pair sheet-pair-wide">
+    <div class="sheet-label">通し番号</div>
+    <div class="sheet-value sheet-readonly"><%= @order.serial_number_range_label || "-" %></div>
+  </div>
+</div>
 
     <%# 6行目: 合計本数、合計金額 %>
     <div class="sheet-row sheet-row-two">
