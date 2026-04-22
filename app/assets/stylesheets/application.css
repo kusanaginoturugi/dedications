@@ -600,6 +600,10 @@ tfoot td {
   font-weight: 700;
 }
 
+.text-right {
+  text-align: right;
+}
+
 @media (max-width: 800px) {
   .app-header,
   .page-head {
