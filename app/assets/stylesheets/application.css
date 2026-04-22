@@ -424,11 +424,11 @@ textarea {
   margin: 0 0 1rem;
   text-align: left;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  font-size: 1.25rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--accent-strong);
-  padding-left: 0.5rem;
-  border-left: 4px solid var(--accent);
+  padding-left: 0.75rem;
+  border-left: 6px solid var(--accent);
 }
 
 .summary-totals {
