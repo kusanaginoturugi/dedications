@@ -360,12 +360,28 @@ textarea {
   display: grid;
   grid-template-columns: auto auto minmax(0, 1fr);
   align-items: center;
-  gap: 0.12rem;
+  gap: 0.75rem;
   white-space: normal;
+  cursor: pointer;
+}
+
+.payment-toggle input[type="checkbox"] {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 2px solid var(--muted);
+  border-radius: 4px;
+  cursor: pointer;
+  accent-color: var(--accent-strong);
+}
+
+.payment-toggle:hover input[type="checkbox"] {
+  border-color: var(--accent-strong);
 }
 
 .payment-toggle-text {
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--ink);
 }
 
 .payment-note {
