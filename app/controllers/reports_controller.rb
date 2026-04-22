@@ -82,6 +82,7 @@ class ReportsController < ApplicationController
     name_overrides = {
       "41505" => "新潟公壇",
       "41605" => "北陸公壇",
+      "63302" => "岡山北大楽<br>伝道会",
       "9000" => "弥勒寺",
       "99000" => "聖治命院(モンゴル)",
       "99001" => "(株)加賀御神水"
