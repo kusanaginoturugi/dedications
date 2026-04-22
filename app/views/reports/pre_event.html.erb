@@ -3,19 +3,18 @@
 <section class="page-head">
   <div>
     <h2>帳票: 前夜祭・当日</h2>
-    <p class="section-lead">還付.ods の「前夜祭・当日」シート相当です。</p>
+    <p class="section-lead">還付.ods の「前夜祭・当日」シート相当です。奉納数を入力すると自動計算されます。</p>
   </div>
 </section>
 
-<section class="card">
-  <p class="report-note">本システムは代理奉納入力が対象のため、この帳票の数値は現時点では 0 で出力しています。</p>
+<section class="card" data-pre-event-report>
   <div class="table-wrap">
     <table class="report-table">
       <thead>
         <tr>
           <th>道具名</th>
           <th>奉納料</th>
-          <th>奉納数</th>
+          <th style="width: 8rem;">奉納数</th>
           <th>売上</th>
           <th>還付金</th>
           <th>聖院還付分</th>
@@ -24,19 +23,106 @@
         </tr>
       </thead>
       <tbody>
-        <% @rows.each do |row| %>
-          <tr>
+        <% @rows.each_with_index do |row, index| %>
+          <tr data-row="<%= index %>" 
+              data-unit-price="<%= row[:unit_price] %>"
+              data-refund-unit="<%= row[:refund_unit] %>"
+              data-miroku-unit="<%= row[:miroku_unit] %>">
             <td><%= row[:label] %></td>
-            <td><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
-            <td><%= row[:quantity] %></td>
-            <td><%= number_to_currency(row[:sales], unit: "¥", precision: 0) %></td>
-            <td><%= number_to_currency(row[:refund_unit], unit: "¥", precision: 0) %></td>
-            <td><%= number_to_currency(row[:seiin_amount], unit: "¥", precision: 0) %></td>
-            <td><%= number_to_currency(row[:miroku_unit], unit: "¥", precision: 0) %></td>
-            <td><%= number_to_currency(row[:miroku_amount], unit: "¥", precision: 0) %></td>
+            <td class="text-right"><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
+            <td>
+              <input type="number" min="0" value="0" class="report-input" data-quantity-input>
+            </td>
+            <td class="text-right" data-sales-display>¥0</td>
+            <td class="text-right"><%= number_to_currency(row[:refund_unit], unit: "¥", precision: 0) %></td>
+            <td class="text-right" data-seiin-amount-display>¥0</td>
+            <td class="text-right"><%= number_to_currency(row[:miroku_unit], unit: "¥", precision: 0) %></td>
+            <td class="text-right" data-miroku-amount-display>¥0</td>
           </tr>
         <% end %>
       </tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td colspan="2">合計</td>
+          <td class="text-right" data-total-quantity>0</td>
+          <td class="text-right" data-total-sales>¥0</td>
+          <td>-</td>
+          <td class="text-right" data-total-seiin>¥0</td>
+          <td>-</td>
+          <td class="text-right" data-total-miroku>¥0</td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.querySelector("[data-pre-event-report]");
+  if (!container) return;
+
+  const rows = container.querySelectorAll("tbody tr");
+  const totalQuantityDisplay = container.querySelector("[data-total-quantity]");
+  const totalSalesDisplay = container.querySelector("[data-total-sales]");
+  const totalSeiinDisplay = container.querySelector("[data-total-seiin]");
+  const totalMirokuDisplay = container.querySelector("[data-total-miroku]");
+
+  const formatCurrency = (amount) => {
+    return "¥" + amount.toLocaleString();
+  };
+
+  const updateCalculations = () => {
+    let totalQty = 0;
+    let totalSales = 0;
+    let totalSeiin = 0;
+    let totalMiroku = 0;
+
+    rows.forEach(row => {
+      const qty = parseInt(row.querySelector("[data-quantity-input]").value) || 0;
+      const unitPrice = parseInt(row.dataset.unitPrice) || 0;
+      const refundUnit = parseInt(row.dataset.refundUnit) || 0;
+      const mirokuUnit = parseInt(row.dataset.mirokuUnit) || 0;
+
+      const sales = qty * unitPrice;
+      const seiinAmount = qty * refundUnit;
+      const mirokuAmount = qty * mirokuUnit;
+
+      row.querySelector("[data-sales-display]").textContent = formatCurrency(sales);
+      row.querySelector("[data-seiin-amount-display]").textContent = formatCurrency(seiinAmount);
+      row.querySelector("[data-miroku-amount-display]").textContent = formatCurrency(mirokuAmount);
+
+      totalQty += qty;
+      totalSales += sales;
+      totalSeiin += seiinAmount;
+      totalMiroku += mirokuAmount;
+    });
+
+    totalQuantityDisplay.textContent = totalQty;
+    totalSalesDisplay.textContent = formatCurrency(totalSales);
+    totalSeiinDisplay.textContent = formatCurrency(totalSeiin);
+    totalMirokuDisplay.textContent = formatCurrency(totalMiroku);
+  };
+
+  container.querySelectorAll("[data-quantity-input]").forEach(input => {
+    input.addEventListener("input", updateCalculations);
+  });
+});
+</script>
+
+<style>
+.report-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+  text-align: right;
+}
+.total-row {
+  font-weight: 800;
+  background: var(--accent-soft);
+}
+.total-row td {
+  border-top: 2px solid var(--accent);
+}
+</style>
