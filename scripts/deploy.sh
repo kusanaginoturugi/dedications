@@ -33,7 +33,8 @@ git config core.fileMode false
 
 log "Fetching latest code"
 git fetch origin
-git pull --ff-only origin main
+git status --short || true
+git reset --hard origin/main
 
 log "Installing gems"
 bundle config set deployment true
