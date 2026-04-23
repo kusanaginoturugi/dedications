@@ -76,12 +76,8 @@ textarea {
   position: relative;
 }
 
-.menu-tree summary {
-  list-style: none;
-}
-
-.menu-tree summary::-webkit-details-marker {
-  display: none;
+.menu-tree [data-menu-toggle] {
+  user-select: none;
 }
 
 .menu-tree-panel {
@@ -97,6 +93,10 @@ textarea {
   display: grid;
   gap: 0.9rem;
   z-index: 10;
+}
+
+.menu-tree-panel[hidden] {
+  display: none;
 }
 
 .menu-tree-panel h3 {

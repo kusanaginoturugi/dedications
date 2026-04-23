@@ -31,9 +31,17 @@
         </div>
         <% if signed_in? %>
           <nav class="header-nav">
-            <details class="menu-tree">
-              <summary class="secondary-link">メニュー</summary>
-              <div class="menu-tree-panel">
+            <div class="menu-tree" data-menu-tree>
+              <button
+                type="button"
+                class="secondary-link"
+                data-menu-toggle
+                aria-expanded="false"
+                aria-controls="header-menu-panel"
+              >
+                メニュー
+              </button>
+              <div class="menu-tree-panel" id="header-menu-panel" hidden>
                 <section>
                   <h3>申込</h3>
                   <%= link_to "FAX申込入力", new_order_path %>
@@ -60,7 +68,7 @@
                   </section>
                 <% end %>
               </div>
-            </details>
+            </div>
             <%= button_to "サインアウト", session_path, method: :delete, class: "ghost-button" %>
           </nav>
         <% end %>
