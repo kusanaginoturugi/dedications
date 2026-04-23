@@ -5,6 +5,7 @@ APP_ROOT="/home/ubuntu/dedications"
 RUBY_BIN="/home/ubuntu/.local/share/mise/installs/ruby/3.4.8/bin"
 MISE_BIN="/home/ubuntu/.local/bin"
 SERVICE_NAME="dedications.service"
+HEALTHCHECK_URL="http://127.0.0.1:3000/up"
 
 log() {
   printf '\n[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"
@@ -49,5 +50,10 @@ bin/rails assets:clobber
 bin/rails assets:precompile
 
 log "Restarting application service"
+rm -f "$APP_ROOT"/tmp/pids/*.pid
 sudo -n /usr/bin/systemctl restart "$SERVICE_NAME"
 sudo -n /usr/bin/systemctl is-active "$SERVICE_NAME"
+
+log "Checking application health"
+sleep 5
+curl --fail --silent --show-error --retry 5 --retry-delay 2 "$HEALTHCHECK_URL" > /dev/null
