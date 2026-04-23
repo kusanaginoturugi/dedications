@@ -38,7 +38,7 @@
                 </td>
                 <td class="text-right"><%= row[:paid_count] %></td>
                 <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
-                <td class="text-right"><%= row[:total_count] %></td>
+                <td class="text-right"><%= row[:total_count] %> 本</td>
               </tr>
             <% end %>
           <% end %>
@@ -69,7 +69,7 @@
                 </td>
                 <td class="text-right"><%= row[:paid_count] %></td>
                 <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
-                <td class="text-right"><%= row[:total_count] %></td>
+                <td class="text-right"><%= row[:total_count] %> 本</td>
               </tr>
             <% end %>
           <% end %>

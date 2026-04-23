@@ -11,7 +11,7 @@
   <div class="summary-totals summary-totals-overall">
     <div class="summary-total-card text-right">
       <span class="summary-total-label">合計本数</span>
-      <strong><%= @proxy_totals[:quantity] %></strong>
+      <strong><%= @proxy_totals[:quantity] %> 本</strong>
     </div>
     <div class="summary-total-card text-right">
       <span class="summary-total-label">合計売上</span>
@@ -59,7 +59,7 @@
         <tr class="total-row">
           <td>合計</td>
           <td>-</td>
-          <td class="text-right"><%= @proxy_totals[:quantity] %></td>
+          <td class="text-right"><%= @proxy_totals[:quantity] %> 本</td>
           <td class="text-right"><%= number_to_currency(@proxy_totals[:sales], unit: "¥", precision: 0) %></td>
           <td>-</td>
           <td class="text-right"><%= number_to_currency(@proxy_totals[:seiin_amount], unit: "¥", precision: 0) %></td>
