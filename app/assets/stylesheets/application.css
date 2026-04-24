@@ -557,6 +557,11 @@ textarea {
   margin-bottom: 2rem;
 }
 
+.summary-totals-mixed .summary-total-label {
+  display: block;
+  text-align: left;
+}
+
 .summary-total-card {
   min-width: 8rem;
   padding: 0.85rem 1rem;
