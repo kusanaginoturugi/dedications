@@ -525,7 +525,7 @@ textarea {
 
 .dedication-counts-sheet .report-table-compact td,
 .dedication-counts-sheet .report-table-compact th {
-  line-height: 1.2;
+  line-height: 1.08;
 }
 
 .order-group + .order-group {
@@ -870,15 +870,9 @@ tfoot td {
 
   .dedication-counts-sheet .report-table-compact td,
   .dedication-counts-sheet .report-table-compact th {
-    padding: 0.12rem 0.22rem;
+    padding: 0.1rem 0.22rem;
     font-size: 0.56rem;
-    line-height: 1.0;
-  }
-
-  .dedication-counts-sheet .report-table-compact td br {
-    display: block;
-    content: "";
-    margin: 0;
+    line-height: 0.98;
   }
 
   .dedication-counts-sheet .blank-row td {

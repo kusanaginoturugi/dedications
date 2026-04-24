@@ -30,12 +30,7 @@
               <tr class="blank-row"><td colspan="4">&nbsp;</td></tr>
             <% else %>
               <tr>
-                <td>
-                  <% unless row[:code].to_s.start_with?("99") || row[:code] == "9000" %>
-                    <%= row[:code] %><br>
-                  <% end %>
-                  <%= row[:name] %>
-                </td>
+                <td><%= row[:name] %></td>
                 <td class="text-right"><%= row[:paid_count] %></td>
                 <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
                 <td class="text-right"><%= row[:total_count] %> 本</td>
@@ -61,12 +56,7 @@
               <tr class="blank-row"><td colspan="4">&nbsp;</td></tr>
             <% else %>
               <tr>
-                <td>
-                  <% unless row[:code].to_s.start_with?("99") || row[:code] == "9000" %>
-                    <%= row[:code] %><br>
-                  <% end %>
-                  <%= row[:name] %>
-                </td>
+                <td><%= row[:name] %></td>
                 <td class="text-right"><%= row[:paid_count] %></td>
                 <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
                 <td class="text-right"><%= row[:total_count] %> 本</td>
