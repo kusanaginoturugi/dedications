@@ -105,7 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   container.querySelectorAll("[data-quantity-input]").forEach(input => {
     input.addEventListener("input", updateCalculations);
+    input.addEventListener("focus", () => input.select());
+    input.addEventListener("click", () => input.select());
   });
+
+  updateCalculations();
 });
 </script>
 
@@ -117,6 +121,14 @@ document.addEventListener("DOMContentLoaded", () => {
   padding: 0.4rem 0.6rem;
   font-size: 1rem;
   text-align: right;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.report-input::-webkit-outer-spin-button,
+.report-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .total-row {
   font-weight: 800;
