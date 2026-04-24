@@ -813,7 +813,7 @@ tfoot td {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 12mm 14mm 10mm;
+    margin: 0;
   }
 
   .no-print,
@@ -826,14 +826,18 @@ tfoot td {
   html,
   body {
     font-size: 10px;
+    margin: 0;
+    padding: 0;
   }
 
   .app-shell {
-    padding: 2mm 0 0;
+    max-width: none;
+    padding: 12mm 14mm 10mm;
   }
 
   .page-head {
     margin-bottom: 0.7rem;
+    padding: 0 2mm;
   }
 
   .page-head h2 {
@@ -856,8 +860,9 @@ tfoot td {
   .dedication-counts-sheet {
     break-inside: avoid;
     page-break-inside: avoid;
-    padding-left: 1.5mm;
-    padding-right: 1.5mm;
+    margin-top: 2mm;
+    padding-left: 2mm;
+    padding-right: 2mm;
   }
 
   .dedication-counts-sheet .counts-sheet-grid {
