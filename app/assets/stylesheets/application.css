@@ -218,11 +218,6 @@ textarea {
   font-weight: 600;
 }
 
-.sheet-value-left {
-  justify-content: flex-start;
-  text-align: left;
-}
-
 .compact-field {
   gap: 0;
 }
@@ -415,6 +410,22 @@ textarea {
 }
 
 .payment-note {
+  display: none;
+}
+
+.payment-choices-static {
+  justify-content: flex-start;
+}
+
+.payment-choice-static {
+  cursor: default;
+}
+
+.payment-check-static::after {
+  display: block;
+}
+
+.payment-check-static-unchecked::after {
   display: none;
 }
 

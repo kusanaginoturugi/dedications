@@ -65,10 +65,13 @@
 
       <div class="sheet-pair">
         <div class="sheet-label">入金状態</div>
-        <div class="sheet-value sheet-readonly sheet-value-left">
-          <span class="<%= @order.paid? ? "status-paid" : "status-unpaid" %>">
-            <%= @order.paid? ? "入金済み" : "未入金" %>
-          </span>
+        <div class="sheet-value sheet-readonly">
+          <div class="payment-choices payment-choices-static">
+            <span class="payment-choice payment-choice-static">
+              <span class="payment-check payment-check-static<%= " payment-check-static-unchecked" unless @order.paid? %>"></span>
+              <span class="payment-choice-text<%= " status-unpaid" unless @order.paid? %>"><%= @order.paid? ? "入金済み" : "未入金" %></span>
+            </span>
+          </div>
         </div>
       </div>
 
