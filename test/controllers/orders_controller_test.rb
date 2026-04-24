@@ -14,6 +14,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, orders(:one).form_label
+    assert_includes response.body, orders(:one).offerer_name
   end
 
   test "new order defaults fax received on to today" do
@@ -81,6 +82,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
           page_number: 2,
           fax_received_on: "2026-04-08",
           form_type: "wish_fulfillment_staff",
+          offerer_name: "高橋美咲",
           paid: "1",
           congregation_id: congregations(:osaka).id,
           serial_number_start: 100,
@@ -89,7 +91,9 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to order_path(Order.order(:created_at).last)
+    created_order = Order.order(:created_at).last
+    assert_redirected_to order_path(created_order)
+    assert_equal "高橋美咲", created_order.offerer_name
   end
 
   test "shows edit form" do
@@ -149,6 +153,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
         page_number: 9,
         fax_received_on: "2026-04-09",
         form_type: "sanki_reiboku",
+        offerer_name: "伊藤美紀",
         paid: "1",
         congregation_id: congregations(:osaka).id,
         serial_number_start: 200,
@@ -160,6 +165,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     orders(:one).reload
     assert_equal 9, orders(:one).page_number
     assert_equal 200, orders(:one).serial_number_start
+    assert_equal "伊藤美紀", orders(:one).offerer_name
   end
 
   test "rejects duplicate page number within same form type on update" do

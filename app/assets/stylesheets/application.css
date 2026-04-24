@@ -218,6 +218,11 @@ textarea {
   font-weight: 600;
 }
 
+.sheet-value-left {
+  justify-content: flex-start;
+  text-align: left;
+}
+
 .compact-field {
   gap: 0;
 }

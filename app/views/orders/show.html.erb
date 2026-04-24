@@ -65,7 +65,7 @@
 
       <div class="sheet-pair">
         <div class="sheet-label">入金状態</div>
-        <div class="sheet-value sheet-readonly">
+        <div class="sheet-value sheet-readonly sheet-value-left">
           <span class="<%= @order.paid? ? "status-paid" : "status-unpaid" %>">
             <%= @order.paid? ? "入金済み" : "未入金" %>
           </span>
