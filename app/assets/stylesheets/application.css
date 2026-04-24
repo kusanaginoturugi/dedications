@@ -656,27 +656,47 @@ table {
 }
 
 .summary-page-column {
-  width: 10%;
-}
-
-.summary-congregation-column {
-  width: 24%;
-}
-
-.summary-serial-column {
-  width: 16%;
-}
-
-.summary-quantity-column {
   width: 12%;
 }
 
+.summary-congregation-column {
+  width: 22%;
+}
+
+.summary-serial-column {
+  width: 15%;
+}
+
+.summary-quantity-column {
+  width: 11%;
+}
+
 .summary-amount-column {
-  width: 18%;
+  width: 20%;
 }
 
 .summary-status-column {
   width: 20%;
+}
+
+.summary-table-balanced th:nth-child(1),
+.summary-table-balanced td:nth-child(1) {
+  padding-right: 1.6rem;
+}
+
+.summary-table-balanced th:nth-child(2),
+.summary-table-balanced td:nth-child(2) {
+  padding-left: 1.4rem;
+}
+
+.summary-table-balanced th:nth-child(5),
+.summary-table-balanced td:nth-child(5) {
+  padding-right: 1.6rem;
+}
+
+.summary-table-balanced th:nth-child(6),
+.summary-table-balanced td:nth-child(6) {
+  padding-left: 1.4rem;
 }
 
 th,
