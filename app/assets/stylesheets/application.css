@@ -650,6 +650,30 @@ table {
   width: 7.5rem;
 }
 
+.summary-page-column {
+  width: 10%;
+}
+
+.summary-congregation-column {
+  width: 24%;
+}
+
+.summary-serial-column {
+  width: 16%;
+}
+
+.summary-quantity-column {
+  width: 12%;
+}
+
+.summary-amount-column {
+  width: 18%;
+}
+
+.summary-status-column {
+  width: 20%;
+}
+
 th,
 td {
   border-bottom: 1px solid var(--line);
