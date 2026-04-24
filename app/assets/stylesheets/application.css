@@ -813,7 +813,7 @@ tfoot td {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 6mm;
+    margin: 6mm 10mm;
   }
 
   .no-print,
@@ -833,18 +833,18 @@ tfoot td {
   }
 
   .page-head {
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.5rem;
   }
 
   .page-head h2 {
-    font-size: 1rem;
-    line-height: 1.05;
+    font-size: 1.15rem;
+    line-height: 1.15;
   }
 
   .section-lead {
-    margin-top: 0.05rem;
-    font-size: 0.62rem;
-    line-height: 1.05;
+    margin-top: 0.12rem;
+    font-size: 0.72rem;
+    line-height: 1.15;
   }
 
   .card {
@@ -859,14 +859,14 @@ tfoot td {
   }
 
   .dedication-counts-sheet .counts-sheet-grid {
-    gap: 0.25rem;
+    gap: 0.5rem;
   }
 
   .dedication-counts-sheet .report-table-compact td,
   .dedication-counts-sheet .report-table-compact th {
-    padding: 0.12rem 0.18rem;
-    font-size: 0.6rem;
-    line-height: 1.0;
+    padding: 0.18rem 0.34rem;
+    font-size: 0.68rem;
+    line-height: 1.08;
   }
 
   .dedication-counts-sheet .report-table-compact td br {
@@ -876,8 +876,8 @@ tfoot td {
   }
 
   .dedication-counts-sheet .blank-row td {
-    padding-top: 0;
-    padding-bottom: 0;
+    padding-top: 0.08rem;
+    padding-bottom: 0.08rem;
   }
 }
 
