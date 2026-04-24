@@ -832,23 +832,22 @@ tfoot td {
 
   .app-shell {
     max-width: none;
-    padding: 12mm 14mm 10mm;
+    padding: 0;
   }
 
   .page-head {
-    margin-bottom: 0.7rem;
-    padding: 0 2mm;
+    width: 178mm;
+    margin: 9mm auto 2.5mm;
+    padding: 0;
   }
 
   .page-head h2 {
-    font-size: 1.15rem;
-    line-height: 1.15;
+    font-size: 1.05rem;
+    line-height: 1.1;
   }
 
   .section-lead {
-    margin-top: 0.12rem;
-    font-size: 0.72rem;
-    line-height: 1.15;
+    display: none;
   }
 
   .card {
@@ -860,20 +859,20 @@ tfoot td {
   .dedication-counts-sheet {
     break-inside: avoid;
     page-break-inside: avoid;
-    margin-top: 2mm;
-    padding-left: 2mm;
-    padding-right: 2mm;
+    width: 178mm;
+    margin: 0 auto;
+    padding: 0;
   }
 
   .dedication-counts-sheet .counts-sheet-grid {
-    gap: 0.5rem;
+    gap: 1.8mm;
   }
 
   .dedication-counts-sheet .report-table-compact td,
   .dedication-counts-sheet .report-table-compact th {
-    padding: 0.18rem 0.34rem;
-    font-size: 0.68rem;
-    line-height: 1.08;
+    padding: 0.16rem 0.42rem;
+    font-size: 0.64rem;
+    line-height: 1.04;
   }
 
   .dedication-counts-sheet .report-table-compact td br {
