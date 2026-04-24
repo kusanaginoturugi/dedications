@@ -13,7 +13,7 @@
 
 <section class="card">
   <div class="form-two-columns">
-    <%# 左列 (1-6) %>
+    <%# 左列 %>
     <div class="sheet-grid">
       <div class="sheet-pair">
         <div class="sheet-label">奉納者</div>
@@ -40,14 +40,15 @@
         <div class="sheet-value sheet-readonly"><%= @order.fax_received_on ? l(@order.fax_received_on) : "-" %></div>
       </div>
 
+    </div>
+
+    <%# 右列 %>
+    <div class="sheet-grid">
       <div class="sheet-pair">
         <div class="sheet-label">ページ番号</div>
         <div class="sheet-value sheet-readonly"><%= @order.page_number %></div>
       </div>
-    </div>
 
-    <%# 右列 (7-11) %>
-    <div class="sheet-grid">
       <div class="sheet-pair">
         <div class="sheet-label">通し番号</div>
         <div class="sheet-value sheet-readonly"><%= @order.serial_number_range_label || "-" %></div>
