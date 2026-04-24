@@ -523,6 +523,11 @@ textarea {
   font-size: 0.95rem;
 }
 
+.dedication-counts-sheet .report-table-compact td,
+.dedication-counts-sheet .report-table-compact th {
+  line-height: 1.2;
+}
+
 .order-group + .order-group {
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -819,6 +824,28 @@ tfoot td {
     border: none;
     box-shadow: none;
     padding: 0;
+  }
+
+  .dedication-counts-sheet .counts-sheet-grid {
+    gap: 0.45rem;
+  }
+
+  .dedication-counts-sheet .report-table-compact td,
+  .dedication-counts-sheet .report-table-compact th {
+    padding: 0.22rem 0.28rem;
+    font-size: 0.76rem;
+    line-height: 1.08;
+  }
+
+  .dedication-counts-sheet .report-table-compact td br {
+    display: block;
+    content: "";
+    margin: 0.02rem 0;
+  }
+
+  .dedication-counts-sheet .blank-row td {
+    padding-top: 0.08rem;
+    padding-bottom: 0.08rem;
   }
 }
 
