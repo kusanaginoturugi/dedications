@@ -47,9 +47,9 @@
           </colgroup>
           <thead>
             <tr>
-              <th><%= link_to "ページ番号#{sort_arrow('page_number')}", url_for(sort: 'page_number', direction: next_direction('page_number')), class: "sort-link" %></th>
+              <th class="text-right"><%= link_to "ページ番号#{sort_arrow('page_number')}", url_for(sort: 'page_number', direction: next_direction('page_number')), class: "sort-link" %></th>
               <th>伝道会名</th>
-              <th>通し番号</th>
+              <th class="text-right">通し番号</th>
               <th class="text-right">本数</th>
               <th class="text-right">合計金額</th>
               <th>入金状態</th>
@@ -58,9 +58,9 @@
           <tbody>
             <% summary[:orders].each do |order| %>
               <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の申込を編集">
-                <td data-label="ページ番号"><%= order.page_number %></td>
+                <td data-label="ページ番号" class="text-right"><%= order.page_number %></td>
                 <td data-label="伝道会名"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
-                <td data-label="通し番号"><%= order.serial_number_range_label || "-" %></td>
+                <td data-label="通し番号" class="text-right"><%= order.serial_number_range_label || "-" %></td>
                 <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? order.total_quantity : "-" %></td>
                 <td data-label="合計金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
                 <td data-label="入金状態">

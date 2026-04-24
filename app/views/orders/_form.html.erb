@@ -82,7 +82,7 @@
       <div class="sheet-grid">
         <div class="sheet-pair">
           <div class="sheet-label">ページ番号</div>
-          <div class="sheet-value">
+          <div class="sheet-value sheet-value-right">
             <div class="field compact-field">
               <%= form.number_field :page_number, min: 1, required: true %>
             </div>
@@ -91,7 +91,7 @@
 
         <div class="sheet-pair">
           <div class="sheet-label">通し番号</div>
-          <div class="sheet-value sheet-range">
+          <div class="sheet-value sheet-range sheet-value-right">
             <div class="field compact-field">
               <%= form.number_field :serial_number_start, min: 0, step: 1, data: { quantity_calc_input: true } %>
             </div>
