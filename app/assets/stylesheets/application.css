@@ -378,10 +378,10 @@ textarea {
 }
 
 .payment-check {
-  height: 1.6rem;
-  width: 1.6rem;
+  height: 1.45rem;
+  width: 1.45rem;
   background-color: #fff;
-  border: 2px solid var(--muted);
+  border: 1.5px solid var(--muted);
   border-radius: 4px;
   display: inline-block;
   position: relative;
@@ -391,12 +391,12 @@ textarea {
   content: "";
   position: absolute;
   display: none;
-  left: 0.45rem;
-  top: 0.15rem;
-  width: 0.45rem;
-  height: 0.85rem;
+  left: 0.4rem;
+  top: 0.12rem;
+  width: 0.4rem;
+  height: 0.78rem;
   border: solid var(--ink);
-  border-width: 0 3px 3px 0;
+  border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
 
@@ -405,7 +405,7 @@ textarea {
 }
 
 .payment-choice-text {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink);
 }
 
