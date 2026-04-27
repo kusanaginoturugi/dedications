@@ -381,7 +381,7 @@ textarea {
   height: 1.6rem;
   width: 1.6rem;
   background-color: #fff;
-  border: 2px solid #000;
+  border: 2px solid var(--muted);
   border-radius: 4px;
   display: inline-block;
   position: relative;
@@ -395,7 +395,7 @@ textarea {
   top: 0.15rem;
   width: 0.45rem;
   height: 0.85rem;
-  border: solid #000;
+  border: solid var(--ink);
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
 }
@@ -405,8 +405,8 @@ textarea {
 }
 
 .payment-choice-text {
-  font-weight: 700;
-  color: #000;
+  font-weight: 600;
+  color: var(--ink);
 }
 
 .payment-note {
