@@ -79,6 +79,8 @@ const initializePage = () => {
   const totalAmountDisplay = container.querySelector("[data-total-amount-display]");
   const searchInput = container.querySelector("[data-congregation-search-input]");
   const hiddenCongregationInput = container.querySelector("[data-congregation-search-target='hidden']");
+  const originalCongregationId = container.querySelector("[data-original-congregation-id]")?.value || "";
+  const originalCongregationCode = container.querySelector("[data-original-congregation-code]")?.value || "";
   const searchResults = container.querySelector("[data-congregation-results]");
   const selectedCongregation = container.querySelector("[data-selected-congregation]");
 
@@ -152,6 +154,11 @@ const initializePage = () => {
   formTypeChoices.forEach((input) => input.addEventListener("change", updateTotalQuantity));
 
   quantityCalcInputs.forEach((input) => input.addEventListener("input", updateTotalQuantity));
+  container.querySelector("form")?.addEventListener("submit", () => {
+    if (!hiddenCongregationInput.value && originalCongregationId && searchInput.value === originalCongregationCode) {
+      hiddenCongregationInput.value = originalCongregationId;
+    }
+  });
   updateTotalQuantity();
   container.dataset.orderFormInitialized = "true";
 };

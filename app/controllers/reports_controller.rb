@@ -173,7 +173,12 @@ class ReportsController < ApplicationController
       if row[:is_blank]
         [ " ", " ", " ", " " ]
       else
-        [ row[:name].to_s.gsub("<br>", " "), row[:paid_count].to_s, row[:unpaid_count].to_s, "#{row[:total_count]} 本" ]
+        [
+          row[:name].to_s.gsub("<br>", " "),
+          pdf_count(row[:paid_count]),
+          pdf_count(row[:unpaid_count]),
+          "#{pdf_count(row[:total_count])} 本"
+        ]
       end
     end
 
@@ -194,6 +199,10 @@ class ReportsController < ApplicationController
       row(0).background_color = "F3E6F2"
       columns(1..3).align = :right
     end
+  end
+
+  def pdf_count(value)
+    value.to_i.to_s.tr("0-9", "０-９")
   end
 
   def configure_pdf_font(pdf)

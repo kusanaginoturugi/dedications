@@ -64,6 +64,8 @@
                 data-congregation-search-input
               >
               <%= form.hidden_field :congregation_id, data: { congregation_search_target: "hidden" } %>
+              <input type="hidden" value="<%= order.congregation_id %>" data-original-congregation-id>
+              <input type="hidden" value="<%= order.congregation&.code %>" data-original-congregation-code>
               <div class="selected-congregation" data-selected-congregation>
                 <% if order.congregation %>
                   <button type="button" class="search-result active"><%= "#{order.congregation.code} #{order.congregation.name}" %></button>
