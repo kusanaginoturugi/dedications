@@ -15,6 +15,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, orders(:one).form_label
     assert_includes response.body, orders(:one).congregation.name
+    assert_not_includes response.body, "#{orders(:one).congregation.code} #{orders(:one).congregation.name}"
   end
 
   test "new order defaults fax received on to today" do
