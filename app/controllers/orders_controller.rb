@@ -19,23 +19,7 @@ class OrdersController < ApplicationController
   end
 
   def summary
-    orders = scoped_orders.includes(:congregation, :user).order(sort_column => sort_direction)
-    @order_summaries = Order::FORM_DEFINITIONS.keys.filter_map do |form_type|
-      matches = orders.select { |order| order.form_type == form_type }
-      next if matches.empty?
-
-      {
-        form_type:,
-        label: Order.form_definition_for(form_type).fetch(:label),
-        total_quantity: matches.sum { |order| order.total_quantity.to_i },
-        paid_quantity: matches.select(&:paid?).sum { |order| order.total_quantity.to_i },
-        paid_amount: matches.select(&:paid?).sum { |order| order.total_amount.to_i },
-        unpaid_quantity: matches.reject(&:paid?).sum { |order| order.total_quantity.to_i },
-        unpaid_amount: matches.reject(&:paid?).sum { |order| order.total_amount.to_i },
-        total_amount: matches.sum { |order| order.total_amount.to_i },
-        orders: matches
-      }
-    end
+    redirect_to orders_path
   end
 
   def personal_summary
