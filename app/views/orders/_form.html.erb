@@ -158,7 +158,14 @@
 
     <div class="form-actions <%= order.persisted? ? "form-actions-split" : "" %>">
       <% if order.persisted? %>
-        <%= button_to "削除", order_path(order), method: :delete, class: "danger-button", form: { data: { turbo_confirm: "この申込を削除します。よろしいですか？" } } %>
+        <%= button_tag "削除",
+          type: "submit",
+          class: "danger-button",
+          formaction: order_path(order),
+          formmethod: "post",
+          name: "_method",
+          value: "delete",
+          data: { turbo_confirm: "この申込を削除します。よろしいですか？" } %>
       <% end %>
       <%= form.submit submit_label, class: "primary-button" %>
     </div>
