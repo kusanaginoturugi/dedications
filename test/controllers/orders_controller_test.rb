@@ -54,6 +54,43 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "order list groups orders by requested form type order" do
+    sign_in_as(users(:admin))
+
+    Order.create!(
+      page_number: 30,
+      fax_received_on: "2026-04-10",
+      dedication_on: "2026-04-10",
+      form_type: "sanki_reiboku",
+      offerer_name: "三期テスト",
+      paid: true,
+      serial_number_start: 100,
+      serial_number_end: 101,
+      user: users(:admin),
+      congregation: congregations(:tokyo),
+      event: events(:one)
+    )
+    Order.create!(
+      page_number: 31,
+      fax_received_on: "2026-04-11",
+      dedication_on: "2026-04-11",
+      form_type: "sankai_ryuge_pillar",
+      offerer_name: "三會テスト",
+      paid: false,
+      serial_number_start: 200,
+      serial_number_end: 201,
+      user: users(:admin),
+      congregation: congregations(:tokyo),
+      event: events(:one)
+    )
+
+    get orders_path
+
+    assert_response :success
+    assert_operator response.body.index("八大明王如意棒"), :<, response.body.index("三期滅劫\n之霊木")
+    assert_operator response.body.index("三期滅劫\n之霊木"), :<, response.body.index("三會龍華\n之御柱")
+  end
+
   test "shows personal summary" do
     sign_in_as(users(:admin))
 
