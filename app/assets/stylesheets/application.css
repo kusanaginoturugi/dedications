@@ -690,27 +690,27 @@ table {
 }
 
 .orders-page-column {
-  width: 5.5rem;
+  width: 4.5rem;
 }
 
 .orders-date-column {
-  width: 6.8rem;
+  width: 6.5rem;
 }
 
-.orders-congregation-column {
-  width: auto;
+.orders-type-column {
+  width: 8rem;
 }
 
 .orders-quantity-column {
-  width: 5.2rem;
+  width: 4.8rem;
 }
 
 .orders-serial-column {
-  width: 7.2rem;
+  width: 6.8rem;
 }
 
 .orders-amount-column {
-  width: 7.4rem;
+  width: 7rem;
 }
 
 .orders-status-column {
@@ -718,7 +718,7 @@ table {
 }
 
 .orders-offerer-column {
-  width: 8rem;
+  width: auto;
 }
 
 .orders-table th,
@@ -727,19 +727,14 @@ table {
   padding-right: 0.8rem;
 }
 
-.orders-table th:nth-child(3),
-.orders-table td:nth-child(3) {
-  padding-left: 1.6rem;
-}
-
+.orders-table th:nth-child(6),
+.orders-table td:nth-child(6),
 .orders-table th:nth-child(7),
-.orders-table td:nth-child(7) {
-  padding-right: 0.35rem;
-}
-
+.orders-table td:nth-child(7),
 .orders-table th:nth-child(8),
 .orders-table td:nth-child(8) {
-  padding-left: 0.35rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .summary-page-column {

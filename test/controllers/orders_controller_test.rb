@@ -35,23 +35,23 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_operator response.body.index(">1<"), :<, response.body.index(">15<")
   end
 
-  test "shows order summary" do
+  test "redirects order summary to order list" do
     sign_in_as(users(:admin))
 
     get summary_orders_path
 
-    assert_response :success
-    assert_includes response.body, "申込集計"
-    assert_includes response.body, orders(:one).form_label
+    assert_redirected_to orders_path
   end
 
-  test "sorts summary by page ascending" do
+  test "order list includes unified columns" do
     sign_in_as(users(:admin))
 
-    get summary_orders_path, params: { sort: "page_number", direction: "asc" }
+    get orders_path
 
     assert_response :success
-    assert_operator response.body.index(">1<"), :<, response.body.index(">15<")
+    %w[番号 奉納者名 FAX受信日 奉納日 種類 通し番号 本数 金額 入金状態 入力日].each do |heading|
+      assert_includes response.body, heading
+    end
   end
 
   test "shows personal summary" do

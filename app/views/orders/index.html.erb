@@ -9,76 +9,76 @@
 
 <section class="card">
   <% if @orders.any? %>
-    <% grouped_orders = Order::FORM_DEFINITIONS.keys.each_with_object([]) do |form_type, groups|
-      matches = @orders.select { |order| order.form_type == form_type }
-      next if matches.empty?
+    <div class="summary-totals summary-totals-mixed">
+      <div class="summary-total-card">
+        <span class="summary-total-label">合計本数</span>
+        <strong><%= @orders.sum { |order| order.total_quantity.to_i } %> 本</strong>
+      </div>
+      <div class="summary-total-card">
+        <span class="summary-total-label">入金済み</span>
+        <strong><%= @orders.select(&:paid?).sum { |order| order.total_quantity.to_i } %> 本</strong>
+        <small><%= number_to_currency(@orders.select(&:paid?).sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></small>
+      </div>
+      <div class="summary-total-card">
+        <span class="summary-total-label">未入金</span>
+        <strong class="<%= @orders.reject(&:paid?).sum { |order| order.total_quantity.to_i }.positive? ? "status-unpaid" : "" %>"><%= @orders.reject(&:paid?).sum { |order| order.total_quantity.to_i } %> 本</strong>
+        <small class="<%= @orders.reject(&:paid?).sum { |order| order.total_amount.to_i }.positive? ? "status-unpaid" : "" %>"><%= number_to_currency(@orders.reject(&:paid?).sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></small>
+      </div>
+      <div class="summary-total-card">
+        <span class="summary-total-label">合計金額</span>
+        <strong><%= number_to_currency(@orders.sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></strong>
+      </div>
+    </div>
 
-      groups << [ Order.form_definition_for(form_type).fetch(:label), matches ]
-    end %>
-
-    <% grouped_orders.each do |label, orders| %>
-      <section class="order-group">
-        <header class="order-group-header">
-          <h3><%= label.html_safe %></h3>
-          <p><%= orders.size %>件</p>
-        </header>
-
-        <div class="summary-totals">
-          <div class="summary-total-card">
-            <span class="summary-total-label">合計本数</span>
-            <strong><%= orders.sum { |order| order.total_quantity.to_i } %> 本</strong>
-          </div>
-          <div class="summary-total-card">
-            <span class="summary-total-label">合計金額</span>
-            <strong><%= number_to_currency(orders.sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></strong>
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          <table class="stack-on-mobile orders-table">
-            <colgroup>
-              <col class="orders-page-column">
-              <col class="orders-date-column">
-              <col class="orders-congregation-column">
-              <col class="orders-quantity-column">
-              <col class="orders-serial-column">
-              <col class="orders-amount-column">
-              <col class="orders-status-column">
-              <col class="orders-offerer-column">
-            </colgroup>
-            <thead>
-              <tr>
-                <th><%= link_to "ページ#{sort_arrow('page_number')}", url_for(sort: 'page_number', direction: next_direction('page_number')), class: "sort-link" %></th>
-                <th>受信日</th>
-                <th>伝道会名</th>
-                <th class="text-right">本数</th>
-                <th class="text-right">通し番号</th>
-                <th class="text-right">金額</th>
-                <th>入金状態</th>
-                <th>奉納者名</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% orders.each do |order| %>
-                <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の申込を編集">
-                  <td data-label="ページ"><%= order.page_number %></td>
-                  <td data-label="受信日"><%= order.fax_received_on ? l(order.fax_received_on) : "-" %></td>
-                  <td data-label="伝道会名"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
-                  <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? "#{order.total_quantity} 本" : "-" %></td>
-                  <td data-label="通し番号" class="text-right"><%= order.serial_number_range_label || "-" %></td>
-                  <td data-label="金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
-                  <td data-label="入金状態">
-                    <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済み" : "未入金" %></span>
-                  </td>
-                  <td data-label="奉納者名"><%= order.offerer_name.presence || "-" %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    <% end %>
+    <div class="table-wrap">
+      <table class="stack-on-mobile orders-table">
+        <colgroup>
+          <col class="orders-page-column">
+          <col class="orders-offerer-column">
+          <col class="orders-date-column">
+          <col class="orders-date-column">
+          <col class="orders-type-column">
+          <col class="orders-serial-column">
+          <col class="orders-quantity-column">
+          <col class="orders-amount-column">
+          <col class="orders-status-column">
+          <col class="orders-date-column">
+        </colgroup>
+        <thead>
+          <tr>
+            <th><%= link_to "番号#{sort_arrow('page_number')}", url_for(sort: 'page_number', direction: next_direction('page_number')), class: "sort-link" %></th>
+            <th><%= link_to "奉納者名#{sort_arrow('offerer_name')}", url_for(sort: 'offerer_name', direction: next_direction('offerer_name')), class: "sort-link" %></th>
+            <th><%= link_to "FAX受信日#{sort_arrow('fax_received_on')}", url_for(sort: 'fax_received_on', direction: next_direction('fax_received_on')), class: "sort-link" %></th>
+            <th><%= link_to "奉納日#{sort_arrow('dedication_on')}", url_for(sort: 'dedication_on', direction: next_direction('dedication_on')), class: "sort-link" %></th>
+            <th><%= link_to "種類#{sort_arrow('form_type')}", url_for(sort: 'form_type', direction: next_direction('form_type')), class: "sort-link" %></th>
+            <th class="text-right">通し番号</th>
+            <th class="text-right">本数</th>
+            <th class="text-right">金額</th>
+            <th><%= link_to "入金状態#{sort_arrow('paid')}", url_for(sort: 'paid', direction: next_direction('paid')), class: "sort-link" %></th>
+            <th><%= link_to "入力日#{sort_arrow('created_at')}", url_for(sort: 'created_at', direction: next_direction('created_at')), class: "sort-link" %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="番号 <%= order.page_number %> の申込を編集">
+              <td data-label="番号"><%= order.page_number %></td>
+              <td data-label="奉納者名"><%= order.offerer_name.presence || "-" %></td>
+              <td data-label="FAX受信日"><%= order.fax_received_on ? l(order.fax_received_on) : "-" %></td>
+              <td data-label="奉納日"><%= order.dedication_on ? l(order.dedication_on) : "-" %></td>
+              <td data-label="種類"><%= order.form_label.html_safe %></td>
+              <td data-label="通し番号" class="text-right"><%= order.serial_number_range_label || "-" %></td>
+              <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? "#{order.total_quantity} 本" : "-" %></td>
+              <td data-label="金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
+              <td data-label="入金状態">
+                <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済み" : "未入金" %></span>
+              </td>
+              <td data-label="入力日"><%= l(order.created_at.to_date) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   <% else %>
-    <p>まだ注文は登録されていません。</p>
+    <p>まだ申込は登録されていません。</p>
   <% end %>
 </section>
