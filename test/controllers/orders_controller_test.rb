@@ -14,7 +14,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, orders(:one).form_label
-    assert_includes response.body, orders(:one).offerer_name
+    assert_includes response.body, orders(:one).congregation.name
   end
 
   test "new order defaults fax received on to today" do
@@ -49,9 +49,11 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     get orders_path
 
     assert_response :success
-    %w[番号 奉納者名 FAX受信日 奉納日 種類 通し番号 本数 金額 入金状態 入力日].each do |heading|
+    %w[番号 伝道会名 FAX受信日 奉納日 種類 通し番号 本数 金額 入金状態].each do |heading|
       assert_includes response.body, heading
     end
+    assert_not_includes response.body, "奉納者名"
+    assert_not_includes response.body, "入力日"
   end
 
   test "order list groups orders by requested form type order" do
