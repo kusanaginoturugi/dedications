@@ -1,4 +1,15 @@
 class OrdersController < ApplicationController
+  PRESERVE_ON_BLANK_ATTRIBUTES = %i[
+    page_number
+    fax_received_on
+    dedication_on
+    form_type
+    congregation_id
+    serial_number_start
+    serial_number_end
+    offerer_name
+  ].freeze
+
   before_action :require_sign_in!
   before_action :set_order, only: [ :show, :edit, :update, :destroy ]
   helper_method :sort_column, :sort_direction, :sort_arrow, :next_direction
@@ -143,7 +154,13 @@ class OrdersController < ApplicationController
 
   def order_update_params
     permitted_params = order_params
-    permitted_params[:congregation_id] = @order.congregation_id if permitted_params[:congregation_id].blank?
+    PRESERVE_ON_BLANK_ATTRIBUTES.each do |attribute|
+      next unless permitted_params.key?(attribute)
+      next unless permitted_params[attribute].blank?
+
+      current_value = @order.public_send(attribute)
+      permitted_params[attribute] = current_value if current_value.present?
+    end
     permitted_params
   end
 end

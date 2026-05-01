@@ -132,6 +132,7 @@ class ReportsController < ApplicationController
       end
       format.pdf do
         filename = "#{@form_label || '各種代理奉納合計'}_#{Date.current.strftime('%Y%m%d')}.pdf"
+        response.headers["Cache-Control"] = "no-store"
         send_data generate_dedication_counts_pdf,
           filename: filename,
           type: "application/pdf",

@@ -23,7 +23,7 @@
           <div class="sheet-label">奉納者</div>
           <div class="sheet-value">
             <div class="field compact-field">
-              <%= form.text_field :offerer_name, placeholder: "氏名を入力" %>
+              <%= form.text_field :offerer_name, placeholder: "氏名を入力", autocomplete: "off" %>
             </div>
           </div>
         </div>
@@ -39,10 +39,9 @@
 
         <div class="sheet-pair">
           <div class="sheet-label">種類</div>
-          <div class="sheet-value">
-            <div class="field compact-field">
-              <%= form.select :form_type, Order.form_options, {}, data: { form_type_select: true } %>
-            </div>
+          <div class="sheet-value sheet-readonly">
+            <%= order.plain_form_label %>
+            <%= form.hidden_field :form_type, data: { form_type_field: true } %>
           </div>
         </div>
 

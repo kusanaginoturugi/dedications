@@ -35,4 +35,30 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "帳票: 各種代理奉納"
     assert_includes response.body, "新潟公壇"
   end
+
+  test "downloads dedication counts pdf without browser print mode" do
+    sign_in_as(users(:admin))
+
+    congregation = Congregation.create!(code: "10121", old_code: "0121", name: "江別昇龍壇")
+    Order.create!(
+      page_number: 99,
+      fax_received_on: Date.current,
+      dedication_on: Date.current,
+      form_type: "wish_fulfillment_staff",
+      offerer_name: "PDF確認",
+      paid: true,
+      congregation: congregation,
+      user: users(:admin),
+      event: events(:one),
+      serial_number_start: 300,
+      serial_number_end: 306
+    )
+
+    get dedication_counts_by_type_reports_path(form_type: "wish_fulfillment_staff", format: :pdf)
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_equal "no-store", response.headers["Cache-Control"]
+    assert_match(/\A%PDF/, response.body)
+  end
 end

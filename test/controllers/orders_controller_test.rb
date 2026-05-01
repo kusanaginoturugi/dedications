@@ -104,6 +104,8 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "申込編集"
     assert_includes response.body, "削除"
+    assert_includes response.body, "八大明王如意棒"
+    assert_not_includes response.body, "<select"
   end
 
   test "rejects duplicate page number within same form type on create" do
@@ -166,6 +168,40 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 9, orders(:one).page_number
     assert_equal 200, orders(:one).serial_number_start
     assert_equal "伊藤美紀", orders(:one).offerer_name
+  end
+
+  test "keeps existing values when edit submits blank fields" do
+    sign_in_as(users(:admin))
+    order = orders(:one)
+    original_attributes = order.attributes.slice(
+      "page_number",
+      "fax_received_on",
+      "form_type",
+      "offerer_name",
+      "congregation_id",
+      "serial_number_start",
+      "serial_number_end"
+    )
+
+    patch order_path(order), params: {
+      order: {
+        page_number: "",
+        fax_received_on: "",
+        dedication_on: "",
+        form_type: "",
+        offerer_name: "",
+        paid: order.paid ? "1" : "0",
+        congregation_id: "",
+        serial_number_start: "",
+        serial_number_end: ""
+      }
+    }
+
+    assert_redirected_to orders_path
+    order.reload
+    original_attributes.each do |attribute, value|
+      assert_equal value, order.public_send(attribute)
+    end
   end
 
   test "rejects duplicate page number within same form type on update" do

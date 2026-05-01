@@ -73,6 +73,7 @@ const initializePage = () => {
   if (container.dataset.orderFormInitialized === "true") return;
 
   const formTypeSelect = container.querySelector("[data-form-type-select='true']");
+  const formTypeField = container.querySelector("[data-form-type-field='true']");
   const quantityCalcInputs = Array.from(container.querySelectorAll("[data-quantity-calc-input='true']"));
   const totalQuantityDisplay = container.querySelector("[data-total-quantity-display]");
   const totalAmountDisplay = container.querySelector("[data-total-amount-display]");
@@ -89,7 +90,8 @@ const initializePage = () => {
 
   const formatCurrency = (value) => `¥${new Intl.NumberFormat("ja-JP").format(value)}`;
   const unitPrices = JSON.parse(container.dataset.unitPrices || "{}");
-  const unitPrice = () => Number(unitPrices[formTypeSelect.value] || totalAmountDisplay?.dataset.unitPrice || 0);
+  const selectedFormType = () => formTypeSelect?.value || formTypeField?.value || "";
+  const unitPrice = () => Number(unitPrices[selectedFormType()] || totalAmountDisplay?.dataset.unitPrice || 0);
 
   const updateTotalQuantity = () => {
     if (!totalQuantityDisplay || quantityCalcInputs.length < 2) return;
@@ -146,7 +148,7 @@ const initializePage = () => {
     });
   });
 
-  formTypeSelect.addEventListener("change", updateTotalQuantity);
+  formTypeSelect?.addEventListener("change", updateTotalQuantity);
 
   quantityCalcInputs.forEach((input) => input.addEventListener("input", updateTotalQuantity));
   updateTotalQuantity();
