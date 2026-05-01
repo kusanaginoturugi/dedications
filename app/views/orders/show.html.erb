@@ -21,8 +21,8 @@
       </div>
 
       <div class="sheet-pair">
-        <div class="sheet-label">入力日</div>
-        <div class="sheet-value sheet-readonly"><%= l(@order.created_at.to_date) %></div>
+        <div class="sheet-label">奉納日</div>
+        <div class="sheet-value sheet-readonly"><%= @order.dedication_on ? l(@order.dedication_on) : "-" %></div>
       </div>
 
       <div class="sheet-pair">

@@ -8,7 +8,7 @@
   </div>
   <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
     <%= link_to "CSV", url_for(format: :csv), class: "secondary-button", style: "padding: 0.4rem 1rem;" %>
-    <button type="button" class="secondary-button" onclick="window.print()" style="padding: 0.4rem 1rem;">PDF</button>
+    <%= link_to "PDF保存", url_for(format: :pdf), class: "secondary-button", style: "padding: 0.4rem 1rem;" %>
   </div>
 </section>
 

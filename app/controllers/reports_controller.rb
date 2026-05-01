@@ -1,4 +1,6 @@
 require "csv"
+require "prawn"
+require "prawn/table"
 
 class ReportsController < ApplicationController
   PRE_EVENT_ITEMS = [
@@ -128,10 +130,83 @@ class ReportsController < ApplicationController
         filename = "#{@form_label || '各種代理奉納合計'}_#{Date.current.strftime('%Y%m%d')}.csv"
         send_data generate_dedication_counts_csv, filename: filename, type: "text/csv; charset=shift_jis"
       end
+      format.pdf do
+        filename = "#{@form_label || '各種代理奉納合計'}_#{Date.current.strftime('%Y%m%d')}.pdf"
+        send_data generate_dedication_counts_pdf,
+          filename: filename,
+          type: "application/pdf",
+          disposition: "attachment"
+      end
     end
   end
 
   private
+
+  def generate_dedication_counts_pdf
+    title = @form_label || "各種代理奉納（合計）"
+    Prawn::Document.new(page_size: "A4", margin: [ 28, 22, 24, 22 ]) do |pdf|
+      configure_pdf_font(pdf)
+      pdf.text "帳票: #{title}", size: 12
+      pdf.move_down 3
+      pdf.text "伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。", size: 7
+      pdf.move_down 8
+
+      start_cursor = pdf.cursor
+      column_gap = 10
+      column_width = (pdf.bounds.width - column_gap) / 2
+
+      pdf.bounding_box([ 0, start_cursor ], width: column_width) do
+        draw_dedication_counts_table(pdf, @left_rows, column_width)
+      end
+
+      pdf.bounding_box([ column_width + column_gap, start_cursor ], width: column_width) do
+        draw_dedication_counts_table(pdf, @right_rows, column_width)
+      end
+    end.render
+  end
+
+  def draw_dedication_counts_table(pdf, rows, width)
+    table_rows = [
+      [ "伝道会", "入金済み本数", "未入金本数", "合計本数" ]
+    ] + rows.map do |row|
+      if row[:is_blank]
+        [ " ", " ", " ", " " ]
+      else
+        [ row[:name].to_s.gsub("<br>", " "), row[:paid_count].to_s, row[:unpaid_count].to_s, "#{row[:total_count]} 本" ]
+      end
+    end
+
+    pdf.table(
+      table_rows,
+      header: true,
+      width: width,
+      column_widths: [ width * 0.43, width * 0.19, width * 0.19, width * 0.19 ],
+      cell_style: {
+        size: 5.8,
+        padding: [ 1.1, 1.6 ],
+        borders: [ :bottom ],
+        border_color: "D7DFEF",
+        overflow: :shrink_to_fit,
+        min_font_size: 4.8
+      }
+    ) do
+      row(0).background_color = "F3E6F2"
+      columns(1..3).align = :right
+    end
+  end
+
+  def configure_pdf_font(pdf)
+    font_path = [
+      Rails.root.join("app/assets/fonts/NotoSansCJKjp-Regular.otf").to_s,
+      "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+      "/System/Library/Fonts/Supplemental/AppleGothic.ttf"
+    ].find { |path| File.exist?(path) }
+
+    return unless font_path
+
+    pdf.font_families.update("Japanese" => { normal: font_path })
+    pdf.font "Japanese"
+  end
 
   def generate_dedication_counts_csv
     CSV.generate do |csv|

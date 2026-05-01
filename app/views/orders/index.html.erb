@@ -39,11 +39,12 @@
             <colgroup>
               <col class="orders-page-column">
               <col class="orders-date-column">
-              <col>
+              <col class="orders-congregation-column">
               <col class="orders-quantity-column">
+              <col class="orders-serial-column">
               <col class="orders-amount-column">
-              <col>
-              <col>
+              <col class="orders-status-column">
+              <col class="orders-offerer-column">
             </colgroup>
             <thead>
               <tr>
@@ -51,17 +52,20 @@
                 <th>受信日</th>
                 <th>伝道会名</th>
                 <th class="text-right">本数</th>
+                <th class="text-right">通し番号</th>
                 <th class="text-right">金額</th>
                 <th>入金状態</th>
                 <th>奉納者名</th>
-                </tr>
-                </thead>              <tbody>
+              </tr>
+            </thead>
+            <tbody>
               <% orders.each do |order| %>
                 <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の申込を編集">
                   <td data-label="ページ"><%= order.page_number %></td>
                   <td data-label="受信日"><%= order.fax_received_on ? l(order.fax_received_on) : "-" %></td>
                   <td data-label="伝道会名"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
                   <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? "#{order.total_quantity} 本" : "-" %></td>
+                  <td data-label="通し番号" class="text-right"><%= order.serial_number_range_label || "-" %></td>
                   <td data-label="金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>
                   <td data-label="入金状態">
                     <span class="<%= order.paid? ? "status-paid" : "status-unpaid" %>"><%= order.paid? ? "入金済み" : "未入金" %></span>
@@ -78,4 +82,3 @@
     <p>まだ注文は登録されていません。</p>
   <% end %>
 </section>
-ection>

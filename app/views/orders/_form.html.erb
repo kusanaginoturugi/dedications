@@ -29,8 +29,12 @@
         </div>
 
         <div class="sheet-pair">
-          <div class="sheet-label">入力日</div>
-          <div class="sheet-value sheet-readonly"><%= l(order.created_at&.to_date || Date.current) %></div>
+          <div class="sheet-label">奉納日</div>
+          <div class="sheet-value">
+            <div class="field compact-field">
+              <%= form.date_field :dedication_on %>
+            </div>
+          </div>
         </div>
 
         <div class="sheet-pair">

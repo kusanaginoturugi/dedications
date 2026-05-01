@@ -654,15 +654,52 @@ table {
 }
 
 .orders-date-column {
-  width: 7rem;
+  width: 6.8rem;
+}
+
+.orders-congregation-column {
+  width: auto;
 }
 
 .orders-quantity-column {
-  width: 5.5rem;
+  width: 5.2rem;
+}
+
+.orders-serial-column {
+  width: 7.2rem;
 }
 
 .orders-amount-column {
-  width: 7.5rem;
+  width: 7.4rem;
+}
+
+.orders-status-column {
+  width: 6.2rem;
+}
+
+.orders-offerer-column {
+  width: 8rem;
+}
+
+.orders-table th,
+.orders-table td {
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+}
+
+.orders-table th:nth-child(3),
+.orders-table td:nth-child(3) {
+  padding-left: 1.6rem;
+}
+
+.orders-table th:nth-child(7),
+.orders-table td:nth-child(7) {
+  padding-right: 0.35rem;
+}
+
+.orders-table th:nth-child(8),
+.orders-table td:nth-child(8) {
+  padding-left: 0.35rem;
 }
 
 .summary-page-column {

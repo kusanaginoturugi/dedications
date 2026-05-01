@@ -43,6 +43,7 @@ class OrdersController < ApplicationController
     @order = current_user.orders.build(
       form_type: selected_form_type,
       fax_received_on: Date.current,
+      dedication_on: Date.current,
       event: current_event
     )
   end
@@ -65,7 +66,7 @@ class OrdersController < ApplicationController
   end
 
   def update
-    if @order.update(order_params)
+    if @order.update(order_update_params)
       redirect_to orders_path, notice: "申込を更新しました。"
     else
       flash.now[:alert] = "入力内容を確認してください。"
@@ -100,6 +101,7 @@ class OrdersController < ApplicationController
     columns = {
       "番号" => "page_number",
       "奉納者名" => "offerer_name",
+      "奉納日" => "dedication_on",
       "入力日" => "created_at",
       "FAX受信日" => "fax_received_on",
       "種類" => "form_type",
@@ -108,7 +110,7 @@ class OrdersController < ApplicationController
       "入金状態" => "paid"
     }
     # 特殊な計算が必要な項目は簡易化、またはデフォルトの page_number にします
-    valid_columns = %w[page_number offerer_name created_at fax_received_on form_type paid]
+    valid_columns = %w[page_number offerer_name dedication_on created_at fax_received_on form_type paid]
     valid_columns.include?(params[:sort]) ? params[:sort] : "page_number"
   end
 
@@ -129,6 +131,7 @@ class OrdersController < ApplicationController
     params.require(:order).permit(
       :page_number,
       :fax_received_on,
+      :dedication_on,
       :form_type,
       :paid,
       :congregation_id,
@@ -136,5 +139,11 @@ class OrdersController < ApplicationController
       :serial_number_end,
       :offerer_name
     )
+  end
+
+  def order_update_params
+    permitted_params = order_params
+    permitted_params[:congregation_id] = @order.congregation_id if permitted_params[:congregation_id].blank?
+    permitted_params
   end
 end
