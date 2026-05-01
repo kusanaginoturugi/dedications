@@ -388,6 +388,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
+  matrix (~> 0.4.3)
   prawn (~> 2.4)
   prawn-table (~> 0.2.2)
   propshaft
