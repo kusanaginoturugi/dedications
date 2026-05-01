@@ -843,6 +843,11 @@ tfoot td {
   margin-top: 0.25rem;
 }
 
+.delete-order-form {
+  margin-top: -1.95rem;
+  width: fit-content;
+}
+
 .form-actions-split {
   justify-content: space-between;
   align-items: center;

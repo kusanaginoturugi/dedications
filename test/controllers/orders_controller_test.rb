@@ -108,7 +108,8 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "三會龍華之御柱"
     assert_includes response.body, "三期滅劫之霊木"
     assert_not_includes response.body, "<select"
-    assert_equal 1, response.body.scan(/<form[^>]+action="\/orders\/#{orders(:one).id}"/).size
+    assert_equal 2, response.body.scan(/<form[^>]+action="\/orders\/#{orders(:one).id}"/).size
+    assert_includes response.body, %(class="delete-order-form")
   end
 
   test "shows form type choices on new order without dropdown" do
