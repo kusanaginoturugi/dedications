@@ -362,6 +362,46 @@ textarea {
   align-items: center;
 }
 
+.form-type-choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.15rem;
+}
+
+.form-type-choice {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.82rem;
+  line-height: 1.15;
+}
+
+.form-type-choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-type-choice span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: calc(var(--sheet-row-height) - 0.3rem);
+  padding: 0 0.2rem;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.form-type-choice input:checked + span {
+  border-color: var(--accent-strong);
+  background: rgba(183, 166, 217, 0.16);
+  font-weight: 700;
+}
+
 .payment-choice {
   display: flex;
   align-items: center;

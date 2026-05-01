@@ -34,7 +34,7 @@ class Order < ApplicationRecord
 
   validates :page_number, numericality: { greater_than: 0, only_integer: true }
   validates :form_type, inclusion: { in: FORM_DEFINITIONS.keys }
-  validates :congregation, :user, presence: true
+  validates :user, presence: true
   validates :serial_number_start, :serial_number_end,
     numericality: { only_integer: true, allow_nil: true }
   validate :serial_number_range_is_valid

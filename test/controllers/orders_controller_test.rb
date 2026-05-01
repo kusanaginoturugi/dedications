@@ -105,6 +105,20 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "申込編集"
     assert_includes response.body, "削除"
     assert_includes response.body, "八大明王如意棒"
+    assert_includes response.body, "三會龍華之御柱"
+    assert_includes response.body, "三期滅劫之霊木"
+    assert_not_includes response.body, "<select"
+  end
+
+  test "shows form type choices on new order without dropdown" do
+    sign_in_as(users(:admin))
+
+    get new_order_path
+
+    assert_response :success
+    assert_includes response.body, "八大明王如意棒"
+    assert_includes response.body, "三會龍華之御柱"
+    assert_includes response.body, "三期滅劫之霊木"
     assert_not_includes response.body, "<select"
   end
 
@@ -127,6 +141,27 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_includes response.body, "ページ番号は同じ申込書種類ですでに使われています"
+  end
+
+  test "shows missing congregation error in Japanese" do
+    sign_in_as(users(:admin))
+
+    post orders_path, params: {
+      order: {
+        page_number: 88,
+        fax_received_on: "2026-04-10",
+        dedication_on: "2026-04-10",
+        form_type: "wish_fulfillment_staff",
+        paid: "0",
+        congregation_id: "",
+        serial_number_start: 30,
+        serial_number_end: 32
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "伝道会を選択してください"
+    assert_not_includes response.body, "Translation missing"
   end
 
   test "allows same page number for different form type" do

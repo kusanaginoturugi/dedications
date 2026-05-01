@@ -39,9 +39,15 @@
 
         <div class="sheet-pair">
           <div class="sheet-label">種類</div>
-          <div class="sheet-value sheet-readonly">
-            <%= order.plain_form_label %>
-            <%= form.hidden_field :form_type, data: { form_type_field: true } %>
+          <div class="sheet-value">
+            <div class="form-type-choices">
+              <% Order.form_options.each do |label, value| %>
+                <label class="form-type-choice">
+                  <%= form.radio_button :form_type, value, data: { form_type_choice: true } %>
+                  <span><%= label %></span>
+                </label>
+              <% end %>
+            </div>
           </div>
         </div>
 

@@ -4,7 +4,25 @@ ja:
       default: "%Y/%m/%d"
   errors:
     format: "%{attribute}%{message}"
+    messages:
+      blank: "を入力してください"
+      required: "を選択してください"
   activerecord:
+    models:
+      order: 申込
+      congregation: 伝道会
     attributes:
       order:
         page_number: ページ番号
+        fax_received_on: FAX受信日
+        dedication_on: 奉納日
+        form_type: 種類
+        paid: 入金状態
+        congregation: 伝道会
+        congregation_id: 伝道会
+        serial_number_start: 通し番号(開始)
+        serial_number_end: 通し番号(終了)
+        offerer_name: 奉納者
+      congregation:
+        code: 伝道会コード
+        name: 伝道会名
