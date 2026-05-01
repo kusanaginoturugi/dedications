@@ -116,11 +116,11 @@ const initializePage = () => {
   let lastSearchToken = 0;
 
   searchInput.addEventListener("input", async () => {
-    const query = searchInput.value.replace(/\D/g, "");
+    const query = searchInput.value.trim();
     hiddenCongregationInput.value = "";
     renderSelection(null);
 
-    if (query.length < 2) {
+    if (query.replace(/\D/g, "").length < 2 && query.length < 2) {
       searchResults.innerHTML = "";
       return;
     }

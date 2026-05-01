@@ -7,3 +7,8 @@ osaka:
   code: "52701"
   old_code: "2701"
   name: 大阪準総壇
+
+senzu:
+  code: "42407"
+  old_code: "2407"
+  name: 泉珠準総壇

@@ -57,9 +57,10 @@
             <div class="field compact-field congregation-field">
               <input
                 id="congregation-code-search"
+                name="order[congregation_query]"
                 type="text"
                 value="<%= order.congregation&.code %>"
-                placeholder="2桁以上で絞り込み"
+                placeholder="コードまたは伝道会名"
                 autocomplete="off"
                 data-congregation-search-input
               >

@@ -60,7 +60,7 @@ class OrdersController < ApplicationController
   end
 
   def create
-    @order = current_user.orders.build(order_params.merge(event: current_event))
+    @order = current_user.orders.build(order_attributes.merge(event: current_event))
 
     if @order.save
       redirect_to @order, notice: "申込を登録しました。"
@@ -77,7 +77,7 @@ class OrdersController < ApplicationController
   end
 
   def update
-    if @order.update(order_update_params)
+    if @order.update(order_update_attributes)
       redirect_to orders_path, notice: "申込を更新しました。"
     else
       flash.now[:alert] = "入力内容を確認してください。"
@@ -138,7 +138,7 @@ class OrdersController < ApplicationController
     (sort_column == column && sort_direction == "asc") ? "desc" : "asc"
   end
 
-  def order_params
+  def order_params_with_query
     params.require(:order).permit(
       :page_number,
       :fax_received_on,
@@ -146,14 +146,22 @@ class OrdersController < ApplicationController
       :form_type,
       :paid,
       :congregation_id,
+      :congregation_query,
       :serial_number_start,
       :serial_number_end,
       :offerer_name
     )
   end
 
-  def order_update_params
-    permitted_params = order_params
+  def order_attributes
+    permitted_params = order_params_with_query
+    apply_congregation_query(permitted_params)
+    permitted_params.except(:congregation_query)
+  end
+
+  def order_update_attributes
+    permitted_params = order_params_with_query
+    apply_congregation_query(permitted_params)
     PRESERVE_ON_BLANK_ATTRIBUTES.each do |attribute|
       next unless permitted_params.key?(attribute)
       next unless permitted_params[attribute].blank?
@@ -161,6 +169,13 @@ class OrdersController < ApplicationController
       current_value = @order.public_send(attribute)
       permitted_params[attribute] = current_value if current_value.present?
     end
-    permitted_params
+    permitted_params.except(:congregation_query)
+  end
+
+  def apply_congregation_query(permitted_params)
+    return if permitted_params[:congregation_id].present?
+
+    congregation = Congregation.resolve_query(permitted_params[:congregation_query])
+    permitted_params[:congregation_id] = congregation.id if congregation
   end
 end

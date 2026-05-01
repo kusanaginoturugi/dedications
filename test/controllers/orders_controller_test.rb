@@ -96,6 +96,31 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "高橋美咲", created_order.offerer_name
   end
 
+  test "creates an order by congregation name query" do
+    sign_in_as(users(:admin))
+
+    assert_difference("Order.count", 1) do
+      post orders_path, params: {
+        order: {
+          page_number: 3,
+          fax_received_on: "2026-04-08",
+          dedication_on: "2026-04-08",
+          form_type: "sankai_ryuge_pillar",
+          offerer_name: "名前検索",
+          paid: "1",
+          congregation_id: "",
+          congregation_query: "泉珠",
+          serial_number_start: 300,
+          serial_number_end: 305
+        }
+      }
+    end
+
+    created_order = Order.order(:created_at).last
+    assert_redirected_to order_path(created_order)
+    assert_equal congregations(:senzu), created_order.congregation
+  end
+
   test "shows edit form" do
     sign_in_as(users(:admin))
 
