@@ -697,6 +697,10 @@ table {
   width: 6.5rem;
 }
 
+.orders-congregation-column {
+  width: auto;
+}
+
 .orders-type-column {
   width: 8rem;
 }
@@ -715,10 +719,6 @@ table {
 
 .orders-status-column {
   width: 6.2rem;
-}
-
-.orders-offerer-column {
-  width: auto;
 }
 
 .orders-table th,
