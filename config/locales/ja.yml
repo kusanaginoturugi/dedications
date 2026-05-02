@@ -1,7 +1,7 @@
 ja:
   date:
     formats:
-      default: "%Y/%m/%d"
+      default: "%m/%d"
   errors:
     format: "%{attribute}%{message}"
     messages:
