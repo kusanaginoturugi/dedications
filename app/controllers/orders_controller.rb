@@ -12,7 +12,7 @@ class OrdersController < ApplicationController
 
   before_action :require_sign_in!
   before_action :set_order, only: [ :show, :edit, :update, :destroy ]
-  helper_method :sort_column, :sort_direction, :sort_arrow, :next_direction
+  helper_method :sort_column, :sort_direction, :sort_arrow, :next_direction, :sort_link_class
 
   def index
     @orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
@@ -32,6 +32,16 @@ class OrdersController < ApplicationController
         unpaid_count: orders.count { |order| !order.paid? }
       }
     end.sort_by { |summary| [ -summary[:total_amount], summary[:user].display_name ] }
+  end
+
+  def processing_status
+    orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
+    @order_groups = processing_status_form_types.filter_map do |form_type|
+      matches = orders.select { |order| order.form_type == form_type }
+      next if matches.empty?
+
+      [ Order.form_definition_for(form_type).fetch(:label), matches ]
+    end
   end
 
   def new
@@ -86,6 +96,14 @@ class OrdersController < ApplicationController
     Order.where(event: current_event).or(Order.where(event_id: nil))
   end
 
+  def processing_status_form_types
+    %w[
+      wish_fulfillment_staff
+      sanki_reiboku
+      sankai_ryuge_pillar
+    ]
+  end
+
   def selected_form_type
     form_type = params.dig(:order, :form_type).presence || params[:form_type].presence
     Order::FORM_DEFINITIONS.key?(form_type) ? form_type : Order::FORM_DEFINITIONS.keys.first
@@ -116,6 +134,10 @@ class OrdersController < ApplicationController
   def sort_arrow(column)
     return "" unless sort_column == column
     sort_direction == "asc" ? " ▲" : " ▼"
+  end
+
+  def sort_link_class(column)
+    sort_column == column ? "sort-link active" : "sort-link"
   end
 
   def next_direction(column)

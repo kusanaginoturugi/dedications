@@ -701,6 +701,10 @@ table {
   width: auto;
 }
 
+.orders-offerer-column {
+  width: 8rem;
+}
+
 .orders-type-column {
   width: 8rem;
 }
@@ -725,6 +729,10 @@ table {
 .orders-table td {
   padding-left: 0.8rem;
   padding-right: 0.8rem;
+}
+
+.processing-status-table {
+  min-width: 1160px;
 }
 
 .orders-table th:nth-child(6),
@@ -805,11 +813,15 @@ tfoot td {
 }
 
 .sort-link::after {
-  content: " ⇅";
+  content: " ▼";
   position: absolute;
   right: 0;
   opacity: 0.3;
   font-size: 0.8rem;
+}
+
+.sort-link.active::after {
+  display: none;
 }
 
 .sort-link:hover::after {

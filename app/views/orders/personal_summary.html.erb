@@ -24,14 +24,14 @@
       <table class="stack-on-mobile personal-summary-table">
         <thead>
           <tr>
-            <th><%= link_to "番号#{sort_arrow('page_number')}", url_for(sort: 'page_number', direction: next_direction('page_number')), class: "sort-link" %></th>
-            <th><%= link_to "奉納者名#{sort_arrow('offerer_name')}", url_for(sort: 'offerer_name', direction: next_direction('offerer_name')), class: "sort-link" %></th>
-            <th><%= link_to "入力日#{sort_arrow('created_at')}", url_for(sort: 'created_at', direction: next_direction('created_at')), class: "sort-link" %></th>
-            <th><%= link_to "FAX受信日#{sort_arrow('fax_received_on')}", url_for(sort: 'fax_received_on', direction: next_direction('fax_received_on')), class: "sort-link" %></th>
-            <th><%= link_to "種類#{sort_arrow('form_type')}", url_for(sort: 'form_type', direction: next_direction('form_type')), class: "sort-link" %></th>
+            <th><%= link_to "番号#{sort_arrow('page_number')}", url_for(sort: 'page_number', direction: next_direction('page_number')), class: sort_link_class('page_number') %></th>
+            <th><%= link_to "奉納者名#{sort_arrow('offerer_name')}", url_for(sort: 'offerer_name', direction: next_direction('offerer_name')), class: sort_link_class('offerer_name') %></th>
+            <th><%= link_to "入力日#{sort_arrow('created_at')}", url_for(sort: 'created_at', direction: next_direction('created_at')), class: sort_link_class('created_at') %></th>
+            <th><%= link_to "FAX受信日#{sort_arrow('fax_received_on')}", url_for(sort: 'fax_received_on', direction: next_direction('fax_received_on')), class: sort_link_class('fax_received_on') %></th>
+            <th><%= link_to "種類#{sort_arrow('form_type')}", url_for(sort: 'form_type', direction: next_direction('form_type')), class: sort_link_class('form_type') %></th>
             <th>本数</th>
             <th>金額</th>
-            <th><%= link_to "入金状態#{sort_arrow('paid')}", url_for(sort: 'paid', direction: next_direction('paid')), class: "sort-link" %></th>
+            <th><%= link_to "入金状態#{sort_arrow('paid')}", url_for(sort: 'paid', direction: next_direction('paid')), class: sort_link_class('paid') %></th>
           </tr>
         </thead>
         <tbody>

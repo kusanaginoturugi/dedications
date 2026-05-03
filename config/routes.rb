@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     collection do
       get :summary
       get :personal_summary
+      get :processing_status
     end
   end
   get "reports/pre_event", to: "reports#pre_event", as: :pre_event_reports
