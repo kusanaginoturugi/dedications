@@ -735,6 +735,11 @@ table {
   white-space: nowrap;
 }
 
+.orders-table th:first-child,
+.orders-table td:first-child {
+  text-align: right;
+}
+
 .processing-status-table {
   min-width: 1160px;
 }
