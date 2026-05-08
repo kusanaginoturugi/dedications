@@ -15,7 +15,7 @@ class OrdersController < ApplicationController
   helper_method :sort_column, :sort_direction, :sort_arrow, :next_direction, :sort_link_class
 
   def index
-    @orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
+    @orders = ordered_orders
   end
 
   def summary
@@ -23,7 +23,7 @@ class OrdersController < ApplicationController
   end
 
   def personal_summary
-    @orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
+    @orders = ordered_orders
     @user_summaries = @orders.group_by(&:user).map do |user, orders|
       {
         user:,
@@ -35,7 +35,7 @@ class OrdersController < ApplicationController
   end
 
   def processing_status
-    orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
+    orders = ordered_orders
     @form_type = params[:form_type].presence
     @form_label = Order.form_definition_for(@form_type).fetch(:label) if Order::FORM_DEFINITIONS.key?(@form_type)
     @order_groups = selected_processing_status_form_types.filter_map do |form_type|
@@ -98,6 +98,17 @@ class OrdersController < ApplicationController
     Order.where(event: current_event).or(Order.where(event_id: nil))
   end
 
+  def ordered_orders
+    orders = Order.includes(:congregation, :user)
+    return orders.order(sort_column => sort_direction) unless sort_column == "congregation_name"
+
+    orders.to_a.sort do |left, right|
+      comparison = left.congregation.short_name <=> right.congregation.short_name
+      comparison = left.page_number.to_i <=> right.page_number.to_i if comparison.zero?
+      sort_direction == "desc" ? -comparison : comparison
+    end
+  end
+
   def processing_status_form_types
     %w[
       wish_fulfillment_staff
@@ -122,6 +133,7 @@ class OrdersController < ApplicationController
     columns = {
       "番号" => "page_number",
       "奉納者名" => "offerer_name",
+      "伝道会名" => "congregation_name",
       "奉納日" => "dedication_on",
       "入力日" => "created_at",
       "FAX受信日" => "fax_received_on",
@@ -131,7 +143,7 @@ class OrdersController < ApplicationController
       "入金状態" => "paid"
     }
     # 特殊な計算が必要な項目は簡易化、またはデフォルトの page_number にします
-    valid_columns = %w[page_number offerer_name dedication_on created_at fax_received_on form_type paid]
+    valid_columns = %w[page_number offerer_name congregation_name dedication_on created_at fax_received_on form_type paid]
     valid_columns.include?(params[:sort]) ? params[:sort] : "page_number"
   end
 

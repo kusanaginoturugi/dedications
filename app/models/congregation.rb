@@ -28,4 +28,8 @@ class Congregation < ApplicationRecord
     matches = search_by_query(normalized_query).limit(2).to_a
     matches.one? ? matches.first : nil
   end
+
+  def short_name
+    name.to_s.sub(/(準総壇|伝道会|公壇|総壇)\z/, "")
+  end
 end

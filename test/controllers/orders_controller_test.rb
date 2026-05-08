@@ -14,7 +14,9 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, orders(:one).form_label
-    assert_includes response.body, orders(:one).congregation.name
+    assert_includes response.body, orders(:one).offerer_name
+    assert_includes response.body, orders(:one).congregation.short_name
+    assert_not_includes response.body, orders(:one).congregation.name
     assert_not_includes response.body, "#{orders(:one).congregation.code} #{orders(:one).congregation.name}"
   end
 
@@ -36,6 +38,51 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_operator response.body.index(">1<"), :<, response.body.index(">15<")
   end
 
+  test "sorts orders by congregation name" do
+    sign_in_as(users(:admin))
+
+    alpha = Congregation.create!(code: "80001", old_code: "8001", name: "A伝道会")
+    bravo = Congregation.create!(code: "80002", old_code: "8002", name: "B準総壇")
+    Order.create!(
+      page_number: 30,
+      fax_received_on: "2026-04-10",
+      dedication_on: "2026-04-10",
+      form_type: "wish_fulfillment_staff",
+      offerer_name: "B担当",
+      paid: true,
+      serial_number_start: 100,
+      serial_number_end: 101,
+      user: users(:admin),
+      congregation: bravo,
+      event: events(:one)
+    )
+    Order.create!(
+      page_number: 31,
+      fax_received_on: "2026-04-11",
+      dedication_on: "2026-04-11",
+      form_type: "wish_fulfillment_staff",
+      offerer_name: "A担当",
+      paid: false,
+      serial_number_start: 200,
+      serial_number_end: 201,
+      user: users(:admin),
+      congregation: alpha,
+      event: events(:one)
+    )
+
+    get orders_path, params: { sort: "congregation_name", direction: "asc" }
+
+    assert_response :success
+    assert_operator response.body.index(">A<"), :<, response.body.index(">B<")
+    assert_includes response.body, "伝道会名 ▲"
+
+    get orders_path, params: { sort: "congregation_name", direction: "desc" }
+
+    assert_response :success
+    assert_operator response.body.index(">B<"), :<, response.body.index(">A<")
+    assert_includes response.body, "伝道会名 ▼"
+  end
+
   test "redirects order summary to order list" do
     sign_in_as(users(:admin))
 
@@ -50,10 +97,9 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     get orders_path
 
     assert_response :success
-    %w[番号 伝道会名 FAX受信日 奉納日 通し番号 本数 金額 入金状態].each do |heading|
+    %w[番号 奉納者名 伝道会名 FAX受信日 奉納日 通し番号 本数 金額 入金状態].each do |heading|
       assert_includes response.body, heading
     end
-    assert_not_includes response.body, "奉納者名"
     assert_not_includes response.body, "入力日"
     assert_select ".orders-table thead th", text: "種類", count: 0
   end
