@@ -50,11 +50,12 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     get orders_path
 
     assert_response :success
-    %w[番号 伝道会名 FAX受信日 奉納日 種類 通し番号 本数 金額 入金状態].each do |heading|
+    %w[番号 伝道会名 FAX受信日 奉納日 通し番号 本数 金額 入金状態].each do |heading|
       assert_includes response.body, heading
     end
     assert_not_includes response.body, "奉納者名"
     assert_not_includes response.body, "入力日"
+    assert_select ".orders-table thead th", text: "種類", count: 0
   end
 
   test "order list groups orders by requested form type order" do

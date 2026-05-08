@@ -60,7 +60,6 @@
               <col class="orders-congregation-column">
               <col class="orders-date-column">
               <col class="orders-date-column">
-              <col class="orders-type-column">
               <col class="orders-serial-column">
               <col class="orders-quantity-column">
               <col class="orders-amount-column">
@@ -72,7 +71,6 @@
                 <th>伝道会名</th>
                 <th><%= link_to "FAX受信日#{sort_arrow('fax_received_on')}", url_for(sort: 'fax_received_on', direction: next_direction('fax_received_on')), class: sort_link_class('fax_received_on') %></th>
                 <th><%= link_to "奉納日#{sort_arrow('dedication_on')}", url_for(sort: 'dedication_on', direction: next_direction('dedication_on')), class: sort_link_class('dedication_on') %></th>
-                <th><%= link_to "種類#{sort_arrow('form_type')}", url_for(sort: 'form_type', direction: next_direction('form_type')), class: sort_link_class('form_type') %></th>
                 <th class="text-right">通し番号</th>
                 <th class="text-right">本数</th>
                 <th class="text-right">金額</th>
@@ -86,7 +84,6 @@
                   <td data-label="伝道会名"><%= order.congregation.name %></td>
                   <td data-label="FAX受信日"><%= order.fax_received_on ? l(order.fax_received_on) : "-" %></td>
                   <td data-label="奉納日"><%= order.dedication_on ? l(order.dedication_on) : "-" %></td>
-                  <td data-label="種類"><%= order.form_label.html_safe %></td>
                   <td data-label="通し番号" class="text-right"><%= order.serial_number_range_label || "-" %></td>
                   <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? "#{order.total_quantity} 本" : "-" %></td>
                   <td data-label="金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>

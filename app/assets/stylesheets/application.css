@@ -690,11 +690,11 @@ table {
 }
 
 .orders-page-column {
-  width: 4.5rem;
+  width: 5.2rem;
 }
 
 .orders-date-column {
-  width: 6.5rem;
+  width: 7.2rem;
 }
 
 .orders-congregation-column {
@@ -722,7 +722,7 @@ table {
 }
 
 .orders-status-column {
-  width: 6.2rem;
+  width: 7.8rem;
 }
 
 .orders-table th,
@@ -731,16 +731,20 @@ table {
   padding-right: 0.8rem;
 }
 
+.orders-table th {
+  white-space: nowrap;
+}
+
 .processing-status-table {
   min-width: 1160px;
 }
 
+.orders-table th:nth-child(5),
+.orders-table td:nth-child(5),
 .orders-table th:nth-child(6),
 .orders-table td:nth-child(6),
 .orders-table th:nth-child(7),
-.orders-table td:nth-child(7),
-.orders-table th:nth-child(8),
-.orders-table td:nth-child(8) {
+.orders-table td:nth-child(7) {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
