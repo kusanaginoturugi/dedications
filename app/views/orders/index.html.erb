@@ -21,33 +21,37 @@
       [ Order.form_definition_for(form_type).fetch(:label), orders ]
     end %>
 
-    <div class="summary-totals summary-totals-mixed">
-      <div class="summary-total-card">
-        <span class="summary-total-label">合計本数</span>
-        <strong><%= @orders.sum { |order| order.total_quantity.to_i } %> 本</strong>
-      </div>
-      <div class="summary-total-card">
-        <span class="summary-total-label">入金済み</span>
-        <strong><%= @orders.select(&:paid?).sum { |order| order.total_quantity.to_i } %> 本</strong>
-        <small><%= number_to_currency(@orders.select(&:paid?).sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></small>
-      </div>
-      <div class="summary-total-card">
-        <span class="summary-total-label">未入金</span>
-        <strong class="<%= @orders.reject(&:paid?).sum { |order| order.total_quantity.to_i }.positive? ? "status-unpaid" : "" %>"><%= @orders.reject(&:paid?).sum { |order| order.total_quantity.to_i } %> 本</strong>
-        <small class="<%= @orders.reject(&:paid?).sum { |order| order.total_amount.to_i }.positive? ? "status-unpaid" : "" %>"><%= number_to_currency(@orders.reject(&:paid?).sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></small>
-      </div>
-      <div class="summary-total-card">
-        <span class="summary-total-label">合計金額</span>
-        <strong><%= number_to_currency(@orders.sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></strong>
-      </div>
-    </div>
-
     <% grouped_orders.each do |label, orders| %>
       <section class="order-group">
         <header class="order-group-header">
           <h3><%= label.html_safe %></h3>
           <p><%= orders.size %>件</p>
         </header>
+
+        <% paid_orders = orders.select(&:paid?) %>
+        <% unpaid_orders = orders.reject(&:paid?) %>
+        <% unpaid_quantity = unpaid_orders.sum { |order| order.total_quantity.to_i } %>
+        <% unpaid_amount = unpaid_orders.sum { |order| order.total_amount.to_i } %>
+        <div class="summary-totals summary-totals-mixed">
+          <div class="summary-total-card">
+            <span class="summary-total-label">合計本数</span>
+            <strong><%= orders.sum { |order| order.total_quantity.to_i } %> 本</strong>
+          </div>
+          <div class="summary-total-card">
+            <span class="summary-total-label">入金済み</span>
+            <strong><%= paid_orders.sum { |order| order.total_quantity.to_i } %> 本</strong>
+            <small><%= number_to_currency(paid_orders.sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></small>
+          </div>
+          <div class="summary-total-card">
+            <span class="summary-total-label">未入金</span>
+            <strong class="<%= unpaid_quantity.positive? ? "status-unpaid" : "" %>"><%= unpaid_quantity %> 本</strong>
+            <small class="<%= unpaid_amount.positive? ? "status-unpaid" : "" %>"><%= number_to_currency(unpaid_amount, unit: "¥", precision: 0) %></small>
+          </div>
+          <div class="summary-total-card">
+            <span class="summary-total-label">合計金額</span>
+            <strong><%= number_to_currency(orders.sum { |order| order.total_amount.to_i }, unit: "¥", precision: 0) %></strong>
+          </div>
+        </div>
 
         <div class="table-wrap">
           <table class="stack-on-mobile orders-table">
