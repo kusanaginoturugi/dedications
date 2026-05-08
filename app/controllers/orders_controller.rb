@@ -36,7 +36,9 @@ class OrdersController < ApplicationController
 
   def processing_status
     orders = Order.includes(:congregation, :user).order(sort_column => sort_direction)
-    @order_groups = processing_status_form_types.filter_map do |form_type|
+    @form_type = params[:form_type].presence
+    @form_label = Order.form_definition_for(@form_type).fetch(:label) if Order::FORM_DEFINITIONS.key?(@form_type)
+    @order_groups = selected_processing_status_form_types.filter_map do |form_type|
       matches = orders.select { |order| order.form_type == form_type }
       next if matches.empty?
 
@@ -102,6 +104,12 @@ class OrdersController < ApplicationController
       sanki_reiboku
       sankai_ryuge_pillar
     ]
+  end
+
+  def selected_processing_status_form_types
+    return [ @form_type ] if Order::FORM_DEFINITIONS.key?(@form_type)
+
+    processing_status_form_types
   end
 
   def selected_form_type

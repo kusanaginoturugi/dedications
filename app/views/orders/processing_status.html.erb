@@ -1,8 +1,9 @@
-<% content_for :title, "処理状況" %>
+<% processing_status_title = @form_label ? "処理状況: #{@form_label}" : "処理状況" %>
+<% content_for :title, processing_status_title %>
 
 <section class="page-head">
   <div>
-    <h2>処理状況</h2>
+    <h2><%= processing_status_title %></h2>
     <p class="section-lead">申込書種類ごとに処理状況を確認します。</p>
   </div>
 </section>

@@ -36,6 +36,14 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "新潟公壇"
   end
 
+  test "redirects typed dedication counts html to processing status" do
+    sign_in_as(users(:admin))
+
+    get dedication_counts_by_type_reports_path(form_type: "wish_fulfillment_staff")
+
+    assert_redirected_to processing_status_orders_path(form_type: "wish_fulfillment_staff")
+  end
+
   test "downloads dedication counts pdf without browser print mode" do
     sign_in_as(users(:admin))
 

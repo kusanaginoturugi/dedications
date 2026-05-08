@@ -148,6 +148,18 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_operator response.body.index("三期滅劫\n之霊木"), :<, response.body.index("三會龍華\n之御柱")
   end
 
+  test "shows processing status for a selected form type" do
+    sign_in_as(users(:admin))
+
+    get processing_status_orders_path, params: { form_type: "wish_fulfillment_staff" }
+
+    assert_response :success
+    assert_includes response.body, "処理状況: 八大明王如意棒"
+    assert_includes response.body, "八大明王如意棒"
+    assert_select "main .order-group-header h3", 1
+    assert_select "main .order-group-header h3", text: "八大明王如意棒"
+  end
+
   test "sorts personal summary by page ascending" do
     sign_in_as(users(:admin))
 
