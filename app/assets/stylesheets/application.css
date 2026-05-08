@@ -737,7 +737,7 @@ table {
 
 .orders-table th:first-child,
 .orders-table td:first-child {
-  text-align: right;
+  text-align: center;
 }
 
 .processing-status-table {
@@ -825,7 +825,7 @@ tfoot td {
   content: " ▼";
   position: absolute;
   right: 0;
-  opacity: 0.3;
+  opacity: 1;
   font-size: 0.8rem;
 }
 
@@ -834,7 +834,7 @@ tfoot td {
 }
 
 .sort-link:hover::after {
-  opacity: 0.6;
+  opacity: 1;
 }
 
 .selected-congregation,
