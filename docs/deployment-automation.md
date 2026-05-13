@@ -14,7 +14,7 @@
 1. GitHub Actions が `main` への push で起動する
 2. EC2 に SSH 接続する
 3. server 上で `scripts/deploy.sh` を実行する
-4. `deploy.sh` が `git pull`、`bundle install`、`db:migrate`、`assets:precompile`、`systemctl restart` を行う
+4. `deploy.sh` が `git pull`、`bundle install`、`db:migrate`、必要なマスタ取込、`assets:precompile`、`systemctl restart` を行う
 
 ## 前提
 
@@ -119,6 +119,8 @@ bundle config set without 'development test'
 bundle install
 
 bin/rails db:migrate
+# 伝道会CSVのような参照マスタは専用 task で反映する
+bin/rails congregations:import
 bin/rails assets:precompile
 
 sudo -n /usr/bin/systemctl restart "$SERVICE_NAME"
@@ -130,6 +132,23 @@ sudo -n /usr/bin/systemctl is-active "$SERVICE_NAME"
 ```bash
 chmod +x scripts/deploy.sh
 git update-index --chmod=+x scripts/deploy.sh
+```
+
+## マスタデータ更新の扱い
+
+`db:seed` は初期データ投入や開発環境セットアップ用として残し、deploy 時の定常更新には直接使わない方が安全です。
+
+CSV や定義ファイルから本番DBへ反映したい参照マスタは、次のように専用 task を用意して deploy の中で明示的に実行します。
+
+```bash
+bin/rails congregations:import
+```
+
+この構成にすると、`資料/伝道会番号.csv` の更新は `main` への push 後の通常 deploy で本番反映されます。手動再実行が必要な場合は server 上で次を実行します。
+
+```bash
+cd /home/ubuntu/YOUR_APP
+RAILS_ENV=production bin/rails congregations:import
 ```
 
 ## GitHub Actions 例
