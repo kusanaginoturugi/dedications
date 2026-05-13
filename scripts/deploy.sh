@@ -45,6 +45,9 @@ bundle install
 log "Running database migrations"
 bin/rails db:migrate
 
+log "Importing congregations"
+bin/rails congregations:import
+
 log "Precompiling assets"
 bin/rails assets:clobber
 bin/rails assets:precompile

@@ -64,3 +64,15 @@ bin/rails test
 - `EC2_SSH_KEY`
 
 デプロイ処理本体は `scripts/deploy.sh` です。
+
+### 伝道会CSVの本番反映
+
+`main` への deploy 時に `bin/rails congregations:import` が自動実行されるので、
+`資料/伝道会番号.csv` の更新は通常のデプロイで本番DBの `congregations` に反映されます。
+
+手動で再実行したいときは本番サーバで次を実行します。
+
+```bash
+cd /home/ubuntu/dedications
+RAILS_ENV=production bin/rails congregations:import
+```
