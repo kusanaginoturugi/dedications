@@ -1,4 +1,5 @@
 require "test_helper"
+require "tempfile"
 
 class ReportsControllerTest < ActionDispatch::IntegrationTest
   test "requires sign in" do
@@ -106,5 +107,22 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "application/pdf", response.media_type
     assert_equal "no-store", response.headers["Cache-Control"]
     assert_match(/\A%PDF/, response.body)
+    assert_pdf_text_includes response.body, "帳票: 八大明王如意棒"
+    assert_pdf_text_includes response.body, "江別昇龍壇"
+  end
+
+  private
+
+  def assert_pdf_text_includes(pdf_body, expected_text)
+    skip "pdftotext is not installed" unless system("which", "pdftotext", out: File::NULL)
+
+    Tempfile.create([ "dedication-counts", ".pdf" ]) do |pdf|
+      pdf.binmode
+      pdf.write(pdf_body)
+      pdf.flush
+
+      text = IO.popen([ "pdftotext", pdf.path, "-" ], &:read)
+      assert_includes text, expected_text
+    end
   end
 end

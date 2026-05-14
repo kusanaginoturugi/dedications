@@ -208,8 +208,9 @@ class ReportsController < ApplicationController
 
   def configure_pdf_font(pdf)
     font_path = [
-      Rails.root.join("app/assets/fonts/NotoSansCJKjp-Regular.otf").to_s,
+      Rails.root.join("app/assets/fonts/PlemolJP-Regular.ttf").to_s,
       "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+      "/usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf",
       "/System/Library/Fonts/Supplemental/AppleGothic.ttf"
     ].find { |path| File.exist?(path) }
 
