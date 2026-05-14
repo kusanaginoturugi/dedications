@@ -302,11 +302,11 @@ class ReportsController < ApplicationController
       configure_pdf_font(pdf)
       pdf.text "帳票: #{title}", size: 18, style: :bold
       pdf.move_down 3
-      pdf.text "伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。", size: 10
+      pdf.text "伝道会ごとの入金済み、未入金、合計本数を表示します。", size: 10
       pdf.move_down 5
 
       start_cursor = pdf.cursor
-      column_gap = 8
+      column_gap = 22
       column_width = (pdf.bounds.width - column_gap) / 2
       max_row_count = [ @left_rows.size, @right_rows.size ].max + 1
       row_height = (start_cursor / max_row_count.to_f).floor
@@ -323,7 +323,7 @@ class ReportsController < ApplicationController
 
   def draw_dedication_counts_table(pdf, rows, width, row_height)
     table_rows = [
-      [ "伝道会", "入金済み本数", "未入金本数", "合計本数" ]
+      [ "伝道会", "入金済み", "未入金", "合計本数" ]
     ] + rows.map do |row|
       if row[:is_blank]
         [ " ", " ", " ", " " ]
@@ -341,7 +341,7 @@ class ReportsController < ApplicationController
       table_rows,
       header: true,
       width: width,
-      column_widths: [ width * 0.43, width * 0.19, width * 0.19, width * 0.19 ],
+      column_widths: [ width * 0.37, width * 0.21, width * 0.21, width * 0.21 ],
       cell_style: {
         size: 11.2,
         height: row_height,
