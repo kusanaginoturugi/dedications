@@ -674,6 +674,24 @@ textarea {
   font-size: 0.95rem;
 }
 
+.serial-gap-warning {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: rgba(180, 106, 106, 0.14);
+  color: var(--error);
+}
+
+.serial-gap-warning strong {
+  font-size: 0.95rem;
+}
+
+.serial-gap-warning span {
+  line-height: 1.5;
+}
+
 .clickable-row {
   cursor: pointer;
 }

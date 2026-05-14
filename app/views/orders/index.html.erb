@@ -28,6 +28,14 @@
           <p><%= orders.size %>件</p>
         </header>
 
+        <% missing_serial_number_ranges = @missing_serial_number_ranges_by_form_type[orders.first.form_type] || [] %>
+        <% if missing_serial_number_ranges.any? %>
+          <div class="serial-gap-warning" role="alert">
+            <strong>通し番号に抜けがあります</strong>
+            <span><%= missing_serial_number_ranges.join("、") %></span>
+          </div>
+        <% end %>
+
         <% paid_orders = orders.select(&:paid?) %>
         <% unpaid_orders = orders.reject(&:paid?) %>
         <% unpaid_quantity = unpaid_orders.sum { |order| order.total_quantity.to_i } %>

@@ -191,6 +191,18 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "order list warns about missing serial number ranges" do
+    sign_in_as(users(:admin))
+
+    get orders_path
+
+    assert_response :success
+    assert_select ".serial-gap-warning" do
+      assert_select "strong", "通し番号に抜けがあります"
+      assert_select "span", "16〜19"
+    end
+  end
+
   test "shows personal summary" do
     sign_in_as(users(:admin))
 

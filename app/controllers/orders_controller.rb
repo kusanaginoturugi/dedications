@@ -16,6 +16,7 @@ class OrdersController < ApplicationController
 
   def index
     @orders = ordered_orders
+    @missing_serial_number_ranges_by_form_type = missing_serial_number_ranges_by_form_type(@orders)
   end
 
   def summary
@@ -121,6 +122,45 @@ class OrdersController < ApplicationController
     return [ @form_type ] if Order::FORM_DEFINITIONS.key?(@form_type)
 
     processing_status_form_types
+  end
+
+  def missing_serial_number_ranges_by_form_type(orders)
+    orders.group_by(&:form_type).transform_values do |form_orders|
+      serial_numbers = form_orders.flat_map do |order|
+        next [] if order.serial_number_start.blank? || order.serial_number_end.blank?
+
+        (order.serial_number_start..order.serial_number_end).to_a
+      end.uniq.sort
+
+      next [] if serial_numbers.size < 2
+
+      missing_numbers = ((serial_numbers.first)..serial_numbers.last).to_a - serial_numbers
+      compact_number_ranges(missing_numbers)
+    end
+  end
+
+  def compact_number_ranges(numbers)
+    ranges = []
+    range_start = nil
+    previous = nil
+
+    numbers.each do |number|
+      if range_start.nil?
+        range_start = number
+      elsif number != previous + 1
+        ranges << format_number_range(range_start, previous)
+        range_start = number
+      end
+
+      previous = number
+    end
+
+    ranges << format_number_range(range_start, previous) if range_start
+    ranges
+  end
+
+  def format_number_range(range_start, range_end)
+    range_start == range_end ? range_start.to_s : "#{range_start}〜#{range_end}"
   end
 
   def selected_form_type
