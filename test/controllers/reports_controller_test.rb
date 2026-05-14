@@ -17,6 +17,22 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "帳票: 前夜祭・当日"
   end
 
+  test "downloads pre event csv and pdf" do
+    sign_in_as(users(:admin))
+
+    get pre_event_reports_path(format: :csv, quantities: { "0" => "3" })
+
+    assert_response :success
+    assert_equal "text/csv", response.media_type
+
+    get pre_event_reports_path(format: :pdf, quantities: { "0" => "3" })
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_equal "no-store", response.headers["Cache-Control"]
+    assert_match(/\A%PDF/, response.body)
+  end
+
   test "shows proxy inventory report" do
     sign_in_as(users(:admin))
 
@@ -25,6 +41,22 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "帳票: 代理・在庫"
     assert_includes response.body, "明王如意棒"
+  end
+
+  test "downloads proxy inventory csv and pdf" do
+    sign_in_as(users(:admin))
+
+    get proxy_inventory_reports_path(format: :csv)
+
+    assert_response :success
+    assert_equal "text/csv", response.media_type
+
+    get proxy_inventory_reports_path(format: :pdf)
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_equal "no-store", response.headers["Cache-Control"]
+    assert_match(/\A%PDF/, response.body)
   end
 
   test "shows dedication counts report" do

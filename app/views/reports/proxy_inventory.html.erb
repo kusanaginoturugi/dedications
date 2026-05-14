@@ -5,6 +5,10 @@
     <h2>帳票: 代理・在庫</h2>
     <p class="section-lead">代理奉納入力データから、代理・在庫シート相当の集計を表示します。</p>
   </div>
+  <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
+    <%= link_to "CSV", proxy_inventory_reports_path(format: :csv), class: "secondary-button", style: "padding: 0.4rem 1rem;" %>
+    <%= link_to "PDF保存", proxy_inventory_reports_path(format: :pdf), class: "secondary-button", style: "padding: 0.4rem 1rem;" %>
+  </div>
 </section>
 
 <section class="card">

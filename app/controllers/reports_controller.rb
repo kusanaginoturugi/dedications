@@ -25,31 +25,44 @@ class ReportsController < ApplicationController
   before_action :require_sign_in!
 
   def pre_event
-    @rows = PRE_EVENT_ITEMS.map do |item|
-      item.merge(quantity: 0, sales: 0, seiin_amount: 0, miroku_amount: 0)
+    @rows = build_pre_event_rows
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        filename = "前夜祭・当日_#{Date.current.strftime('%Y%m%d')}.csv"
+        send_data generate_pre_event_csv, filename: filename, type: "text/csv; charset=shift_jis"
+      end
+      format.pdf do
+        filename = "前夜祭・当日_#{Date.current.strftime('%Y%m%d')}.pdf"
+        response.headers["Cache-Control"] = "no-store"
+        send_data generate_pre_event_pdf,
+          filename: filename,
+          type: "application/pdf",
+          disposition: "attachment"
+      end
     end
   end
 
   def proxy_inventory
-    @rows = Order::FORM_DEFINITIONS.map do |form_type, definition|
-      quantity = scoped_orders.where(form_type:).sum { |order| order.total_quantity.to_i }
-      {
-        label: definition.fetch(:report_label),
-        unit_price: definition.fetch(:unit_price),
-        quantity:,
-        sales: quantity * definition.fetch(:unit_price),
-        refund_unit: definition.fetch(:refund_unit),
-        seiin_amount: quantity * definition.fetch(:refund_unit),
-        miroku_unit: definition.fetch(:miroku_unit),
-        miroku_amount: quantity * definition.fetch(:miroku_unit)
-      }
+    @rows = build_proxy_inventory_rows
+    @proxy_totals = calculate_proxy_totals(@rows)
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        filename = "代理・在庫_#{Date.current.strftime('%Y%m%d')}.csv"
+        send_data generate_proxy_inventory_csv, filename: filename, type: "text/csv; charset=shift_jis"
+      end
+      format.pdf do
+        filename = "代理・在庫_#{Date.current.strftime('%Y%m%d')}.pdf"
+        response.headers["Cache-Control"] = "no-store"
+        send_data generate_proxy_inventory_pdf,
+          filename: filename,
+          type: "application/pdf",
+          disposition: "attachment"
+      end
     end
-    @proxy_totals = {
-      quantity: @rows.sum { |row| row[:quantity] },
-      sales: @rows.sum { |row| row[:sales] },
-      seiin_amount: @rows.sum { |row| row[:seiin_amount] },
-      miroku_amount: @rows.sum { |row| row[:miroku_amount] }
-    }
   end
 
   def dedication_counts
@@ -144,6 +157,145 @@ class ReportsController < ApplicationController
 
   private
 
+  def build_pre_event_rows
+    quantities = params[:quantities] || {}
+    PRE_EVENT_ITEMS.each_with_index.map do |item, index|
+      quantity = quantities[index.to_s].to_i
+      item.merge(
+        quantity: quantity,
+        sales: quantity * item.fetch(:unit_price),
+        seiin_amount: quantity * item.fetch(:refund_unit),
+        miroku_amount: quantity * item.fetch(:miroku_unit)
+      )
+    end
+  end
+
+  def build_proxy_inventory_rows
+    Order::FORM_DEFINITIONS.map do |form_type, definition|
+      quantity = scoped_orders.where(form_type:).sum { |order| order.total_quantity.to_i }
+      {
+        label: definition.fetch(:report_label),
+        unit_price: definition.fetch(:unit_price),
+        quantity: quantity,
+        sales: quantity * definition.fetch(:unit_price),
+        refund_unit: definition.fetch(:refund_unit),
+        seiin_amount: quantity * definition.fetch(:refund_unit),
+        miroku_unit: definition.fetch(:miroku_unit),
+        miroku_amount: quantity * definition.fetch(:miroku_unit)
+      }
+    end
+  end
+
+  def calculate_proxy_totals(rows)
+    {
+      quantity: rows.sum { |row| row[:quantity] },
+      sales: rows.sum { |row| row[:sales] },
+      seiin_amount: rows.sum { |row| row[:seiin_amount] },
+      miroku_amount: rows.sum { |row| row[:miroku_amount] }
+    }
+  end
+
+  def generate_pre_event_pdf
+    headers = [ "道具名", "奉納料", "奉納数", "売上", "還付金", "聖院還付分", "弥勒寺", "弥勒寺入金分" ]
+    rows = @rows.map do |row|
+      [
+        report_label(row),
+        yen(row[:unit_price]),
+        row[:quantity],
+        yen(row[:sales]),
+        yen(row[:refund_unit]),
+        yen(row[:seiin_amount]),
+        yen(row[:miroku_unit]),
+        yen(row[:miroku_amount])
+      ]
+    end
+    totals = [
+      "合計",
+      "-",
+      @rows.sum { |row| row[:quantity].to_i },
+      yen(@rows.sum { |row| row[:sales].to_i }),
+      "-",
+      yen(@rows.sum { |row| row[:seiin_amount].to_i }),
+      "-",
+      yen(@rows.sum { |row| row[:miroku_amount].to_i })
+    ]
+
+    generate_full_page_table_pdf("帳票: 前夜祭・当日", "還付.ods の「前夜祭・当日」シート相当です。", headers, rows, totals)
+  end
+
+  def generate_proxy_inventory_pdf
+    headers = [ "道具名", "奉納料", "奉納数", "売上", "還付金", "聖院還付分", "弥勒寺", "弥勒寺入金分" ]
+    rows = @rows.map do |row|
+      [
+        report_label(row),
+        yen(row[:unit_price]),
+        row[:quantity],
+        yen(row[:sales]),
+        yen(row[:refund_unit]),
+        yen(row[:seiin_amount]),
+        yen(row[:miroku_unit]),
+        yen(row[:miroku_amount])
+      ]
+    end
+    totals = [
+      "合計",
+      "-",
+      "#{@proxy_totals[:quantity]} 本",
+      yen(@proxy_totals[:sales]),
+      "-",
+      yen(@proxy_totals[:seiin_amount]),
+      "-",
+      yen(@proxy_totals[:miroku_amount])
+    ]
+
+    generate_full_page_table_pdf("帳票: 代理・在庫", "代理奉納入力データから、代理・在庫シート相当の集計を表示します。", headers, rows, totals)
+  end
+
+  def generate_full_page_table_pdf(title, lead, headers, rows, totals)
+    Prawn::Document.new(page_size: "A4", margin: [ 24, 18, 24, 18 ]) do |pdf|
+      configure_pdf_font(pdf)
+      pdf.text title, size: 18, style: :bold
+      pdf.move_down 6
+      pdf.text lead, size: 10
+      pdf.move_down 12
+
+      table_rows = [ headers ] + rows + [ totals ]
+      row_height = [ (pdf.cursor - 4) / table_rows.size, 34 ].max
+
+      pdf.table(
+        table_rows,
+        header: true,
+        width: pdf.bounds.width,
+        column_widths: [
+          pdf.bounds.width * 0.23,
+          pdf.bounds.width * 0.11,
+          pdf.bounds.width * 0.09,
+          pdf.bounds.width * 0.12,
+          pdf.bounds.width * 0.11,
+          pdf.bounds.width * 0.12,
+          pdf.bounds.width * 0.1,
+          pdf.bounds.width * 0.12
+        ],
+        cell_style: {
+          size: 10,
+          height: row_height,
+          padding: [ 8, 5 ],
+          borders: [ :bottom ],
+          border_color: "D7DFEF",
+          overflow: :shrink_to_fit,
+          min_font_size: 7,
+          valign: :center
+        }
+      ) do
+        row(0).background_color = "F3E6F2"
+        row(0).font_style = :bold
+        row(table_rows.size - 1).background_color = "F3E6F2"
+        row(table_rows.size - 1).font_style = :bold
+        columns(1..7).align = :right
+      end
+    end.render
+  end
+
   def generate_dedication_counts_pdf
     title = @form_label || "各種代理奉納（合計）"
     Prawn::Document.new(page_size: "A4", margin: [ 28, 22, 24, 22 ]) do |pdf|
@@ -215,8 +367,64 @@ class ReportsController < ApplicationController
 
     return unless font_path
 
-    pdf.font_families.update("Japanese" => { normal: font_path })
+    pdf.font_families.update("Japanese" => { normal: font_path, bold: font_path })
     pdf.font "Japanese"
+  end
+
+  def generate_pre_event_csv
+    CSV.generate do |csv|
+      csv << [ "道具名", "奉納料", "奉納数", "売上", "還付金", "聖院還付分", "弥勒寺", "弥勒寺入金分" ]
+      @rows.each do |row|
+        csv << [
+          report_label(row),
+          row[:unit_price],
+          row[:quantity],
+          row[:sales],
+          row[:refund_unit],
+          row[:seiin_amount],
+          row[:miroku_unit],
+          row[:miroku_amount]
+        ]
+      end
+      csv << [
+        "合計",
+        "-",
+        @rows.sum { |row| row[:quantity].to_i },
+        @rows.sum { |row| row[:sales].to_i },
+        "-",
+        @rows.sum { |row| row[:seiin_amount].to_i },
+        "-",
+        @rows.sum { |row| row[:miroku_amount].to_i }
+      ]
+    end.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
+  end
+
+  def generate_proxy_inventory_csv
+    CSV.generate do |csv|
+      csv << [ "道具名", "奉納料", "奉納数", "売上", "還付金", "聖院還付分", "弥勒寺", "弥勒寺入金分" ]
+      @rows.each do |row|
+        csv << [
+          report_label(row),
+          row[:unit_price],
+          row[:quantity],
+          row[:sales],
+          row[:refund_unit],
+          row[:seiin_amount],
+          row[:miroku_unit],
+          row[:miroku_amount]
+        ]
+      end
+      csv << [
+        "合計",
+        "-",
+        @proxy_totals[:quantity],
+        @proxy_totals[:sales],
+        "-",
+        @proxy_totals[:seiin_amount],
+        "-",
+        @proxy_totals[:miroku_amount]
+      ]
+    end.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
   end
 
   def generate_dedication_counts_csv
@@ -233,6 +441,14 @@ class ReportsController < ApplicationController
         ]
       end
     end.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
+  end
+
+  def report_label(row)
+    row[:plain_label].presence || row[:label].to_s.gsub("<br>", "").gsub(/\s+/, "")
+  end
+
+  def yen(value)
+    "¥#{value.to_i.to_fs(:delimited)}"
   end
 
   def scoped_orders

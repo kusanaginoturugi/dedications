@@ -5,55 +5,61 @@
     <h2>帳票: 前夜祭・当日</h2>
     <p class="section-lead">還付.ods の「前夜祭・当日」シート相当です。奉納数を入力すると自動計算されます。</p>
   </div>
+  <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
+    <button class="secondary-button" type="submit" form="pre-event-report-form" formaction="<%= pre_event_reports_path(format: :csv) %>" style="padding: 0.4rem 1rem;">CSV</button>
+    <button class="secondary-button" type="submit" form="pre-event-report-form" formaction="<%= pre_event_reports_path(format: :pdf) %>" style="padding: 0.4rem 1rem;">PDF保存</button>
+  </div>
 </section>
 
 <section class="card" data-pre-event-report>
-  <div class="table-wrap">
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th>道具名</th>
-          <th>奉納料</th>
-          <th style="width: 8rem;">奉納数</th>
-          <th>売上</th>
-          <th>還付金</th>
-          <th>聖院還付分</th>
-          <th>弥勒寺</th>
-          <th>弥勒寺入金分</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @rows.each_with_index do |row, index| %>
-          <tr data-row="<%= index %>" 
-              data-unit-price="<%= row[:unit_price] %>"
-              data-refund-unit="<%= row[:refund_unit] %>"
-              data-miroku-unit="<%= row[:miroku_unit] %>">
-            <td><%= row[:label] %></td>
-            <td class="text-right"><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
-            <td>
-              <input type="number" min="0" value="0" class="report-input" data-quantity-input>
-            </td>
-            <td class="text-right" data-sales-display>¥0</td>
-            <td class="text-right"><%= number_to_currency(row[:refund_unit], unit: "¥", precision: 0) %></td>
-            <td class="text-right" data-seiin-amount-display>¥0</td>
-            <td class="text-right"><%= number_to_currency(row[:miroku_unit], unit: "¥", precision: 0) %></td>
-            <td class="text-right" data-miroku-amount-display>¥0</td>
+  <form id="pre-event-report-form" action="<%= pre_event_reports_path %>" method="get">
+    <div class="table-wrap">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>道具名</th>
+            <th>奉納料</th>
+            <th style="width: 8rem;">奉納数</th>
+            <th>売上</th>
+            <th>還付金</th>
+            <th>聖院還付分</th>
+            <th>弥勒寺</th>
+            <th>弥勒寺入金分</th>
           </tr>
-        <% end %>
-      </tbody>
-      <tfoot>
-        <tr class="total-row">
-          <td colspan="2">合計</td>
-          <td class="text-right" data-total-quantity>0</td>
-          <td class="text-right" data-total-sales>¥0</td>
-          <td>-</td>
-          <td class="text-right" data-total-seiin>¥0</td>
-          <td>-</td>
-          <td class="text-right" data-total-miroku>¥0</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          <% @rows.each_with_index do |row, index| %>
+            <tr data-row="<%= index %>"
+                data-unit-price="<%= row[:unit_price] %>"
+                data-refund-unit="<%= row[:refund_unit] %>"
+                data-miroku-unit="<%= row[:miroku_unit] %>">
+              <td><%= row[:label] %></td>
+              <td class="text-right"><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
+              <td>
+                <input type="number" min="0" value="<%= row[:quantity] %>" name="quantities[<%= index %>]" class="report-input" data-quantity-input>
+              </td>
+              <td class="text-right" data-sales-display><%= number_to_currency(row[:sales], unit: "¥", precision: 0) %></td>
+              <td class="text-right"><%= number_to_currency(row[:refund_unit], unit: "¥", precision: 0) %></td>
+              <td class="text-right" data-seiin-amount-display><%= number_to_currency(row[:seiin_amount], unit: "¥", precision: 0) %></td>
+              <td class="text-right"><%= number_to_currency(row[:miroku_unit], unit: "¥", precision: 0) %></td>
+              <td class="text-right" data-miroku-amount-display><%= number_to_currency(row[:miroku_amount], unit: "¥", precision: 0) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="2">合計</td>
+            <td class="text-right" data-total-quantity><%= @rows.sum { |row| row[:quantity].to_i } %></td>
+            <td class="text-right" data-total-sales><%= number_to_currency(@rows.sum { |row| row[:sales].to_i }, unit: "¥", precision: 0) %></td>
+            <td>-</td>
+            <td class="text-right" data-total-seiin><%= number_to_currency(@rows.sum { |row| row[:seiin_amount].to_i }, unit: "¥", precision: 0) %></td>
+            <td>-</td>
+            <td class="text-right" data-total-miroku><%= number_to_currency(@rows.sum { |row| row[:miroku_amount].to_i }, unit: "¥", precision: 0) %></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </form>
 </section>
 
 <script>
