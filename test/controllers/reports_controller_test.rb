@@ -45,6 +45,41 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "帳票: 八大明王如意棒"
   end
 
+  test "typed dedication counts include special congregations" do
+    sign_in_as(users(:admin))
+
+    [
+      [ "90000", "弥勒寺", 900, 1000, 1001 ],
+      [ "10000", "聖治命院", 901, 1010, 1012 ],
+      [ "90001", "加賀御神水", 902, 1020, 1023 ]
+    ].each do |code, name, page_number, serial_start, serial_end|
+      congregation = Congregation.find_or_create_by!(code:) do |record|
+        record.old_code = code
+        record.name = name
+      end
+      Order.create!(
+        page_number: page_number,
+        fax_received_on: Date.current,
+        dedication_on: Date.current,
+        form_type: "wish_fulfillment_staff",
+        offerer_name: name,
+        paid: true,
+        congregation: congregation,
+        user: users(:admin),
+        event: events(:one),
+        serial_number_start: serial_start,
+        serial_number_end: serial_end
+      )
+    end
+
+    get dedication_counts_by_type_reports_path(form_type: "wish_fulfillment_staff")
+
+    assert_response :success
+    assert_select "tr", text: /弥勒寺.*2 本/
+    assert_select "tr", text: /聖治命院\(モンゴル\).*3 本/
+    assert_select "tr", text: /\(株\)加賀御神水.*4 本/
+  end
+
   test "downloads dedication counts pdf without browser print mode" do
     sign_in_as(users(:admin))
 
