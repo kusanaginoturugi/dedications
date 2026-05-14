@@ -298,28 +298,30 @@ class ReportsController < ApplicationController
 
   def generate_dedication_counts_pdf
     title = @form_label || "各種代理奉納（合計）"
-    Prawn::Document.new(page_size: "A4", margin: [ 28, 22, 24, 22 ]) do |pdf|
+    Prawn::Document.new(page_size: "A4", margin: [ 22, 18, 22, 18 ]) do |pdf|
       configure_pdf_font(pdf)
-      pdf.text "帳票: #{title}", size: 12
-      pdf.move_down 3
-      pdf.text "伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。", size: 7
-      pdf.move_down 8
+      pdf.text "帳票: #{title}", size: 18, style: :bold
+      pdf.move_down 5
+      pdf.text "伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。", size: 10
+      pdf.move_down 10
 
       start_cursor = pdf.cursor
-      column_gap = 10
+      column_gap = 12
       column_width = (pdf.bounds.width - column_gap) / 2
+      max_row_count = [ @left_rows.size, @right_rows.size ].max + 1
+      row_height = (start_cursor / max_row_count.to_f).floor
 
       pdf.bounding_box([ 0, start_cursor ], width: column_width) do
-        draw_dedication_counts_table(pdf, @left_rows, column_width)
+        draw_dedication_counts_table(pdf, @left_rows, column_width, row_height)
       end
 
       pdf.bounding_box([ column_width + column_gap, start_cursor ], width: column_width) do
-        draw_dedication_counts_table(pdf, @right_rows, column_width)
+        draw_dedication_counts_table(pdf, @right_rows, column_width, row_height)
       end
     end.render
   end
 
-  def draw_dedication_counts_table(pdf, rows, width)
+  def draw_dedication_counts_table(pdf, rows, width, row_height)
     table_rows = [
       [ "伝道会", "入金済み本数", "未入金本数", "合計本数" ]
     ] + rows.map do |row|
@@ -341,15 +343,18 @@ class ReportsController < ApplicationController
       width: width,
       column_widths: [ width * 0.43, width * 0.19, width * 0.19, width * 0.19 ],
       cell_style: {
-        size: 5.8,
-        padding: [ 1.1, 1.6 ],
+        size: 8.2,
+        height: row_height,
+        padding: [ 3.2, 2.4 ],
         borders: [ :bottom ],
         border_color: "D7DFEF",
         overflow: :shrink_to_fit,
-        min_font_size: 4.8
+        min_font_size: 6.2,
+        valign: :center
       }
     ) do
       row(0).background_color = "F3E6F2"
+      row(0).font_style = :bold
       columns(1..3).align = :right
     end
   end
