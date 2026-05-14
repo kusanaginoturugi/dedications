@@ -28,11 +28,16 @@
           <p><%= orders.size %>件</p>
         </header>
 
+        <% missing_number_ranges = @missing_number_ranges_by_form_type[orders.first.form_type] || [] %>
         <% missing_serial_number_ranges = @missing_serial_number_ranges_by_form_type[orders.first.form_type] || [] %>
-        <% if missing_serial_number_ranges.any? %>
+        <% if missing_number_ranges.any? || missing_serial_number_ranges.any? %>
           <div class="serial-gap-warning" role="alert">
-            <strong>通し番号に抜けがあります</strong>
-            <span><%= missing_serial_number_ranges.join("、") %></span>
+            <% if missing_number_ranges.any? %>
+              <p><strong>番号に抜けがあります。</strong><span><%= missing_number_ranges.join("、") %></span></p>
+            <% end %>
+            <% if missing_serial_number_ranges.any? %>
+              <p><strong>通し番号に抜けがあります。</strong><span><%= missing_serial_number_ranges.join("、") %></span></p>
+            <% end %>
           </div>
         <% end %>
 

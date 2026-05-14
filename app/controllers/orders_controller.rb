@@ -16,6 +16,7 @@ class OrdersController < ApplicationController
 
   def index
     @orders = ordered_orders
+    @missing_number_ranges_by_form_type = missing_number_ranges_by_form_type(@orders)
     @missing_serial_number_ranges_by_form_type = missing_serial_number_ranges_by_form_type(@orders)
   end
 
@@ -132,11 +133,23 @@ class OrdersController < ApplicationController
         (order.serial_number_start..order.serial_number_end).to_a
       end.uniq.sort
 
-      next [] if serial_numbers.size < 2
-
-      missing_numbers = ((serial_numbers.first)..serial_numbers.last).to_a - serial_numbers
-      compact_number_ranges(missing_numbers)
+      missing_ranges_for_numbers(serial_numbers)
     end
+  end
+
+  def missing_number_ranges_by_form_type(orders)
+    orders.group_by(&:form_type).transform_values do |form_orders|
+      numbers = form_orders.map(&:page_number).compact.uniq.sort
+
+      missing_ranges_for_numbers(numbers)
+    end
+  end
+
+  def missing_ranges_for_numbers(numbers)
+    return [] if numbers.size < 2
+
+    missing_numbers = ((numbers.first)..numbers.last).to_a - numbers
+    compact_number_ranges(missing_numbers)
   end
 
   def compact_number_ranges(numbers)

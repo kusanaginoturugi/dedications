@@ -684,12 +684,14 @@ textarea {
   color: var(--error);
 }
 
-.serial-gap-warning strong {
-  font-size: 0.95rem;
+.serial-gap-warning p {
+  margin: 0;
+  line-height: 1.5;
 }
 
-.serial-gap-warning span {
-  line-height: 1.5;
+.serial-gap-warning strong {
+  margin-right: 0.35rem;
+  font-size: 0.95rem;
 }
 
 .clickable-row {
