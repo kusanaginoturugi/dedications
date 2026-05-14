@@ -56,10 +56,6 @@ class ReportsController < ApplicationController
     @form_type = params[:form_type]
     if @form_type.present?
       @form_label = Order.form_definition_for(@form_type).fetch(:label)
-      if request.format.html?
-        redirect_to processing_status_orders_path(form_type: @form_type)
-        return
-      end
     end
 
     # 左列の定義
