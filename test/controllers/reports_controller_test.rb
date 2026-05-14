@@ -51,7 +51,8 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     [
       [ "90000", "弥勒寺", 900, 1000, 1001 ],
       [ "10000", "聖治命院", 901, 1010, 1012 ],
-      [ "90001", "加賀御神水", 902, 1020, 1023 ]
+      [ "90001", "加賀御神水", 902, 1020, 1023 ],
+      [ "10001", "聖龍華院", 903, 1030, 1034 ]
     ].each do |code, name, page_number, serial_start, serial_end|
       congregation = Congregation.find_or_create_by!(code:) do |record|
         record.old_code = code
@@ -78,6 +79,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "tr", text: /弥勒寺.*2 本/
     assert_select "tr", text: /聖治命院\(モンゴル\).*3 本/
     assert_select "tr", text: /\(株\)加賀御神水.*4 本/
+    assert_select "tr", text: /聖龍華院.*5 本/
   end
 
   test "downloads dedication counts pdf without browser print mode" do
