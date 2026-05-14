@@ -68,7 +68,7 @@ class ReportsController < ApplicationController
   def dedication_counts
     @form_type = params[:form_type]
     if @form_type.present?
-      @form_label = Order.form_definition_for(@form_type).fetch(:label)
+      @form_label = Order.form_definition_for(@form_type).fetch(:plain_label)
     end
 
     # 左列の定義
@@ -298,15 +298,15 @@ class ReportsController < ApplicationController
 
   def generate_dedication_counts_pdf
     title = @form_label || "各種代理奉納（合計）"
-    Prawn::Document.new(page_size: "A4", margin: [ 22, 18, 22, 18 ]) do |pdf|
+    Prawn::Document.new(page_size: "A4", margin: [ 6, 6, 6, 6 ]) do |pdf|
       configure_pdf_font(pdf)
       pdf.text "帳票: #{title}", size: 18, style: :bold
-      pdf.move_down 5
+      pdf.move_down 3
       pdf.text "伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。", size: 10
-      pdf.move_down 10
+      pdf.move_down 5
 
       start_cursor = pdf.cursor
-      column_gap = 12
+      column_gap = 8
       column_width = (pdf.bounds.width - column_gap) / 2
       max_row_count = [ @left_rows.size, @right_rows.size ].max + 1
       row_height = (start_cursor / max_row_count.to_f).floor
@@ -343,13 +343,13 @@ class ReportsController < ApplicationController
       width: width,
       column_widths: [ width * 0.43, width * 0.19, width * 0.19, width * 0.19 ],
       cell_style: {
-        size: 8.2,
+        size: 11.2,
         height: row_height,
-        padding: [ 3.2, 2.4 ],
+        padding: [ 1.2, 1.8 ],
         borders: [ :bottom ],
         border_color: "D7DFEF",
         overflow: :shrink_to_fit,
-        min_font_size: 6.2,
+        min_font_size: 8.5,
         valign: :center
       }
     ) do
