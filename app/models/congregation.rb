@@ -30,6 +30,6 @@ class Congregation < ApplicationRecord
   end
 
   def short_name
-    name.to_s.sub(/(準総壇|伝道会|公壇|総壇)\z/, "")
+    name.to_s.sub(/(準総壇|準公壇|伝道会|公壇|総壇)\z/, "")
   end
 end
