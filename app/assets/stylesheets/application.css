@@ -568,6 +568,23 @@ textarea {
   line-height: 1.08;
 }
 
+.dedication-counts-sheet .dedication-name-column {
+  width: 46%;
+}
+
+.dedication-counts-sheet .dedication-count-column {
+  width: 17%;
+}
+
+.dedication-counts-sheet .dedication-total-column {
+  width: 20%;
+}
+
+.dedication-counts-sheet td:first-child,
+.dedication-counts-sheet th:first-child {
+  white-space: nowrap;
+}
+
 .dedication-counts-sheet .total-row {
   color: #1f2937;
   font-weight: 700;

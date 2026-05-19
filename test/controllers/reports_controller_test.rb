@@ -76,6 +76,10 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, "帳票: 八大明王如意棒"
+    assert_select "th", text: "入金済み", count: 2
+    assert_select "th", text: "未入金", count: 2
+    assert_select "th", text: "入金済み本数", count: 0
+    assert_select "th", text: "未入金本数", count: 0
     assert_not_includes response.body, "伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。"
   end
 

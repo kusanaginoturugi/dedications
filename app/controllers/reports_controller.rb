@@ -358,7 +358,7 @@ class ReportsController < ApplicationController
       table_rows,
       header: true,
       width: width,
-      column_widths: [ width * 0.37, width * 0.21, width * 0.21, width * 0.21 ],
+      column_widths: [ width * 0.46, width * 0.17, width * 0.17, width * 0.2 ],
       cell_style: {
         size: 11.2,
         height: row_height,
@@ -462,7 +462,7 @@ class ReportsController < ApplicationController
 
   def generate_dedication_counts_csv
     CSV.generate do |csv|
-      csv << [ "コード", "伝道会名", "入金済み本数", "未入金本数", "合計本数" ]
+      csv << [ "コード", "伝道会名", "入金済み", "未入金", "合計本数" ]
       (@left_rows + @right_rows).each do |row|
         next if row[:is_blank]
         csv << [
