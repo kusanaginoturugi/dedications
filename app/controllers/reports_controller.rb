@@ -316,7 +316,7 @@ class ReportsController < ApplicationController
       pdf.move_down 5
 
       start_cursor = pdf.cursor
-      column_gap = 34
+      column_gap = 48
       column_width = (pdf.bounds.width - column_gap) / 2
       max_row_count = [ @left_rows.size, @right_rows.size ].max + 1
       row_height = (start_cursor / max_row_count.to_f).floor
@@ -358,7 +358,7 @@ class ReportsController < ApplicationController
       table_rows,
       header: true,
       width: width,
-      column_widths: [ width * 0.4, width * 0.19, width * 0.19, width * 0.22 ],
+      column_widths: [ width * 0.32, width * 0.22, width * 0.22, width * 0.24 ],
       cell_style: {
         size: 11.2,
         height: row_height,
