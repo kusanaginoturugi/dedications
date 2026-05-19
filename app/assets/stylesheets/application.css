@@ -554,7 +554,7 @@ textarea {
 .counts-sheet-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 1.75rem;
 }
 
 .report-table-compact td,
@@ -569,15 +569,15 @@ textarea {
 }
 
 .dedication-counts-sheet .dedication-name-column {
-  width: 46%;
+  width: 40%;
 }
 
 .dedication-counts-sheet .dedication-count-column {
-  width: 17%;
+  width: 19%;
 }
 
 .dedication-counts-sheet .dedication-total-column {
-  width: 20%;
+  width: 22%;
 }
 
 .dedication-counts-sheet td:first-child,
@@ -1005,7 +1005,7 @@ tfoot td {
   }
 
   .dedication-counts-sheet .counts-sheet-grid {
-    gap: 1.2mm;
+    gap: 3mm;
   }
 
   .dedication-counts-sheet .report-table-compact td,
