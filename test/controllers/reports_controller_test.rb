@@ -116,6 +116,21 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "tr.total-row", text: /合計.*14 本/
   end
 
+  test "typed dedication counts leave a blank row between niigata and hokuriku" do
+    sign_in_as(users(:admin))
+
+    get dedication_counts_by_type_reports_path(form_type: "wish_fulfillment_staff")
+
+    assert_response :success
+    rows = css_select(".counts-sheet-grid section:first-child tbody tr")
+    niigata_index = rows.index { |row| row.text.include?("新潟公壇") }
+    hokuriku_index = rows.index { |row| row.text.include?("北陸公壇") }
+
+    assert niigata_index, "新潟公壇の行が見つかること"
+    assert_equal niigata_index + 2, hokuriku_index
+    assert_includes rows[niigata_index + 1]["class"].to_s, "blank-row"
+  end
+
   test "downloads dedication counts pdf without browser print mode" do
     sign_in_as(users(:admin))
 
