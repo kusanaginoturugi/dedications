@@ -138,6 +138,7 @@ class ReportsController < ApplicationController
     @left_rows = left_codes.map { |c| build_row.call(c) }.compact
     @right_rows = right_codes.map { |c| build_row.call(c) }.compact
     @dedication_totals = dedication_count_totals(@left_rows + @right_rows)
+    @right_rows << { is_blank: true }
     @right_rows << @dedication_totals.merge(is_total: true, name: "合計")
 
     respond_to do |format|
@@ -312,8 +313,6 @@ class ReportsController < ApplicationController
     Prawn::Document.new(page_size: "A4", margin: [ 6, 6, 6, 6 ]) do |pdf|
       configure_pdf_font(pdf)
       pdf.text "帳票: #{title}", size: 18, style: :bold
-      pdf.move_down 3
-      pdf.text "伝道会ごとの入金済み、未入金、合計本数を表示します。", size: 10
       pdf.move_down 5
 
       start_cursor = pdf.cursor
@@ -374,7 +373,10 @@ class ReportsController < ApplicationController
       row(0).background_color = "F3E6F2"
       row(0).font_style = :bold
       columns(1..3).align = :right
-      row(table_rows.size - 1).font_style = :bold if rows.last&.fetch(:is_total, false)
+      if rows.last&.fetch(:is_total, false)
+        row(table_rows.size - 1).font_style = :bold
+        row(table_rows.size - 1).text_color = "1F2937"
+      end
     end
   end
 

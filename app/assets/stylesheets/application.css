@@ -569,7 +569,8 @@ textarea {
 }
 
 .dedication-counts-sheet .total-row {
-  font-weight: 800;
+  color: #1f2937;
+  font-weight: 700;
 }
 
 .order-group + .order-group {

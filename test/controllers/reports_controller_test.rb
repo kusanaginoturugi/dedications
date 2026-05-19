@@ -76,6 +76,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, "帳票: 八大明王如意棒"
+    assert_not_includes response.body, "伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。"
   end
 
   test "typed dedication counts include special congregations" do
@@ -114,6 +115,13 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "tr", text: /\(株\)加賀御神水.*4 本/
     assert_select "tr", text: /聖龍華院.*5 本/
     assert_select "tr.total-row", text: /合計.*14 本/
+    rows = css_select(".counts-sheet-grid section:last-child tbody tr")
+    seiryugein_index = rows.index { |row| row.text.include?("聖龍華院") }
+    total_index = rows.index { |row| row.text.include?("合計") }
+
+    assert seiryugein_index, "聖龍華院の行が見つかること"
+    assert_equal seiryugein_index + 2, total_index
+    assert_includes rows[seiryugein_index + 1]["class"].to_s, "blank-row"
   end
 
   test "typed dedication counts leave a blank row between niigata and hokuriku" do
