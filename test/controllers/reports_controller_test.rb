@@ -113,6 +113,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "tr", text: /聖治命院\(モンゴル\).*3 本/
     assert_select "tr", text: /\(株\)加賀御神水.*4 本/
     assert_select "tr", text: /聖龍華院.*5 本/
+    assert_select "tr.total-row", text: /合計.*14 本/
   end
 
   test "downloads dedication counts pdf without browser print mode" do

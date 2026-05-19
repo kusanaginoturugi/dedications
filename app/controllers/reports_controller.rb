@@ -137,6 +137,8 @@ class ReportsController < ApplicationController
 
     @left_rows = left_codes.map { |c| build_row.call(c) }.compact
     @right_rows = right_codes.map { |c| build_row.call(c) }.compact
+    @dedication_totals = dedication_count_totals(@left_rows + @right_rows)
+    @right_rows << @dedication_totals.merge(is_total: true, name: "合計")
 
     respond_to do |format|
       format.html
@@ -192,6 +194,15 @@ class ReportsController < ApplicationController
       sales: rows.sum { |row| row[:sales] },
       seiin_amount: rows.sum { |row| row[:seiin_amount] },
       miroku_amount: rows.sum { |row| row[:miroku_amount] }
+    }
+  end
+
+  def dedication_count_totals(rows)
+    countable_rows = rows.reject { |row| row[:is_blank] }
+    {
+      paid_count: countable_rows.sum { |row| row[:paid_count].to_i },
+      unpaid_count: countable_rows.sum { |row| row[:unpaid_count].to_i },
+      total_count: countable_rows.sum { |row| row[:total_count].to_i }
     }
   end
 
@@ -327,6 +338,13 @@ class ReportsController < ApplicationController
     ] + rows.map do |row|
       if row[:is_blank]
         [ " ", " ", " ", " " ]
+      elsif row[:is_total]
+        [
+          row[:name],
+          pdf_count(row[:paid_count]),
+          pdf_count(row[:unpaid_count]),
+          "#{pdf_count(row[:total_count])} 本"
+        ]
       else
         [
           row[:name].to_s.gsub("<br>", " "),
@@ -356,6 +374,7 @@ class ReportsController < ApplicationController
       row(0).background_color = "F3E6F2"
       row(0).font_style = :bold
       columns(1..3).align = :right
+      row(table_rows.size - 1).font_style = :bold if rows.last&.fetch(:is_total, false)
     end
   end
 

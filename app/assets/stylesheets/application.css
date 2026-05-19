@@ -568,6 +568,10 @@ textarea {
   line-height: 1.08;
 }
 
+.dedication-counts-sheet .total-row {
+  font-weight: 800;
+}
+
 .order-group + .order-group {
   margin-top: 2rem;
   padding-top: 1.5rem;

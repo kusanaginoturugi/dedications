@@ -29,7 +29,7 @@
             <% if row[:is_blank] %>
               <tr class="blank-row"><td colspan="4">&nbsp;</td></tr>
             <% else %>
-              <tr>
+              <tr class="<%= "total-row" if row[:is_total] %>">
                 <td><%= row[:name] %></td>
                 <td class="text-right"><%= row[:paid_count] %></td>
                 <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
@@ -55,7 +55,7 @@
             <% if row[:is_blank] %>
               <tr class="blank-row"><td colspan="4">&nbsp;</td></tr>
             <% else %>
-              <tr>
+              <tr class="<%= "total-row" if row[:is_total] %>">
                 <td><%= row[:name] %></td>
                 <td class="text-right"><%= row[:paid_count] %></td>
                 <td class="text-right <%= row[:unpaid_count].positive? ? "status-unpaid" : "" %>"><%= row[:unpaid_count] %></td>
