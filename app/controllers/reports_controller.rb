@@ -374,8 +374,9 @@ class ReportsController < ApplicationController
       row(0).font_style = :bold
       columns(1..3).align = :right
       if rows.last&.fetch(:is_total, false)
+        row(table_rows.size - 1).size = 11.6
         row(table_rows.size - 1).font_style = :bold
-        row(table_rows.size - 1).text_color = "1F2937"
+        row(table_rows.size - 1).text_color = "000000"
       end
     end
   end
@@ -385,15 +386,21 @@ class ReportsController < ApplicationController
   end
 
   def configure_pdf_font(pdf)
-    font_path = [
+    normal_font_path = [
       Rails.root.join("app/assets/fonts/NotoSansJP.ttf").to_s,
       "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
       "/System/Library/Fonts/Supplemental/AppleGothic.ttf"
     ].find { |path| File.exist?(path) }
 
-    return unless font_path
+    return unless normal_font_path
 
-    pdf.font_families.update("Japanese" => { normal: font_path, bold: font_path })
+    bold_font_path = [
+      "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
+      "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
+      normal_font_path
+    ].find { |path| File.exist?(path) }
+
+    pdf.font_families.update("Japanese" => { normal: normal_font_path, bold: bold_font_path })
     pdf.font "Japanese"
   end
 
