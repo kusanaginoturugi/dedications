@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-APP_ROOT="/home/ubuntu/dedications"
-RUBY_BIN="/home/ubuntu/.local/share/mise/installs/ruby/3.4.8/bin"
-MISE_BIN="/home/ubuntu/.local/bin"
+APP_ROOT="/home/admin/dedications"
+RUBY_BIN="/home/admin/.local/share/mise/installs/ruby/3.4.8/bin"
+MISE_BIN="/home/admin/.local/bin"
 SERVICE_NAME="dedications.service"
 HEALTHCHECK_URL="http://127.0.0.1:3003/up"
 
@@ -24,7 +24,7 @@ trap 'report_failure "$LINENO" "$?"' ERR
 
 cd "$APP_ROOT"
 
-export HOME="/home/ubuntu"
+export HOME="/home/admin"
 export PATH="$MISE_BIN:$RUBY_BIN:$PATH"
 export RAILS_ENV="production"
 export BUNDLE_GEMFILE="$APP_ROOT/Gemfile"
@@ -44,9 +44,6 @@ bundle install
 
 log "Running database migrations"
 bin/rails db:migrate
-
-log "Importing congregations"
-bin/rails congregations:import
 
 log "Precompiling assets"
 bin/rails assets:clobber

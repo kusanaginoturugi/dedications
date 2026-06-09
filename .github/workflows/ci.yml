@@ -85,13 +85,13 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           port: ${{ secrets.EC2_PORT }}
-          username: ubuntu
+          username: admin
           key: ${{ secrets.EC2_SSH_KEY }}
           command_timeout: 20m
           debug: true
           script: |
             set -euo pipefail
-            cd /home/ubuntu/dedications
+            cd /home/admin/dedications
             git config core.fileMode false
             git fetch origin
             git show origin/main:scripts/deploy.sh | bash
