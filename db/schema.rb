@@ -10,16 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_01_000000) do
-  create_table "congregations", force: :cascade do |t|
-    t.string "code", null: false
-    t.datetime "created_at", null: false
-    t.string "name", null: false
-    t.string "old_code"
-    t.datetime "updated_at", null: false
-    t.index ["code"], name: "index_congregations_on_code", unique: true
-  end
-
+ActiveRecord::Schema[8.1].define(version: 2026_06_09_060200) do
   create_table "events", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "is_active"
@@ -27,12 +18,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_000000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "fellowships", force: :cascade do |t|
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: false, null: false
+    t.string "name", null: false
+    t.string "old_code"
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_fellowships_on_code", unique: true
+  end
+
   create_table "orders", force: :cascade do |t|
-    t.integer "congregation_id", null: false
     t.datetime "created_at", null: false
     t.date "dedication_on"
     t.integer "event_id"
     t.date "fax_received_on"
+    t.integer "fellowship_id", null: false
     t.string "form_type", null: false
     t.string "offerer_name"
     t.integer "page_number", null: false
@@ -41,9 +42,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_000000) do
     t.integer "serial_number_start"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
-    t.index ["congregation_id", "page_number"], name: "index_orders_on_congregation_id_and_page_number"
-    t.index ["congregation_id"], name: "index_orders_on_congregation_id"
     t.index ["event_id"], name: "index_orders_on_event_id"
+    t.index ["fellowship_id", "page_number"], name: "index_orders_on_fellowship_id_and_page_number"
+    t.index ["fellowship_id"], name: "index_orders_on_fellowship_id"
     t.index ["form_type", "page_number"], name: "index_orders_on_form_type_and_page_number", unique: true
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
@@ -58,7 +59,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_000000) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key "orders", "congregations"
   add_foreign_key "orders", "events"
+  add_foreign_key "orders", "fellowships"
   add_foreign_key "orders", "users"
 end

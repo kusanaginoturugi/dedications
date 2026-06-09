@@ -77,15 +77,15 @@ const initializePage = () => {
   const quantityCalcInputs = Array.from(container.querySelectorAll("[data-quantity-calc-input='true']"));
   const totalQuantityDisplay = container.querySelector("[data-total-quantity-display]");
   const totalAmountDisplay = container.querySelector("[data-total-amount-display]");
-  const searchInput = container.querySelector("[data-congregation-search-input]");
-  const hiddenCongregationInput = container.querySelector("[data-congregation-search-target='hidden']");
-  const originalCongregationId = container.querySelector("[data-original-congregation-id]")?.value || "";
-  const originalCongregationCode = container.querySelector("[data-original-congregation-code]")?.value || "";
-  const searchResults = container.querySelector("[data-congregation-results]");
-  const selectedCongregation = container.querySelector("[data-selected-congregation]");
+  const searchInput = container.querySelector("[data-fellowship-search-input]");
+  const hiddenFellowshipInput = container.querySelector("[data-fellowship-search-target='hidden']");
+  const originalFellowshipId = container.querySelector("[data-original-fellowship-id]")?.value || "";
+  const originalFellowshipCode = container.querySelector("[data-original-fellowship-code]")?.value || "";
+  const searchResults = container.querySelector("[data-fellowship-results]");
+  const selectedFellowship = container.querySelector("[data-selected-fellowship]");
 
   const renderSelection = (item) => {
-    selectedCongregation.innerHTML = item ?
+    selectedFellowship.innerHTML = item ?
       `<button type="button" class="search-result active">${item.code} ${item.name}</button>` :
       "<span>未選択</span>";
   };
@@ -117,7 +117,7 @@ const initializePage = () => {
 
   searchInput.addEventListener("input", async () => {
     const query = searchInput.value.trim();
-    hiddenCongregationInput.value = "";
+    hiddenFellowshipInput.value = "";
     renderSelection(null);
 
     if (query.replace(/\D/g, "").length < 2 && query.length < 2) {
@@ -126,7 +126,7 @@ const initializePage = () => {
     }
 
     const searchToken = ++lastSearchToken;
-    const response = await fetch(`${container.dataset.congregationsUrl}?query=${encodeURIComponent(query)}`, {
+    const response = await fetch(`${container.dataset.fellowshipsUrl}?query=${encodeURIComponent(query)}`, {
       headers: { Accept: "application/json" }
     });
 
@@ -141,7 +141,7 @@ const initializePage = () => {
       button.className = "search-result";
       button.textContent = `${item.code} ${item.name}`;
       button.addEventListener("click", () => {
-        hiddenCongregationInput.value = item.id;
+        hiddenFellowshipInput.value = item.id;
         searchInput.value = item.code;
         renderSelection(item);
         searchResults.innerHTML = "";
@@ -155,8 +155,8 @@ const initializePage = () => {
 
   quantityCalcInputs.forEach((input) => input.addEventListener("input", updateTotalQuantity));
   container.querySelector("form")?.addEventListener("submit", () => {
-    if (!hiddenCongregationInput.value && originalCongregationId && searchInput.value === originalCongregationCode) {
-      hiddenCongregationInput.value = originalCongregationId;
+    if (!hiddenFellowshipInput.value && originalFellowshipId && searchInput.value === originalFellowshipCode) {
+      hiddenFellowshipInput.value = originalFellowshipId;
     }
   });
   updateTotalQuantity();

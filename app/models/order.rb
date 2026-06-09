@@ -27,7 +27,7 @@ class Order < ApplicationRecord
   }.freeze
 
   belongs_to :user
-  belongs_to :congregation
+  belongs_to :fellowship
   belongs_to :event, optional: true
 
   normalizes :form_type, with: ->(value) { value.to_s.strip.presence }

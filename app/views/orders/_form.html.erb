@@ -1,7 +1,7 @@
 <section
   class="card"
   data-order-form
-  data-congregations-url="<%= congregations_path %>"
+  data-fellowships-url="<%= fellowships_path %>"
   data-unit-prices="<%= Order::FORM_DEFINITIONS.transform_values { |definition| definition.fetch(:unit_price) }.to_json %>"
 >
   <%= form_with model: order, class: "stack-form" do |form| %>
@@ -54,27 +54,27 @@
         <div class="sheet-pair">
           <div class="sheet-label">伝道会名</div>
           <div class="sheet-value">
-            <div class="field compact-field congregation-field">
+            <div class="field compact-field fellowship-field">
               <input
-                id="congregation-code-search"
-                name="order[congregation_query]"
+                id="fellowship-code-search"
+                name="order[fellowship_query]"
                 type="text"
-                value="<%= order.congregation&.code %>"
+                value="<%= order.fellowship&.code %>"
                 placeholder="コードまたは伝道会名"
                 autocomplete="off"
-                data-congregation-search-input
+                data-fellowship-search-input
               >
-              <%= form.hidden_field :congregation_id, data: { congregation_search_target: "hidden" } %>
-              <input type="hidden" value="<%= order.congregation_id %>" data-original-congregation-id>
-              <input type="hidden" value="<%= order.congregation&.code %>" data-original-congregation-code>
-              <div class="selected-congregation" data-selected-congregation>
-                <% if order.congregation %>
-                  <button type="button" class="search-result active"><%= "#{order.congregation.code} #{order.congregation.name}" %></button>
+              <%= form.hidden_field :fellowship_id, data: { fellowship_search_target: "hidden" } %>
+              <input type="hidden" value="<%= order.fellowship_id %>" data-original-fellowship-id>
+              <input type="hidden" value="<%= order.fellowship&.code %>" data-original-fellowship-code>
+              <div class="selected-fellowship" data-selected-fellowship>
+                <% if order.fellowship %>
+                  <button type="button" class="search-result active"><%= "#{order.fellowship.code} #{order.fellowship.name}" %></button>
                 <% else %>
                   <span>未選択</span>
                 <% end %>
               </div>
-              <div class="search-results" data-congregation-results></div>
+              <div class="search-results" data-fellowship-results></div>
             </div>
           </div>
         </div>

@@ -1,0 +1,84 @@
+<% content_for :title, "伝道会管理" %>
+
+<div class="app-shell">
+  <div class="page-head">
+    <h2>伝道会管理</h2>
+    <p class="section-lead">注文書で選択できる伝道会を絞り込みます。マスタは osystem-masters が source of truth です。</p>
+  </div>
+
+  <% if flash[:notice].present? %>
+    <div class="flash notice"><%= flash[:notice] %></div>
+  <% end %>
+  <% if flash[:alert].present? %>
+    <div class="flash alert"><%= flash[:alert] %></div>
+  <% end %>
+
+  <div class="card">
+    <h2>現在の対象 (enabled)</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>code</th>
+            <th>old_code</th>
+            <th>name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @fellowships.each do |fellowship| %>
+            <tr>
+              <td><%= fellowship.code %></td>
+              <td><%= fellowship.old_code %></td>
+              <td><%= fellowship.name %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <% if current_user&.is_admin? %>
+    <details class="card masters-sync">
+      <summary>マスタ連携 (普段は閉じておく)</summary>
+
+      <div class="masters-sync-actions">
+        <%= button_to "マスタ同期", sync_fellowships_path, method: :post, class: "primary-button", data: { turbo_submits_with: "同期中…" } %>
+        <p class="section-lead">osystem-masters から伝道会一覧を取得して、dedications の fellowships に反映する。enabled は触らない。</p>
+      </div>
+
+      <%= form_with url: bulk_update_enabled_fellowships_path, method: :patch, class: "masters-sync-form" do |form| %>
+        <p class="section-lead">注文書で選択させたい伝道会にチェックを入れて「対象を保存」を押す。チェックを外しても master 側は変わらない。</p>
+        <div class="fellowship-enabled-list">
+          <% @all_fellowships.each do |fellowship| %>
+            <label class="fellowship-enabled-item">
+              <%= check_box_tag "enabled[]", fellowship.id, fellowship.enabled, id: "enabled_#{fellowship.id}" %>
+              <span class="code-mono"><%= fellowship.code %></span>
+              <span><%= fellowship.name %></span>
+            </label>
+          <% end %>
+        </div>
+        <%= form.submit "対象を保存", class: "primary-button", data: { turbo_submits_with: "保存中…" } %>
+      <% end %>
+    </details>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".masters-sync form").forEach((form) => {
+      form.addEventListener("submit", () => {
+        form.querySelectorAll("button[type=submit], input[type=submit]").forEach((btn) => {
+          const submitsWith = btn.dataset.turboSubmitsWith;
+          if (submitsWith) {
+            if (btn.tagName === "INPUT") {
+              btn.value = submitsWith;
+            } else {
+              btn.textContent = submitsWith;
+            }
+          }
+          btn.disabled = true;
+        });
+      });
+    });
+  });
+</script>

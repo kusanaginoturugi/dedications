@@ -8,7 +8,7 @@ class OrderTest < ActiveSupport::TestCase
   test "通し番号が重複していない場合は有効であること" do
     order = Order.new(
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       form_type: "wish_fulfillment_staff",
       page_number: 100,
       serial_number_start: 1,
@@ -24,7 +24,7 @@ class OrderTest < ActiveSupport::TestCase
   test "同じ注文書種類で通し番号が完全に重複する場合は無効であること" do
     order = Order.new(
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       form_type: @existing_order.form_type,
       page_number: 100,
       serial_number_start: @existing_order.serial_number_start,
@@ -37,7 +37,7 @@ class OrderTest < ActiveSupport::TestCase
   test "同じ申込書種類で通し番号が一部重複（開始側）する場合は無効であること" do
     order = Order.new(
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       form_type: @existing_order.form_type,
       page_number: 100,
       serial_number_start: 5,
@@ -49,7 +49,7 @@ class OrderTest < ActiveSupport::TestCase
   test "同じ注文書種類で通し番号が一部重複（終了側）する場合は無効であること" do
     order = Order.new(
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       form_type: @existing_order.form_type,
       page_number: 100,
       serial_number_start: 15,
@@ -61,7 +61,7 @@ class OrderTest < ActiveSupport::TestCase
   test "同じ注文書種類で通し番号が既存の範囲を包含する場合は無効であること" do
     order = Order.new(
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       form_type: @existing_order.form_type,
       page_number: 100,
       serial_number_start: 5,
@@ -73,7 +73,7 @@ class OrderTest < ActiveSupport::TestCase
   test "異なる申込書種類であれば同じ通し番号でも有効であること" do
     order = Order.new(
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       form_type: "sankai_ryuge_pillar",
       page_number: 100,
       serial_number_start: @existing_order.serial_number_start,

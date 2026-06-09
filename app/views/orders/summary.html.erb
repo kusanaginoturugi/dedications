@@ -39,7 +39,7 @@
         <table class="summary-table summary-table-balanced stack-on-mobile">
           <colgroup>
             <col class="summary-page-column">
-            <col class="summary-congregation-column">
+            <col class="summary-fellowship-column">
             <col class="summary-serial-column">
             <col class="summary-quantity-column">
             <col class="summary-amount-column">
@@ -59,7 +59,7 @@
             <% summary[:orders].each do |order| %>
               <tr class="clickable-row" data-href="<%= edit_order_path(order) %>" tabindex="0" role="link" aria-label="ページ <%= order.page_number %> の申込を編集">
                 <td data-label="ページ番号" class="text-right"><%= order.page_number %></td>
-                <td data-label="伝道会名"><%= "#{order.congregation.code} #{order.congregation.name}" %></td>
+                <td data-label="伝道会名"><%= "#{order.fellowship.code} #{order.fellowship.name}" %></td>
                 <td data-label="通し番号" class="text-right"><%= order.serial_number_range_label || "-" %></td>
                 <td data-label="本数" class="text-right"><%= order.total_quantity.present? ? order.total_quantity : "-" %></td>
                 <td data-label="合計金額" class="text-right"><%= order.total_amount.present? ? number_to_currency(order.total_amount, unit: "¥", precision: 0) : "-" %></td>

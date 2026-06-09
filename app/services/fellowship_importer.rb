@@ -1,6 +1,6 @@
 require "csv"
 
-class CongregationImporter
+class FellowshipImporter
   DEFAULT_CSV_PATH = Rails.root.join("資料", "伝道会番号.csv")
 
   def self.call(csv_path: DEFAULT_CSV_PATH)
@@ -20,10 +20,10 @@ class CongregationImporter
       code, old_code, name = row.fields.first(3).map { |value| value.to_s.strip }
       next if code.blank? || name.blank?
 
-      Congregation.find_or_initialize_by(code: code).tap do |congregation|
-        congregation.old_code = old_code.presence
-        congregation.name = name
-        congregation.save!
+      Fellowship.find_or_initialize_by(code: code).tap do |fellowship|
+        fellowship.old_code = old_code.presence
+        fellowship.name = name
+        fellowship.save!
       end
 
       imported_count += 1

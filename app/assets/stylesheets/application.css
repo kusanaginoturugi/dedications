@@ -227,7 +227,7 @@ textarea {
   min-height: 0;
 }
 
-.congregation-field {
+.fellowship-field {
   gap: 0.2rem;
 }
 
@@ -739,7 +739,7 @@ table {
   width: 7.2rem;
 }
 
-.orders-congregation-column {
+.orders-fellowship-column {
   width: auto;
 }
 
@@ -800,7 +800,7 @@ table {
   width: 12%;
 }
 
-.summary-congregation-column {
+.summary-fellowship-column {
   width: 22%;
 }
 
@@ -879,14 +879,14 @@ tfoot td {
   opacity: 1;
 }
 
-.selected-congregation,
+.selected-fellowship,
 .search-results {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
 }
 
-.selected-congregation {
+.selected-fellowship {
   min-height: 0;
   align-items: center;
 }
@@ -1154,4 +1154,50 @@ tfoot td {
   .detail-input-number {
     max-width: none;
   }
+}
+
+.masters-sync > summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.masters-sync[open] > summary {
+  margin-bottom: 0.75rem;
+}
+
+.masters-sync-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0;
+}
+
+.masters-sync-form {
+  margin-top: 1rem;
+}
+
+.fellowship-enabled-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.fellowship-enabled-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--panel-border, rgba(0, 0, 0, 0.1));
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+.code-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--muted, #666);
 }

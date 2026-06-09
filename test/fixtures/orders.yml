@@ -7,7 +7,7 @@ one:
   serial_number_start: 10
   serial_number_end: 15
   user: admin
-  congregation: tokyo
+  fellowship: tokyo
   event: one
 
 two:
@@ -19,5 +19,5 @@ two:
   serial_number_start: 20
   serial_number_end: 24
   user: admin
-  congregation: tokyo
+  fellowship: tokyo
   event: one

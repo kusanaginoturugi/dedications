@@ -83,7 +83,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "伝道会ごとの入金済み本数、未入金本数、合計本数を表示します。"
   end
 
-  test "typed dedication counts include special congregations" do
+  test "typed dedication counts include special fellowships" do
     sign_in_as(users(:admin))
 
     [
@@ -92,7 +92,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
       [ "90001", "加賀御神水", 902, 1020, 1023 ],
       [ "10001", "聖龍華院", 903, 1030, 1034 ]
     ].each do |code, name, page_number, serial_start, serial_end|
-      congregation = Congregation.find_or_create_by!(code:) do |record|
+      fellowship = Fellowship.find_or_create_by!(code:) do |record|
         record.old_code = code
         record.name = name
       end
@@ -103,7 +103,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
         form_type: "wish_fulfillment_staff",
         offerer_name: name,
         paid: true,
-        congregation: congregation,
+        fellowship: fellowship,
         user: users(:admin),
         event: events(:one),
         serial_number_start: serial_start,
@@ -146,7 +146,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
   test "downloads dedication counts pdf without browser print mode" do
     sign_in_as(users(:admin))
 
-    congregation = Congregation.create!(code: "10121", old_code: "0121", name: "江別昇龍壇")
+    fellowship = Fellowship.create!(code: "10121", old_code: "0121", name: "江別昇龍壇")
     Order.create!(
       page_number: 99,
       fax_received_on: Date.current,
@@ -154,7 +154,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
       form_type: "wish_fulfillment_staff",
       offerer_name: "PDF確認",
       paid: true,
-      congregation: congregation,
+      fellowship: fellowship,
       user: users(:admin),
       event: events(:one),
       serial_number_start: 300,

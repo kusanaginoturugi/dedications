@@ -1,4 +1,4 @@
-CongregationImporter.call
+FellowshipImporter.call
 
 event31 = Event.find_or_create_by!(name: "第31回") do |event|
   event.is_active = true

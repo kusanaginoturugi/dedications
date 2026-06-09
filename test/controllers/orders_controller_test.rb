@@ -15,9 +15,9 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, orders(:one).form_label
     assert_includes response.body, orders(:one).offerer_name
-    assert_includes response.body, orders(:one).congregation.short_name
-    assert_not_includes response.body, orders(:one).congregation.name
-    assert_not_includes response.body, "#{orders(:one).congregation.code} #{orders(:one).congregation.name}"
+    assert_includes response.body, orders(:one).fellowship.short_name
+    assert_not_includes response.body, orders(:one).fellowship.name
+    assert_not_includes response.body, "#{orders(:one).fellowship.code} #{orders(:one).fellowship.name}"
   end
 
   test "new order defaults fax received on to today" do
@@ -38,11 +38,11 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_operator response.body.index(">1<"), :<, response.body.index(">15<")
   end
 
-  test "sorts orders by congregation name" do
+  test "sorts orders by fellowship name" do
     sign_in_as(users(:admin))
 
-    alpha = Congregation.create!(code: "80001", old_code: "8001", name: "A伝道会")
-    bravo = Congregation.create!(code: "80002", old_code: "8002", name: "B準総壇")
+    alpha = Fellowship.create!(code: "80001", old_code: "8001", name: "A伝道会")
+    bravo = Fellowship.create!(code: "80002", old_code: "8002", name: "B準総壇")
     Order.create!(
       page_number: 30,
       fax_received_on: "2026-04-10",
@@ -53,7 +53,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       serial_number_start: 100,
       serial_number_end: 101,
       user: users(:admin),
-      congregation: bravo,
+      fellowship: bravo,
       event: events(:one)
     )
     Order.create!(
@@ -66,17 +66,17 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       serial_number_start: 200,
       serial_number_end: 201,
       user: users(:admin),
-      congregation: alpha,
+      fellowship: alpha,
       event: events(:one)
     )
 
-    get orders_path, params: { sort: "congregation_name", direction: "asc" }
+    get orders_path, params: { sort: "fellowship_name", direction: "asc" }
 
     assert_response :success
     assert_operator response.body.index(">A<"), :<, response.body.index(">B<")
     assert_includes response.body, "伝道会名 ▲"
 
-    get orders_path, params: { sort: "congregation_name", direction: "desc" }
+    get orders_path, params: { sort: "fellowship_name", direction: "desc" }
 
     assert_response :success
     assert_operator response.body.index(">B<"), :<, response.body.index(">A<")
@@ -117,7 +117,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       serial_number_start: 100,
       serial_number_end: 101,
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       event: events(:one)
     )
     Order.create!(
@@ -130,7 +130,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       serial_number_start: 200,
       serial_number_end: 201,
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       event: events(:one)
     )
 
@@ -154,7 +154,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       serial_number_start: 100,
       serial_number_end: 101,
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       event: events(:one)
     )
     Order.create!(
@@ -167,7 +167,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       serial_number_start: 200,
       serial_number_end: 202,
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       event: events(:one)
     )
 
@@ -226,7 +226,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       serial_number_start: 100,
       serial_number_end: 101,
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       event: events(:one)
     )
     Order.create!(
@@ -239,7 +239,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       serial_number_start: 200,
       serial_number_end: 201,
       user: users(:admin),
-      congregation: congregations(:tokyo),
+      fellowship: fellowships(:tokyo),
       event: events(:one)
     )
 
@@ -251,8 +251,8 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       assert_includes response.body, heading
     end
     assert_includes response.body, orders(:one).offerer_name
-    assert_includes response.body, orders(:one).congregation.name
-    assert_not_includes response.body, "#{orders(:one).congregation.code} #{orders(:one).congregation.name}"
+    assert_includes response.body, orders(:one).fellowship.name
+    assert_not_includes response.body, "#{orders(:one).fellowship.code} #{orders(:one).fellowship.name}"
     assert_operator response.body.index("八大明王如意棒"), :<, response.body.index("三期滅劫\n之霊木")
     assert_operator response.body.index("三期滅劫\n之霊木"), :<, response.body.index("三會龍華\n之御柱")
   end
@@ -289,7 +289,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
           form_type: "wish_fulfillment_staff",
           offerer_name: "高橋美咲",
           paid: "1",
-          congregation_id: congregations(:osaka).id,
+          fellowship_id: fellowships(:osaka).id,
           serial_number_start: 100,
           serial_number_end: 125
         }
@@ -301,7 +301,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "高橋美咲", created_order.offerer_name
   end
 
-  test "creates an order by congregation name query" do
+  test "creates an order by fellowship name query" do
     sign_in_as(users(:admin))
 
     assert_difference("Order.count", 1) do
@@ -313,8 +313,8 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
           form_type: "sankai_ryuge_pillar",
           offerer_name: "名前検索",
           paid: "1",
-          congregation_id: "",
-          congregation_query: "泉珠",
+          fellowship_id: "",
+          fellowship_query: "泉珠",
           serial_number_start: 300,
           serial_number_end: 305
         }
@@ -323,7 +323,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     created_order = Order.order(:created_at).last
     assert_redirected_to order_path(created_order)
-    assert_equal congregations(:senzu), created_order.congregation
+    assert_equal fellowships(:senzu), created_order.fellowship
   end
 
   test "shows edit form" do
@@ -364,7 +364,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
           fax_received_on: "2026-04-10",
           form_type: orders(:one).form_type,
           paid: "0",
-          congregation_id: congregations(:osaka).id,
+          fellowship_id: fellowships(:osaka).id,
           serial_number_start: 30,
           serial_number_end: 32
         }
@@ -375,7 +375,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "ページ番号は同じ申込書種類ですでに使われています"
   end
 
-  test "shows missing congregation error in Japanese" do
+  test "shows missing fellowship error in Japanese" do
     sign_in_as(users(:admin))
 
     post orders_path, params: {
@@ -385,7 +385,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
         dedication_on: "2026-04-10",
         form_type: "wish_fulfillment_staff",
         paid: "0",
-        congregation_id: "",
+        fellowship_id: "",
         serial_number_start: 30,
         serial_number_end: 32
       }
@@ -406,7 +406,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
           fax_received_on: "2026-04-10",
           form_type: "sanki_reiboku",
           paid: "0",
-          congregation_id: congregations(:osaka).id,
+          fellowship_id: fellowships(:osaka).id,
           serial_number_start: 30,
           serial_number_end: 32
         }
@@ -424,7 +424,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
         form_type: "sanki_reiboku",
         offerer_name: "伊藤美紀",
         paid: "1",
-        congregation_id: congregations(:osaka).id,
+        fellowship_id: fellowships(:osaka).id,
         serial_number_start: 200,
         serial_number_end: 240
       }
@@ -445,7 +445,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       "fax_received_on",
       "form_type",
       "offerer_name",
-      "congregation_id",
+      "fellowship_id",
       "serial_number_start",
       "serial_number_end"
     )
@@ -458,7 +458,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
         form_type: "",
         offerer_name: "",
         paid: order.paid ? "1" : "0",
-        congregation_id: "",
+        fellowship_id: "",
         serial_number_start: "",
         serial_number_end: ""
       }
@@ -480,7 +480,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
         fax_received_on: orders(:one).fax_received_on,
         form_type: orders(:one).form_type,
         paid: orders(:one).paid,
-        congregation_id: orders(:one).congregation_id,
+        fellowship_id: orders(:one).fellowship_id,
         serial_number_start: orders(:one).serial_number_start,
         serial_number_end: orders(:one).serial_number_end
       }

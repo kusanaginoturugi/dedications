@@ -112,23 +112,23 @@ class ReportsController < ApplicationController
         return { is_blank: true }
       end
 
-      congregation = Congregation.find_by(code: code)
+      fellowship = Fellowship.find_by(code: code)
       # データベースにない場合も、名称変更があれば特別枠として扱う（弥勒寺など）
-      if !congregation && name_overrides.key?(code)
-        congregation = Congregation.new(code: code, name: name_overrides[code])
+      if !fellowship && name_overrides.key?(code)
+        fellowship = Fellowship.new(code: code, name: name_overrides[code])
       end
 
-      return nil unless congregation
+      return nil unless fellowship
 
-      orders = scoped_orders.where(congregation: congregation)
+      orders = scoped_orders.where(fellowship: fellowship)
       orders = orders.where(form_type: @form_type) if @form_type.present?
       paid_count = orders.select(&:paid?).sum { |order| order.total_quantity.to_i }
       unpaid_count = orders.reject(&:paid?).sum { |order| order.total_quantity.to_i }
 
       {
         is_blank: false,
-        code: congregation.code,
-        name: name_overrides[congregation.code] || congregation.name,
+        code: fellowship.code,
+        name: name_overrides[fellowship.code] || fellowship.name,
         paid_count: paid_count,
         unpaid_count: unpaid_count,
         total_count: paid_count + unpaid_count

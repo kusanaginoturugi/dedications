@@ -4,7 +4,7 @@ class OrdersController < ApplicationController
     fax_received_on
     dedication_on
     form_type
-    congregation_id
+    fellowship_id
     serial_number_start
     serial_number_end
     offerer_name
@@ -91,7 +91,7 @@ class OrdersController < ApplicationController
   private
 
   def set_order
-    @order = Order.includes(:congregation, :user).find(params[:id])
+    @order = Order.includes(:fellowship, :user).find(params[:id])
   end
 
   def scoped_orders
@@ -101,11 +101,11 @@ class OrdersController < ApplicationController
   end
 
   def ordered_orders
-    orders = Order.includes(:congregation, :user)
-    return orders.order(sort_column => sort_direction) unless sort_column == "congregation_name"
+    orders = Order.includes(:fellowship, :user)
+    return orders.order(sort_column => sort_direction) unless sort_column == "fellowship_name"
 
     orders.to_a.sort do |left, right|
-      comparison = left.congregation.short_name <=> right.congregation.short_name
+      comparison = left.fellowship.short_name <=> right.fellowship.short_name
       comparison = left.page_number.to_i <=> right.page_number.to_i if comparison.zero?
       sort_direction == "desc" ? -comparison : comparison
     end
@@ -186,7 +186,7 @@ class OrdersController < ApplicationController
     columns = {
       "番号" => "page_number",
       "奉納者名" => "offerer_name",
-      "伝道会名" => "congregation_name",
+      "伝道会名" => "fellowship_name",
       "奉納日" => "dedication_on",
       "入力日" => "created_at",
       "FAX受信日" => "fax_received_on",
@@ -196,7 +196,7 @@ class OrdersController < ApplicationController
       "入金状態" => "paid"
     }
     # 特殊な計算が必要な項目は簡易化、またはデフォルトの page_number にします
-    valid_columns = %w[page_number offerer_name congregation_name dedication_on created_at fax_received_on form_type paid]
+    valid_columns = %w[page_number offerer_name fellowship_name dedication_on created_at fax_received_on form_type paid]
     valid_columns.include?(params[:sort]) ? params[:sort] : "page_number"
   end
 
@@ -224,8 +224,8 @@ class OrdersController < ApplicationController
       :dedication_on,
       :form_type,
       :paid,
-      :congregation_id,
-      :congregation_query,
+      :fellowship_id,
+      :fellowship_query,
       :serial_number_start,
       :serial_number_end,
       :offerer_name
@@ -234,13 +234,13 @@ class OrdersController < ApplicationController
 
   def order_attributes
     permitted_params = order_params_with_query
-    apply_congregation_query(permitted_params)
-    permitted_params.except(:congregation_query)
+    apply_fellowship_query(permitted_params)
+    permitted_params.except(:fellowship_query)
   end
 
   def order_update_attributes
     permitted_params = order_params_with_query
-    apply_congregation_query(permitted_params)
+    apply_fellowship_query(permitted_params)
     PRESERVE_ON_BLANK_ATTRIBUTES.each do |attribute|
       next unless permitted_params.key?(attribute)
       next unless permitted_params[attribute].blank?
@@ -248,13 +248,13 @@ class OrdersController < ApplicationController
       current_value = @order.public_send(attribute)
       permitted_params[attribute] = current_value if current_value.present?
     end
-    permitted_params.except(:congregation_query)
+    permitted_params.except(:fellowship_query)
   end
 
-  def apply_congregation_query(permitted_params)
-    return if permitted_params[:congregation_id].present?
+  def apply_fellowship_query(permitted_params)
+    return if permitted_params[:fellowship_id].present?
 
-    congregation = Congregation.resolve_query(permitted_params[:congregation_query])
-    permitted_params[:congregation_id] = congregation.id if congregation
+    fellowship = Fellowship.resolve_query(permitted_params[:fellowship_query])
+    permitted_params[:fellowship_id] = fellowship.id if fellowship
   end
 end

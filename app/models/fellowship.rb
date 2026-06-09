@@ -1,4 +1,4 @@
-class Congregation < ApplicationRecord
+class Fellowship < ApplicationRecord
   has_many :orders, dependent: :restrict_with_exception
 
   normalizes :code, :old_code, with: ->(value) { value.to_s.strip.presence }
