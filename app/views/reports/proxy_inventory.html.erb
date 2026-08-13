@@ -125,15 +125,19 @@
           <tr>
             <td><%= row[:label] %></td>
             <% %w[stock_count order_total proxy_quantity pre_event_quantity remaining_count].each do |field_name| %>
-              <td>
-                <input
-                  type="number"
-                  min="0"
-                  value="<%= row[field_name.to_sym] %>"
-                  name="inventory_checks[<%= index %>][<%= field_name %>]"
-                  class="report-input inventory-check-input"
-                >
-              </td>
+              <% if field_name == "stock_count" && row[:stock_slash] %>
+                <td class="text-center inventory-check-slash">／</td>
+              <% else %>
+                <td>
+                  <input
+                    type="number"
+                    min="0"
+                    value="<%= row[field_name.to_sym] %>"
+                    name="inventory_checks[<%= index %>][<%= field_name %>]"
+                    class="report-input inventory-check-input"
+                  >
+                </td>
+              <% end %>
             <% end %>
           </tr>
         <% end %>
@@ -233,6 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 .inventory-check-input {
   min-width: 5rem;
+}
+
+.inventory-check-slash {
+  font-weight: 800;
 }
 
 .report-document-head {

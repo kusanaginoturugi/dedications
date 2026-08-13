@@ -126,6 +126,12 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".proxy-summary-table", text: /② 代理奉納合計.*※聖院分.*として.*入金.*弥勒寺分/
     assert_select ".proxy-summary-table", text: /①前日・当日売上合計.*聖院分.*弥勒寺分/
     assert_select ".proxy-summary-table", text: /地護摩供売上総合計（①＋②）.*聖院還付.*合計.*弥勒寺分.*合計/
+    assert_select ".inventory-check-table tbody tr:nth-child(2) td:nth-child(2)", text: "／"
+    assert_select ".inventory-check-table tbody tr:nth-child(3) td:nth-child(2)", text: "／"
+    assert_select ".inventory-check-table tbody tr:nth-child(4) td:nth-child(2)", text: "／"
+    assert_select "input[name='inventory_checks[1][stock_count]']", count: 0
+    assert_select "input[name='inventory_checks[2][stock_count]']", count: 0
+    assert_select "input[name='inventory_checks[3][stock_count]']", count: 0
     assert_select "input[name='inventory_checks[5][stock_count]'][value='61']"
     assert_select "input[name='inventory_checks[5][proxy_quantity]'][value='15']"
     assert_select "input[name='inventory_checks[5][pre_event_quantity]'][value='43']"

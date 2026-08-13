@@ -33,9 +33,9 @@ class ReportsController < ApplicationController
 
   INVENTORY_CHECK_ITEMS = [
     { label: "弥勒収円大護摩板", order_total: 60, pre_event_index: 0 },
-    { label: "※各種平定之御柱", order_total: 130, pre_event_index: 1 },
-    { label: "※三期滅劫之霊木", order_total: 830, form_type: "sanki_reiboku", pre_event_index: 2 },
-    { label: "※三會龍華之御柱", order_total: 650, form_type: "sankai_ryuge_pillar", pre_event_index: 3 },
+    { label: "※各種平定之御柱", order_total: 130, pre_event_index: 1, stock_slash: true },
+    { label: "※三期滅劫之霊木", order_total: 830, form_type: "sanki_reiboku", pre_event_index: 2, stock_slash: true },
+    { label: "※三會龍華之御柱", order_total: 650, form_type: "sankai_ryuge_pillar", pre_event_index: 3, stock_slash: true },
     { label: "明王如意棒", order_total: 900, form_type: "wish_fulfillment_staff", pre_event_index: 12 },
     { label: "幟", stock_count: 61, proxy_quantity: 15, pre_event_index: 14 }
   ].freeze
@@ -373,6 +373,7 @@ class ReportsController < ApplicationController
       {
         label: item.fetch(:label),
         item_index: index,
+        stock_slash: item[:stock_slash],
         stock_count: inventory_check_value(saved_inventory_checks, index, "stock_count", item[:stock_count]),
         order_total: inventory_check_value(saved_inventory_checks, index, "order_total", item[:order_total]),
         proxy_quantity: inventory_check_value(saved_inventory_checks, index, "proxy_quantity", proxy_quantity.positive? ? proxy_quantity : nil),
@@ -517,7 +518,7 @@ class ReportsController < ApplicationController
       ] + @inventory_rows.map do |row|
         [
           row[:label],
-          pdf_number(row[:stock_count]),
+          inventory_stock_display(row),
           pdf_number(row[:order_total]),
           pdf_number(row[:proxy_quantity]),
           pdf_number(row[:pre_event_quantity]),
@@ -568,6 +569,10 @@ class ReportsController < ApplicationController
 
   def pdf_number(value)
     value.present? ? value.to_s : ""
+  end
+
+  def inventory_stock_display(row)
+    row[:stock_slash] ? "／" : pdf_number(row[:stock_count])
   end
 
   def generate_full_page_table_pdf(title, lead, headers, rows, totals)
@@ -766,7 +771,7 @@ class ReportsController < ApplicationController
       csv << [ "道具数チェック" ]
       csv << [ "道具名", "在庫数", "注文数(合計)", "代理奉納数(合計)", "前日・当日売上数", "残数" ]
       @inventory_rows.each do |row|
-        csv << [ row[:label], row[:stock_count], row[:order_total], row[:proxy_quantity], row[:pre_event_quantity], row[:remaining_count] ]
+        csv << [ row[:label], inventory_stock_display(row), row[:order_total], row[:proxy_quantity], row[:pre_event_quantity], row[:remaining_count] ]
       end
       csv << []
       csv << [ "報告担当者：尾ノ上裕美", "連絡先：09041779036" ]
