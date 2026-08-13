@@ -18,6 +18,8 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "天地免劫護摩木"
     assert_not_includes response.body, "天地免劫&lt;br&gt;護摩木"
     assert_select "form#pre-event-report-form[method='post'][action='#{save_pre_event_reports_path}']"
+    assert_select "form#pre-event-report-form button.primary-button", text: "保存"
+    assert_select "button[form='pre-event-report-form']", count: 0
     assert_select "[data-total-quantity]", count: 0
     assert_select "[data-total-miroku]", count: 1
   end
@@ -41,6 +43,16 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[name='quantities[0]'][value='3']"
     assert_select "input[name='quantities[7]'][value='12']"
+  end
+
+  test "does not overwrite pre event quantities when no quantities are posted" do
+    sign_in_as(users(:admin))
+    events(:one).pre_event_quantities.create!(item_index: 0, quantity: 9)
+
+    post save_pre_event_reports_path
+
+    assert_redirected_to pre_event_reports_path
+    assert_equal 9, events(:one).pre_event_quantities.find_by!(item_index: 0).quantity
   end
 
   test "downloads pre event csv and pdf" do

@@ -1,20 +1,21 @@
 <% content_for :title, "帳票: 前夜祭・当日" %>
 
-<section class="page-head">
-  <div>
-    <h2>帳票: 前夜祭・当日</h2>
-    <p class="section-lead">還付.ods の「前夜祭・当日」シート相当です。奉納数を入力すると自動計算されます。</p>
-  </div>
-  <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
-    <button class="primary-button" type="submit" form="pre-event-report-form" style="padding: 0.4rem 1rem;">保存</button>
-    <button class="secondary-button" type="submit" form="pre-event-report-form" formmethod="get" formaction="<%= pre_event_reports_path(format: :csv) %>" style="padding: 0.4rem 1rem;">CSV</button>
-    <button class="secondary-button" type="submit" form="pre-event-report-form" formmethod="get" formaction="<%= pre_event_reports_path(format: :pdf) %>" style="padding: 0.4rem 1rem;">PDF保存</button>
-  </div>
-</section>
+<form id="pre-event-report-form" action="<%= save_pre_event_reports_path %>" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-<section class="card" data-pre-event-report>
-  <form id="pre-event-report-form" action="<%= save_pre_event_reports_path %>" method="post">
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <section class="page-head">
+    <div>
+      <h2>帳票: 前夜祭・当日</h2>
+      <p class="section-lead">還付.ods の「前夜祭・当日」シート相当です。奉納数を入力すると自動計算されます。</p>
+    </div>
+    <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
+      <button class="primary-button" type="submit" style="padding: 0.4rem 1rem;">保存</button>
+      <button class="secondary-button" type="submit" formmethod="get" formaction="<%= pre_event_reports_path(format: :csv) %>" style="padding: 0.4rem 1rem;">CSV</button>
+      <button class="secondary-button" type="submit" formmethod="get" formaction="<%= pre_event_reports_path(format: :pdf) %>" style="padding: 0.4rem 1rem;">PDF保存</button>
+    </div>
+  </section>
+
+  <section class="card" data-pre-event-report>
     <div class="table-wrap">
       <table class="report-table">
         <thead>
@@ -61,8 +62,8 @@
         </tfoot>
       </table>
     </div>
-  </form>
-</section>
+  </section>
+</form>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
