@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get "reports/pre_event", to: "reports#pre_event", as: :pre_event_reports
   post "reports/pre_event", to: "reports#save_pre_event", as: :save_pre_event_reports
   get "reports/proxy_inventory", to: "reports#proxy_inventory", as: :proxy_inventory_reports
+  post "reports/proxy_inventory", to: "reports#save_proxy_inventory", as: :save_proxy_inventory_reports
   get "reports/dedication_counts", to: "reports#dedication_counts", as: :dedication_counts_reports
   get "reports/dedication_counts/:form_type", to: "reports#dedication_counts", as: :dedication_counts_by_type_reports
   resources :fellowships, only: :index do

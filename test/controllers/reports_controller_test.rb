@@ -86,8 +86,8 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
 
   test "shows proxy inventory report" do
     sign_in_as(users(:admin))
-    events(:one).pre_event_quantities.create!(item_index: 0, quantity: 7)
-    events(:one).pre_event_quantities.create!(item_index: 14, quantity: 14)
+    events(:one).proxy_inventory_quantities.create!(item_index: 0, quantity: 7)
+    events(:one).proxy_inventory_quantities.create!(item_index: 5, quantity: 14)
 
     get proxy_inventory_reports_path
 
@@ -97,8 +97,36 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "明王如意棒"
     assert_includes response.body, "道具数チェック"
     assert_includes response.body, "報告担当者：尾ノ上裕美"
-    assert_select "tr", text: /弥勒収円大護摩板.*7.*28,000/
-    assert_select "tr", text: /幟.*14.*42,000/
+    assert_select "form#proxy-inventory-report-form[method='post'][action='#{save_proxy_inventory_reports_path}']"
+    assert_select "form#proxy-inventory-report-form button.primary-button", text: "保存"
+    assert_select "input[name='quantities[0]'][value='7']"
+    assert_select "input[name='quantities[5]'][value='14']"
+    assert_select ".proxy-report-table tbody tr:nth-child(1) [data-sales-display]", text: "28,000"
+    assert_select ".proxy-report-table tbody tr:nth-child(6) [data-sales-display]", text: "42,000"
+  end
+
+  test "saves proxy inventory quantities for the current event" do
+    sign_in_as(users(:admin))
+
+    post save_proxy_inventory_reports_path, params: {
+      quantities: {
+        "0" => "7",
+        "1" => "482",
+        "5" => "14"
+      }
+    }
+
+    assert_redirected_to proxy_inventory_reports_path
+    assert_equal 7, events(:one).proxy_inventory_quantities.find_by!(item_index: 0).quantity
+    assert_equal 482, events(:one).proxy_inventory_quantities.find_by!(item_index: 1).quantity
+    assert_equal 14, events(:one).proxy_inventory_quantities.find_by!(item_index: 5).quantity
+
+    get proxy_inventory_reports_path
+
+    assert_response :success
+    assert_select "input[name='quantities[0]'][value='7']"
+    assert_select "input[name='quantities[1]'][value='482']"
+    assert_select "input[name='quantities[5]'][value='14']"
   end
 
   test "downloads proxy inventory csv and pdf" do

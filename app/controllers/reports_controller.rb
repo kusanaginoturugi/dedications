@@ -23,12 +23,12 @@ class ReportsController < ApplicationController
   ].freeze
 
   PROXY_INVENTORY_ITEMS = [
-    { label: "弥勒収円大護摩板", unit_price: 4000, refund_unit: 2000, miroku_unit: 2000, pre_event_index: 0 },
+    { label: "弥勒収円大護摩板", unit_price: 4000, refund_unit: 2000, miroku_unit: 2000 },
     { label: "三期滅劫之霊木", unit_price: 800, refund_unit: 100, miroku_unit: 700, form_type: "sanki_reiboku" },
     { label: "三會龍華之御柱", unit_price: 500, refund_unit: 150, miroku_unit: 350, form_type: "sankai_ryuge_pillar" },
     { label: "特別祈祷", unit_price: 5000, refund_unit: 1000, miroku_unit: 4000 },
     { label: "明王如意棒", unit_price: 2000, refund_unit: 800, miroku_unit: 1200, form_type: "wish_fulfillment_staff" },
-    { label: "幟", unit_price: 3000, refund_unit: nil, miroku_unit: 3000, pre_event_index: 14 }
+    { label: "幟", unit_price: 3000, refund_unit: nil, miroku_unit: 3000 }
   ].freeze
 
   INVENTORY_CHECK_ITEMS = [
@@ -100,6 +100,21 @@ class ReportsController < ApplicationController
           disposition: "attachment"
       end
     end
+  end
+
+  def save_proxy_inventory
+    unless current_event
+      redirect_to proxy_inventory_reports_path, alert: "保存先の回次がありません。管理者に確認してください。"
+      return
+    end
+
+    unless params[:quantities].present?
+      redirect_to proxy_inventory_reports_path, alert: "奉納数が送信されませんでした。もう一度入力して保存してください。"
+      return
+    end
+
+    save_proxy_inventory_quantities
+    redirect_to proxy_inventory_reports_path, notice: "代理・在庫の奉納数を保存しました。"
   end
 
   def dedication_counts
@@ -241,8 +256,8 @@ class ReportsController < ApplicationController
   end
 
   def build_proxy_inventory_rows
-    PROXY_INVENTORY_ITEMS.map do |item|
-      quantity = proxy_inventory_quantity_for(item)
+    PROXY_INVENTORY_ITEMS.each_with_index.map do |item, index|
+      quantity = proxy_inventory_quantity_for(item, index)
       {
         label: item.fetch(:label),
         unit_price: item.fetch(:unit_price),
@@ -252,19 +267,47 @@ class ReportsController < ApplicationController
         seiin_amount: quantity && item[:refund_unit] ? quantity * item.fetch(:refund_unit) : nil,
         miroku_unit: item[:miroku_unit],
         miroku_amount: quantity && item[:miroku_unit] ? quantity * item.fetch(:miroku_unit) : nil,
-        form_type: item[:form_type]
+        form_type: item[:form_type],
+        item_index: index
       }
     end
   end
 
-  def proxy_inventory_quantity_for(item)
-    if item[:pre_event_index].present?
-      return pre_event_quantity_map.fetch(item.fetch(:pre_event_index), 0)
-    end
+  def proxy_inventory_quantity_for(item, index)
+    saved_quantities = proxy_inventory_quantity_map
+    return saved_quantities[index] if saved_quantities.key?(index)
 
     return nil if item[:form_type].blank?
 
     scoped_orders.where(form_type: item.fetch(:form_type)).sum { |order| order.total_quantity.to_i }
+  end
+
+  def proxy_inventory_quantity_map
+    @proxy_inventory_quantity_map ||= begin
+      saved_quantities = current_event&.proxy_inventory_quantities || ProxyInventoryQuantity.none
+      saved_quantities.each_with_object({}) do |record, quantities|
+        quantities[record.item_index] = record.quantity
+      end
+    end
+  end
+
+  def save_proxy_inventory_quantities
+    return unless current_event
+
+    normalized_proxy_inventory_quantities(params[:quantities] || {}).each do |item_index, quantity|
+      record = current_event.proxy_inventory_quantities.find_or_initialize_by(item_index: item_index)
+      record.quantity = quantity
+      record.save!
+    end
+  end
+
+  def normalized_proxy_inventory_quantities(raw_quantities)
+    raw_quantities.to_unsafe_h.each_with_object({}) do |(index, value), quantities|
+      item_index = index.to_i
+      next unless item_index.between?(0, PROXY_INVENTORY_ITEMS.size - 1)
+
+      quantities[item_index] = value.blank? ? nil : [ value.to_i, 0 ].max
+    end
   end
 
   def calculate_proxy_totals(rows)
@@ -292,11 +335,16 @@ class ReportsController < ApplicationController
   end
 
   def build_inventory_check_rows(proxy_rows)
-    proxy_quantities = proxy_rows.index_by { |row| row[:form_type] }
+    proxy_quantities_by_form_type = proxy_rows.index_by { |row| row[:form_type] }
+    proxy_quantities_by_label = proxy_rows.index_by { |row| row[:label] }
     pre_event_quantities = pre_event_quantity_map
 
     INVENTORY_CHECK_ITEMS.map do |item|
-      proxy_quantity = item[:form_type].present? ? proxy_quantities.dig(item[:form_type], :quantity).to_i : 0
+      proxy_quantity = if item[:form_type].present?
+        proxy_quantities_by_form_type.dig(item[:form_type], :quantity).to_i
+      else
+        proxy_quantities_by_label.dig(item[:label], :quantity).to_i
+      end
       pre_event_quantity = pre_event_quantities.fetch(item.fetch(:pre_event_index), 0)
       base_count = item[:order_total] || item[:stock_count]
       remaining_count = base_count.to_i - proxy_quantity - pre_event_quantity

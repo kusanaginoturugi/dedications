@@ -2,18 +2,22 @@
 <% amount = ->(value) { value.present? ? number_with_delimiter(value) : "" } %>
 <% yen = ->(value) { number_to_currency(value.to_i, unit: "¥", precision: 0) } %>
 
-<section class="page-head">
-  <div>
-    <h2>帳票: 代理・在庫</h2>
-    <p class="section-lead">聖明王院 <%= current_event&.name %>八大明王護摩供 売上表</p>
-  </div>
-  <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
-    <%= link_to "CSV", proxy_inventory_reports_path(format: :csv), class: "secondary-button", style: "padding: 0.4rem 1rem;" %>
-    <%= link_to "PDF保存", proxy_inventory_reports_path(format: :pdf), class: "secondary-button", style: "padding: 0.4rem 1rem;" %>
-  </div>
-</section>
+<form id="proxy-inventory-report-form" action="<%= save_proxy_inventory_reports_path %>" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-<section class="card proxy-inventory-sheet">
+  <section class="page-head">
+    <div>
+      <h2>帳票: 代理・在庫</h2>
+      <p class="section-lead">聖明王院 <%= current_event&.name %>八大明王護摩供 売上表</p>
+    </div>
+    <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
+      <button class="primary-button" type="submit" style="padding: 0.4rem 1rem;">保存</button>
+      <button class="secondary-button" type="submit" formmethod="get" formaction="<%= proxy_inventory_reports_path(format: :csv) %>" style="padding: 0.4rem 1rem;">CSV</button>
+      <button class="secondary-button" type="submit" formmethod="get" formaction="<%= proxy_inventory_reports_path(format: :pdf) %>" style="padding: 0.4rem 1rem;">PDF保存</button>
+    </div>
+  </section>
+
+<section class="card proxy-inventory-sheet" data-proxy-inventory-report data-pre-event-sales="<%= @pre_event_totals[:sales] %>" data-pre-event-seiin="<%= @pre_event_totals[:seiin_amount] %>" data-pre-event-miroku="<%= @pre_event_totals[:miroku_amount] %>">
   <header class="report-document-head">
     <div>
       <h3>表② 代理奉納</h3>
@@ -24,19 +28,19 @@
   <div class="summary-totals summary-totals-overall">
     <div class="summary-total-card text-right">
       <span class="summary-total-label">代理奉納合計</span>
-      <strong><%= yen.call(@proxy_totals[:sales]) %></strong>
+      <strong data-summary-proxy-sales><%= yen.call(@proxy_totals[:sales]) %></strong>
     </div>
     <div class="summary-total-card text-right">
       <span class="summary-total-label">聖院分</span>
-      <strong><%= yen.call(@proxy_totals[:seiin_amount]) %></strong>
+      <strong data-summary-proxy-seiin><%= yen.call(@proxy_totals[:seiin_amount]) %></strong>
     </div>
     <div class="summary-total-card text-right">
       <span class="summary-total-label">弥勒寺分</span>
-      <strong><%= yen.call(@proxy_totals[:miroku_amount]) %></strong>
+      <strong data-summary-proxy-miroku><%= yen.call(@proxy_totals[:miroku_amount]) %></strong>
     </div>
     <div class="summary-total-card text-right">
       <span class="summary-total-label">総合計</span>
-      <strong><%= yen.call(@grand_totals[:sales]) %></strong>
+      <strong data-summary-grand-sales><%= yen.call(@grand_totals[:sales]) %></strong>
     </div>
   </div>
 
@@ -55,27 +59,32 @@
         </tr>
       </thead>
       <tbody>
-        <% @rows.each do |row| %>
-          <tr>
+        <% @rows.each_with_index do |row, index| %>
+          <tr data-row="<%= index %>"
+              data-unit-price="<%= row[:unit_price] %>"
+              data-refund-unit="<%= row[:refund_unit] %>"
+              data-miroku-unit="<%= row[:miroku_unit] %>">
             <td><%= row[:label] %></td>
             <td class="text-right"><%= amount.call(row[:unit_price]) %></td>
-            <td class="text-right"><%= amount.call(row[:quantity]) %></td>
-            <td class="text-right"><%= amount.call(row[:sales]) %></td>
+            <td>
+              <input type="number" min="0" value="<%= row[:quantity] %>" name="quantities[<%= index %>]" class="report-input proxy-quantity-input" data-quantity-input>
+            </td>
+            <td class="text-right" data-sales-display><%= amount.call(row[:sales]) %></td>
             <td class="text-right"><%= amount.call(row[:refund_unit]) %></td>
-            <td class="text-right"><%= amount.call(row[:seiin_amount]) %></td>
+            <td class="text-right" data-seiin-amount-display><%= amount.call(row[:seiin_amount]) %></td>
             <td class="text-right"><%= amount.call(row[:miroku_unit]) %></td>
-            <td class="text-right"><%= amount.call(row[:miroku_amount]) %></td>
+            <td class="text-right" data-miroku-amount-display><%= amount.call(row[:miroku_amount]) %></td>
           </tr>
         <% end %>
       </tbody>
       <tfoot>
         <tr class="total-row">
           <td colspan="3">※聖院分　② 代理奉納合計</td>
-          <td class="text-right"><%= yen.call(@proxy_totals[:sales]) %></td>
+          <td class="text-right" data-proxy-total-sales><%= yen.call(@proxy_totals[:sales]) %></td>
           <td></td>
-          <td class="text-right"><%= yen.call(@proxy_totals[:seiin_amount]) %></td>
+          <td class="text-right" data-proxy-total-seiin><%= yen.call(@proxy_totals[:seiin_amount]) %></td>
           <td></td>
-          <td class="text-right"><%= yen.call(@proxy_totals[:miroku_amount]) %></td>
+          <td class="text-right" data-proxy-total-miroku><%= yen.call(@proxy_totals[:miroku_amount]) %></td>
         </tr>
         <tr class="total-row">
           <td colspan="3">①前日・当日売上合計</td>
@@ -87,11 +96,11 @@
         </tr>
         <tr class="total-row">
           <td colspan="3">地護摩供売上総合計（①＋②）</td>
-          <td class="text-right"><%= yen.call(@grand_totals[:sales]) %></td>
+          <td class="text-right" data-grand-total-sales><%= yen.call(@grand_totals[:sales]) %></td>
           <td></td>
-          <td class="text-right"><%= yen.call(@grand_totals[:seiin_amount]) %></td>
+          <td class="text-right" data-grand-total-seiin><%= yen.call(@grand_totals[:seiin_amount]) %></td>
           <td></td>
-          <td class="text-right"><%= yen.call(@grand_totals[:miroku_amount]) %></td>
+          <td class="text-right" data-grand-total-miroku><%= yen.call(@grand_totals[:miroku_amount]) %></td>
         </tr>
       </tfoot>
     </table>
@@ -129,8 +138,98 @@
 
   <p class="report-contact">報告担当者：尾ノ上裕美　連絡先：09041779036</p>
 </section>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.querySelector("[data-proxy-inventory-report]");
+  if (!container) return;
+
+  const rows = container.querySelectorAll(".proxy-report-table tbody tr");
+  const preEventSales = parseInt(container.dataset.preEventSales) || 0;
+  const preEventSeiin = parseInt(container.dataset.preEventSeiin) || 0;
+  const preEventMiroku = parseInt(container.dataset.preEventMiroku) || 0;
+
+  const formatNumber = (amount) => amount ? amount.toLocaleString() : "";
+  const formatCurrency = (amount) => "¥" + amount.toLocaleString();
+
+  const setText = (selector, value) => {
+    const element = container.querySelector(selector);
+    if (element) element.textContent = value;
+  };
+
+  const updateCalculations = () => {
+    let proxySales = 0;
+    let proxySeiin = 0;
+    let proxyMiroku = 0;
+
+    rows.forEach(row => {
+      const input = row.querySelector("[data-quantity-input]");
+      const rawQuantity = input.value.trim();
+      const quantity = rawQuantity === "" ? null : Math.max(parseInt(rawQuantity) || 0, 0);
+      const unitPrice = parseInt(row.dataset.unitPrice) || 0;
+      const refundUnitRaw = row.dataset.refundUnit;
+      const mirokuUnitRaw = row.dataset.mirokuUnit;
+      const hasRefundUnit = refundUnitRaw !== "";
+      const hasMirokuUnit = mirokuUnitRaw !== "";
+
+      const sales = quantity === null ? null : quantity * unitPrice;
+      const seiinAmount = quantity === null || !hasRefundUnit ? null : quantity * (parseInt(refundUnitRaw) || 0);
+      const mirokuAmount = quantity === null || !hasMirokuUnit ? null : quantity * (parseInt(mirokuUnitRaw) || 0);
+
+      row.querySelector("[data-sales-display]").textContent = formatNumber(sales);
+      row.querySelector("[data-seiin-amount-display]").textContent = formatNumber(seiinAmount);
+      row.querySelector("[data-miroku-amount-display]").textContent = formatNumber(mirokuAmount);
+
+      proxySales += sales || 0;
+      proxySeiin += seiinAmount || 0;
+      proxyMiroku += mirokuAmount || 0;
+    });
+
+    setText("[data-summary-proxy-sales]", formatCurrency(proxySales));
+    setText("[data-summary-proxy-seiin]", formatCurrency(proxySeiin));
+    setText("[data-summary-proxy-miroku]", formatCurrency(proxyMiroku));
+    setText("[data-summary-grand-sales]", formatCurrency(proxySales + preEventSales));
+    setText("[data-proxy-total-sales]", formatCurrency(proxySales));
+    setText("[data-proxy-total-seiin]", formatCurrency(proxySeiin));
+    setText("[data-proxy-total-miroku]", formatCurrency(proxyMiroku));
+    setText("[data-grand-total-sales]", formatCurrency(proxySales + preEventSales));
+    setText("[data-grand-total-seiin]", formatCurrency(proxySeiin + preEventSeiin));
+    setText("[data-grand-total-miroku]", formatCurrency(proxyMiroku + preEventMiroku));
+  };
+
+  container.querySelectorAll("[data-quantity-input]").forEach(input => {
+    input.addEventListener("input", updateCalculations);
+    input.addEventListener("focus", () => input.select());
+    input.addEventListener("click", () => input.select());
+  });
+
+  updateCalculations();
+});
+</script>
 
 <style>
+.report-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+  text-align: right;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.report-input::-webkit-outer-spin-button,
+.report-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.proxy-quantity-input {
+  min-width: 5.5rem;
+}
+
 .report-document-head {
   display: flex;
   align-items: flex-start;
