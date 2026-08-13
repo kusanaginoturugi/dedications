@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_060200) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_13_150000) do
   create_table "events", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "is_active"
@@ -49,6 +49,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_060200) do
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
+  create_table "pre_event_quantities", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "event_id", null: false
+    t.integer "item_index", null: false
+    t.integer "quantity", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "item_index"], name: "index_pre_event_quantities_on_event_id_and_item_index", unique: true
+    t.index ["event_id"], name: "index_pre_event_quantities_on_event_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", null: false
@@ -62,4 +72,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_060200) do
   add_foreign_key "orders", "events"
   add_foreign_key "orders", "fellowships"
   add_foreign_key "orders", "users"
+  add_foreign_key "pre_event_quantities", "events"
 end

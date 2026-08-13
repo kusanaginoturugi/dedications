@@ -19,6 +19,27 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "天地免劫&lt;br&gt;護摩木"
   end
 
+  test "saves pre event quantities for the current event" do
+    sign_in_as(users(:admin))
+
+    post save_pre_event_reports_path, params: {
+      quantities: {
+        "0" => "3",
+        "7" => "12"
+      }
+    }
+
+    assert_redirected_to pre_event_reports_path
+    assert_equal 3, events(:one).pre_event_quantities.find_by!(item_index: 0).quantity
+    assert_equal 12, events(:one).pre_event_quantities.find_by!(item_index: 7).quantity
+
+    get pre_event_reports_path
+
+    assert_response :success
+    assert_select "input[name='quantities[0]'][value='3']"
+    assert_select "input[name='quantities[7]'][value='12']"
+  end
+
   test "downloads pre event csv and pdf" do
     sign_in_as(users(:admin))
 

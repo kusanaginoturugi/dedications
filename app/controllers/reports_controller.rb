@@ -44,6 +44,11 @@ class ReportsController < ApplicationController
     end
   end
 
+  def save_pre_event
+    save_pre_event_quantities
+    redirect_to pre_event_reports_path, notice: "前夜祭・当日の奉納数を保存しました。"
+  end
+
   def proxy_inventory
     @rows = build_proxy_inventory_rows
     @proxy_totals = calculate_proxy_totals(@rows)
@@ -161,15 +166,45 @@ class ReportsController < ApplicationController
   private
 
   def build_pre_event_rows
-    quantities = params[:quantities] || {}
+    quantities = pre_event_quantities
     PRE_EVENT_ITEMS.each_with_index.map do |item, index|
-      quantity = quantities[index.to_s].to_i
+      quantity = quantities.fetch(index, 0)
       item.merge(
         quantity: quantity,
         sales: quantity * item.fetch(:unit_price),
         seiin_amount: quantity * item.fetch(:refund_unit),
         miroku_amount: quantity * item.fetch(:miroku_unit)
       )
+    end
+  end
+
+  def pre_event_quantities
+    if params[:quantities].present?
+      return normalized_pre_event_quantities(params[:quantities])
+    end
+
+    saved_quantities = current_event&.pre_event_quantities || PreEventQuantity.none
+    saved_quantities.each_with_object({}) do |record, quantities|
+      quantities[record.item_index] = record.quantity
+    end
+  end
+
+  def save_pre_event_quantities
+    return unless current_event
+
+    normalized_pre_event_quantities(params[:quantities] || {}).each do |item_index, quantity|
+      record = current_event.pre_event_quantities.find_or_initialize_by(item_index: item_index)
+      record.quantity = quantity
+      record.save!
+    end
+  end
+
+  def normalized_pre_event_quantities(raw_quantities)
+    raw_quantities.to_unsafe_h.each_with_object({}) do |(index, value), quantities|
+      item_index = index.to_i
+      next unless item_index.between?(0, PRE_EVENT_ITEMS.size - 1)
+
+      quantities[item_index] = [ value.to_i, 0 ].max
     end
   end
 
