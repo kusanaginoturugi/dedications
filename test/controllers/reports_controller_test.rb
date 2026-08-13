@@ -91,7 +91,10 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, "帳票: 代理・在庫"
+    assert_includes response.body, "表② 代理奉納（地方代理＝護摩センター振込分）"
     assert_includes response.body, "明王如意棒"
+    assert_includes response.body, "道具数チェック"
+    assert_includes response.body, "報告担当者：尾ノ上裕美"
   end
 
   test "downloads proxy inventory csv and pdf" do

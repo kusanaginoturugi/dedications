@@ -1,9 +1,11 @@
 <% content_for :title, "帳票: 代理・在庫" %>
+<% amount = ->(value) { value.present? ? number_with_delimiter(value) : "" } %>
+<% yen = ->(value) { number_to_currency(value.to_i, unit: "¥", precision: 0) } %>
 
 <section class="page-head">
   <div>
     <h2>帳票: 代理・在庫</h2>
-    <p class="section-lead">代理奉納入力データから、代理・在庫シート相当の集計を表示します。</p>
+    <p class="section-lead">聖明王院 <%= current_event&.name %>八大明王護摩供 売上表</p>
   </div>
   <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
     <%= link_to "CSV", proxy_inventory_reports_path(format: :csv), class: "secondary-button", style: "padding: 0.4rem 1rem;" %>
@@ -11,28 +13,15 @@
   </div>
 </section>
 
-<section class="card">
-  <div class="summary-totals summary-totals-overall">
-    <div class="summary-total-card text-right">
-      <span class="summary-total-label">合計本数</span>
-      <strong><%= @proxy_totals[:quantity] %> 本</strong>
-    </div>
-    <div class="summary-total-card text-right">
-      <span class="summary-total-label">合計売上</span>
-      <strong><%= number_to_currency(@proxy_totals[:sales], unit: "¥", precision: 0) %></strong>
-    </div>
-    <div class="summary-total-card text-right">
-      <span class="summary-total-label">聖院還付合計</span>
-      <strong><%= number_to_currency(@proxy_totals[:seiin_amount], unit: "¥", precision: 0) %></strong>
-    </div>
-    <div class="summary-total-card text-right">
-      <span class="summary-total-label">弥勒寺分合計</span>
-      <strong><%= number_to_currency(@proxy_totals[:miroku_amount], unit: "¥", precision: 0) %></strong>
-    </div>
-  </div>
+<section class="card proxy-inventory-sheet">
+  <header class="report-document-head">
+    <h3>聖明王院 <%= current_event&.name %>八大明王護摩供 売上表</h3>
+    <p>代理奉納分は表②に記入（※各伝道会からの代理奉納報告書も一緒に提出をお願いします）</p>
+    <h4>表② 代理奉納（地方代理＝護摩センター振込分）</h4>
+  </header>
 
   <div class="table-wrap">
-    <table class="report-table">
+    <table class="report-table proxy-report-table">
       <thead>
         <tr>
           <th>道具名</th>
@@ -48,39 +37,122 @@
       <tbody>
         <% @rows.each do |row| %>
           <tr>
-            <td><%= row[:label].html_safe %></td>
-            <td class="text-right"><%= number_to_currency(row[:unit_price], unit: "¥", precision: 0) %></td>
-            <td class="text-right"><%= row[:quantity] %></td>
-            <td class="text-right"><%= number_to_currency(row[:sales], unit: "¥", precision: 0) %></td>
-            <td class="text-right"><%= number_to_currency(row[:refund_unit], unit: "¥", precision: 0) %></td>
-            <td class="text-right"><%= number_to_currency(row[:seiin_amount], unit: "¥", precision: 0) %></td>
-            <td class="text-right"><%= number_to_currency(row[:miroku_unit], unit: "¥", precision: 0) %></td>
-            <td class="text-right"><%= number_to_currency(row[:miroku_amount], unit: "¥", precision: 0) %></td>
+            <td><%= row[:label] %></td>
+            <td class="text-right"><%= amount.call(row[:unit_price]) %></td>
+            <td class="text-right"><%= amount.call(row[:quantity]) %></td>
+            <td class="text-right"><%= amount.call(row[:sales]) %></td>
+            <td class="text-right"><%= amount.call(row[:refund_unit]) %></td>
+            <td class="text-right"><%= amount.call(row[:seiin_amount]) %></td>
+            <td class="text-right"><%= amount.call(row[:miroku_unit]) %></td>
+            <td class="text-right"><%= amount.call(row[:miroku_amount]) %></td>
           </tr>
         <% end %>
       </tbody>
       <tfoot>
         <tr class="total-row">
-          <td>合計</td>
-          <td>-</td>
-          <td class="text-right"><%= @proxy_totals[:quantity] %> 本</td>
-          <td class="text-right"><%= number_to_currency(@proxy_totals[:sales], unit: "¥", precision: 0) %></td>
-          <td>-</td>
-          <td class="text-right"><%= number_to_currency(@proxy_totals[:seiin_amount], unit: "¥", precision: 0) %></td>
-          <td>-</td>
-          <td class="text-right"><%= number_to_currency(@proxy_totals[:miroku_amount], unit: "¥", precision: 0) %></td>
+          <td colspan="3">※聖院分　② 代理奉納合計</td>
+          <td class="text-right"><%= yen.call(@proxy_totals[:sales]) %></td>
+          <td></td>
+          <td class="text-right"><%= yen.call(@proxy_totals[:seiin_amount]) %></td>
+          <td></td>
+          <td class="text-right"><%= yen.call(@proxy_totals[:miroku_amount]) %></td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="3">①前日・当日売上合計</td>
+          <td class="text-right"><%= yen.call(@pre_event_totals[:sales]) %></td>
+          <td></td>
+          <td class="text-right"><%= yen.call(@pre_event_totals[:seiin_amount]) %></td>
+          <td></td>
+          <td class="text-right"><%= yen.call(@pre_event_totals[:miroku_amount]) %></td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="3">地護摩供売上総合計（①＋②）</td>
+          <td class="text-right"><%= yen.call(@grand_totals[:sales]) %></td>
+          <td></td>
+          <td class="text-right"><%= yen.call(@grand_totals[:seiin_amount]) %></td>
+          <td></td>
+          <td class="text-right"><%= yen.call(@grand_totals[:miroku_amount]) %></td>
         </tr>
       </tfoot>
     </table>
   </div>
+
+  <p class="report-note">※令和元年より、代理奉納の聖院還付は、みろく寺の道具請求(平成27年度までの未入金分）の方へ当てさせていただくことになりました。（4月18日の通達参照）</p>
+
+  <h4 class="inventory-heading">道具数チェック</h4>
+  <div class="table-wrap">
+    <table class="report-table inventory-check-table">
+      <thead>
+        <tr>
+          <th>道具名</th>
+          <th class="text-right">在庫数</th>
+          <th class="text-right">注文数(合計)</th>
+          <th class="text-right">代理奉納数(合計)</th>
+          <th class="text-right">前日・当日売上数</th>
+          <th class="text-right">残数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @inventory_rows.each do |row| %>
+          <tr>
+            <td><%= row[:label] %></td>
+            <td class="text-right"><%= amount.call(row[:stock_count]) %></td>
+            <td class="text-right"><%= amount.call(row[:order_total]) %></td>
+            <td class="text-right"><%= amount.call(row[:proxy_quantity]) %></td>
+            <td class="text-right"><%= amount.call(row[:pre_event_quantity]) %></td>
+            <td class="text-right"><%= amount.call(row[:remaining_count]) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="report-contact">報告担当者：尾ノ上裕美　連絡先：09041779036</p>
 </section>
 
 <style>
+.proxy-inventory-sheet {
+  background: white;
+}
+
+.report-document-head {
+  margin-bottom: 1rem;
+}
+
+.report-document-head h3,
+.report-document-head h4,
+.inventory-heading {
+  color: var(--ink);
+  margin: 0 0 0.5rem;
+}
+
+.report-document-head p,
+.report-note,
+.report-contact {
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+
+.proxy-report-table tfoot td {
+  border-top: 2px solid var(--ink);
+}
+
 .total-row {
   font-weight: 800;
   background: var(--accent-soft);
 }
-.total-row td {
-  border-top: 2px solid var(--accent);
+
+.inventory-heading {
+  margin-top: 1.5rem;
+}
+
+.inventory-check-table th,
+.inventory-check-table td {
+  white-space: nowrap;
+}
+
+.report-contact {
+  margin-top: 1rem;
+  text-align: right;
 }
 </style>

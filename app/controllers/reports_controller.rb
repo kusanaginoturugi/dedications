@@ -22,6 +22,24 @@ class ReportsController < ApplicationController
     { label: "泉珠卜占", plain_label: "泉珠卜占", unit_price: 500, refund_unit: 200, miroku_unit: 300 }
   ].freeze
 
+  PROXY_INVENTORY_ITEMS = [
+    { label: "弥勒収円大護摩板", unit_price: 4000, refund_unit: 2000, miroku_unit: 2000 },
+    { label: "三期滅劫之霊木", unit_price: 800, refund_unit: 100, miroku_unit: 700, form_type: "sanki_reiboku" },
+    { label: "三會龍華之御柱", unit_price: 500, refund_unit: 150, miroku_unit: 350, form_type: "sankai_ryuge_pillar" },
+    { label: "特別祈祷", unit_price: 5000, refund_unit: 1000, miroku_unit: 4000 },
+    { label: "明王如意棒", unit_price: 2000, refund_unit: 800, miroku_unit: 1200, form_type: "wish_fulfillment_staff" },
+    { label: "幟", unit_price: 3000, refund_unit: nil, miroku_unit: 3000 }
+  ].freeze
+
+  INVENTORY_CHECK_ITEMS = [
+    { label: "弥勒収円大護摩板", order_total: 60, pre_event_index: 0 },
+    { label: "※各種平定之御柱", order_total: 130, pre_event_index: 1 },
+    { label: "※三期滅劫之霊木", order_total: 830, form_type: "sanki_reiboku", pre_event_index: 2 },
+    { label: "※三會龍華之御柱", order_total: 650, form_type: "sankai_ryuge_pillar", pre_event_index: 3 },
+    { label: "明王如意棒", order_total: 900, form_type: "wish_fulfillment_staff", pre_event_index: 12 },
+    { label: "幟", stock_count: 61, pre_event_index: 14 }
+  ].freeze
+
   before_action :require_sign_in!
 
   def pre_event
@@ -62,6 +80,10 @@ class ReportsController < ApplicationController
   def proxy_inventory
     @rows = build_proxy_inventory_rows
     @proxy_totals = calculate_proxy_totals(@rows)
+    @pre_event_rows = build_pre_event_rows
+    @pre_event_totals = calculate_pre_event_totals(@pre_event_rows)
+    @grand_totals = combine_report_totals(@proxy_totals, @pre_event_totals)
+    @inventory_rows = build_inventory_check_rows(@rows)
 
     respond_to do |format|
       format.html
@@ -219,28 +241,75 @@ class ReportsController < ApplicationController
   end
 
   def build_proxy_inventory_rows
-    Order::FORM_DEFINITIONS.map do |form_type, definition|
-      quantity = scoped_orders.where(form_type:).sum { |order| order.total_quantity.to_i }
+    PROXY_INVENTORY_ITEMS.map do |item|
+      quantity = proxy_inventory_quantity_for(item)
       {
-        label: definition.fetch(:report_label),
-        unit_price: definition.fetch(:unit_price),
+        label: item.fetch(:label),
+        unit_price: item.fetch(:unit_price),
         quantity: quantity,
-        sales: quantity * definition.fetch(:unit_price),
-        refund_unit: definition.fetch(:refund_unit),
-        seiin_amount: quantity * definition.fetch(:refund_unit),
-        miroku_unit: definition.fetch(:miroku_unit),
-        miroku_amount: quantity * definition.fetch(:miroku_unit)
+        sales: quantity ? quantity * item.fetch(:unit_price) : nil,
+        refund_unit: item[:refund_unit],
+        seiin_amount: quantity && item[:refund_unit] ? quantity * item.fetch(:refund_unit) : nil,
+        miroku_unit: item[:miroku_unit],
+        miroku_amount: quantity && item[:miroku_unit] ? quantity * item.fetch(:miroku_unit) : nil,
+        form_type: item[:form_type]
       }
     end
   end
 
+  def proxy_inventory_quantity_for(item)
+    return nil if item[:form_type].blank?
+
+    scoped_orders.where(form_type: item.fetch(:form_type)).sum { |order| order.total_quantity.to_i }
+  end
+
   def calculate_proxy_totals(rows)
     {
-      quantity: rows.sum { |row| row[:quantity] },
-      sales: rows.sum { |row| row[:sales] },
-      seiin_amount: rows.sum { |row| row[:seiin_amount] },
-      miroku_amount: rows.sum { |row| row[:miroku_amount] }
+      sales: rows.sum { |row| row[:sales].to_i },
+      seiin_amount: rows.sum { |row| row[:seiin_amount].to_i },
+      miroku_amount: rows.sum { |row| row[:miroku_amount].to_i }
     }
+  end
+
+  def calculate_pre_event_totals(rows)
+    {
+      sales: rows.sum { |row| row[:sales].to_i },
+      seiin_amount: rows.sum { |row| row[:seiin_amount].to_i },
+      miroku_amount: rows.sum { |row| row[:miroku_amount].to_i }
+    }
+  end
+
+  def combine_report_totals(*totals)
+    {
+      sales: totals.sum { |total| total[:sales].to_i },
+      seiin_amount: totals.sum { |total| total[:seiin_amount].to_i },
+      miroku_amount: totals.sum { |total| total[:miroku_amount].to_i }
+    }
+  end
+
+  def build_inventory_check_rows(proxy_rows)
+    proxy_quantities = proxy_rows.index_by { |row| row[:form_type] }
+    pre_event_quantities = pre_event_quantity_map
+
+    INVENTORY_CHECK_ITEMS.map do |item|
+      proxy_quantity = item[:form_type].present? ? proxy_quantities.dig(item[:form_type], :quantity).to_i : 0
+      pre_event_quantity = pre_event_quantities.fetch(item.fetch(:pre_event_index), 0)
+      base_count = item[:order_total] || item[:stock_count]
+      remaining_count = base_count.to_i - proxy_quantity - pre_event_quantity
+
+      {
+        label: item.fetch(:label),
+        stock_count: item[:stock_count],
+        order_total: item[:order_total],
+        proxy_quantity: proxy_quantity.positive? ? proxy_quantity : nil,
+        pre_event_quantity: pre_event_quantity.positive? ? pre_event_quantity : nil,
+        remaining_count: remaining_count.positive? ? remaining_count : nil
+      }
+    end
+  end
+
+  def pre_event_quantity_map
+    pre_event_quantities
   end
 
   def dedication_count_totals(rows)
@@ -281,31 +350,84 @@ class ReportsController < ApplicationController
   end
 
   def generate_proxy_inventory_pdf
-    headers = [ "道具名", "奉納料", "奉納数", "売上", "還付金", "聖院還付分", "弥勒寺", "弥勒寺入金分" ]
-    rows = @rows.map do |row|
-      [
-        report_label(row),
-        yen(row[:unit_price]),
-        row[:quantity],
-        yen(row[:sales]),
-        yen(row[:refund_unit]),
-        yen(row[:seiin_amount]),
-        yen(row[:miroku_unit]),
-        yen(row[:miroku_amount])
-      ]
-    end
-    totals = [
-      "合計",
-      "-",
-      "#{@proxy_totals[:quantity]} 本",
-      yen(@proxy_totals[:sales]),
-      "-",
-      yen(@proxy_totals[:seiin_amount]),
-      "-",
-      yen(@proxy_totals[:miroku_amount])
-    ]
+    Prawn::Document.new(page_size: "A4", margin: [ 24, 18, 24, 18 ]) do |pdf|
+      configure_pdf_font(pdf)
+      pdf.text "聖明王院 #{current_event&.name}八大明王護摩供 売上表", size: 14, style: :bold
+      pdf.move_down 4
+      pdf.text "代理奉納分は表②に記入（※各伝道会からの代理奉納報告書も一緒に提出をお願いします）", size: 8.5
+      pdf.move_down 6
+      pdf.text "表② 代理奉納（地方代理＝護摩センター振込分）", size: 10, style: :bold
+      pdf.move_down 4
 
-    generate_full_page_table_pdf("帳票: 代理・在庫", "代理奉納入力データから、代理・在庫シート相当の集計を表示します。", headers, rows, totals)
+      proxy_table_rows = [
+        [ "道具名", "奉納料", "奉納数", "売上", "還付金", "聖院還付分", "弥勒寺", "弥勒寺入金分" ]
+      ] + @rows.map do |row|
+        [
+          row[:label],
+          pdf_number(row[:unit_price]),
+          pdf_number(row[:quantity]),
+          pdf_number(row[:sales]),
+          pdf_number(row[:refund_unit]),
+          pdf_number(row[:seiin_amount]),
+          pdf_number(row[:miroku_unit]),
+          pdf_number(row[:miroku_amount])
+        ]
+      end + [
+        [ "※聖院分　② 代理奉納合計", "", "", yen(@proxy_totals[:sales]), "", yen(@proxy_totals[:seiin_amount]), "", yen(@proxy_totals[:miroku_amount]) ],
+        [ "①前日・当日売上合計", "", "", yen(@pre_event_totals[:sales]), "", yen(@pre_event_totals[:seiin_amount]), "", yen(@pre_event_totals[:miroku_amount]) ],
+        [ "地護摩供売上総合計（①＋②）", "", "", yen(@grand_totals[:sales]), "", yen(@grand_totals[:seiin_amount]), "", yen(@grand_totals[:miroku_amount]) ]
+      ]
+
+      pdf.table(proxy_table_rows, header: true, width: pdf.bounds.width, cell_style: proxy_pdf_cell_style) do
+        row(0).font_style = :bold
+        row(0).background_color = "F3E6F2"
+        columns(1..7).align = :right
+        rows((proxy_table_rows.size - 3)..(proxy_table_rows.size - 1)).font_style = :bold
+      end
+
+      pdf.move_down 8
+      pdf.text "※令和元年より、代理奉納の聖院還付は、みろく寺の道具請求(平成27年度までの未入金分）の方へ当てさせていただくことになりました。（4月18日の通達参照）", size: 7.5
+      pdf.move_down 8
+      pdf.text "道具数チェック", size: 10, style: :bold
+      pdf.move_down 4
+
+      inventory_rows = [
+        [ "道具名", "在庫数", "注文数(合計)", "代理奉納数(合計)", "前日・当日売上数", "残数" ]
+      ] + @inventory_rows.map do |row|
+        [
+          row[:label],
+          pdf_number(row[:stock_count]),
+          pdf_number(row[:order_total]),
+          pdf_number(row[:proxy_quantity]),
+          pdf_number(row[:pre_event_quantity]),
+          pdf_number(row[:remaining_count])
+        ]
+      end
+
+      pdf.table(inventory_rows, header: true, width: pdf.bounds.width, cell_style: proxy_pdf_cell_style) do
+        row(0).font_style = :bold
+        row(0).background_color = "F3E6F2"
+        columns(1..5).align = :right
+      end
+
+      pdf.move_down 8
+      pdf.text "報告担当者：尾ノ上裕美　連絡先：09041779036", size: 9, align: :right
+    end.render
+  end
+
+  def proxy_pdf_cell_style
+    {
+      size: 8.2,
+      padding: [ 4, 3 ],
+      border_color: "444444",
+      overflow: :shrink_to_fit,
+      min_font_size: 5.5,
+      valign: :center
+    }
+  end
+
+  def pdf_number(value)
+    value.present? ? value.to_s : ""
   end
 
   def generate_full_page_table_pdf(title, lead, headers, rows, totals)
@@ -479,10 +601,13 @@ class ReportsController < ApplicationController
 
   def generate_proxy_inventory_csv
     CSV.generate do |csv|
+      csv << [ "聖明王院 #{current_event&.name}八大明王護摩供 売上表" ]
+      csv << [ "代理奉納分は表②に記入（※各伝道会からの代理奉納報告書も一緒に提出をお願いします）" ]
+      csv << [ "表② 代理奉納（地方代理＝護摩センター振込分）" ]
       csv << [ "道具名", "奉納料", "奉納数", "売上", "還付金", "聖院還付分", "弥勒寺", "弥勒寺入金分" ]
       @rows.each do |row|
         csv << [
-          report_label(row),
+          row[:label],
           row[:unit_price],
           row[:quantity],
           row[:sales],
@@ -492,16 +617,19 @@ class ReportsController < ApplicationController
           row[:miroku_amount]
         ]
       end
-      csv << [
-        "合計",
-        "-",
-        @proxy_totals[:quantity],
-        @proxy_totals[:sales],
-        "-",
-        @proxy_totals[:seiin_amount],
-        "-",
-        @proxy_totals[:miroku_amount]
-      ]
+      csv << [ "※聖院分　② 代理奉納合計", "", "", @proxy_totals[:sales], "", @proxy_totals[:seiin_amount], "", @proxy_totals[:miroku_amount] ]
+      csv << [ "①前日・当日売上合計", "", "", @pre_event_totals[:sales], "", @pre_event_totals[:seiin_amount], "", @pre_event_totals[:miroku_amount] ]
+      csv << [ "地護摩供売上総合計（①＋②）", "", "", @grand_totals[:sales], "", @grand_totals[:seiin_amount], "", @grand_totals[:miroku_amount] ]
+      csv << []
+      csv << [ "※令和元年より、代理奉納の聖院還付は、みろく寺の道具請求(平成27年度までの未入金分）の方へ当てさせていただくことになりました。（4月18日の通達参照）" ]
+      csv << []
+      csv << [ "道具数チェック" ]
+      csv << [ "道具名", "在庫数", "注文数(合計)", "代理奉納数(合計)", "前日・当日売上数", "残数" ]
+      @inventory_rows.each do |row|
+        csv << [ row[:label], row[:stock_count], row[:order_total], row[:proxy_quantity], row[:pre_event_quantity], row[:remaining_count] ]
+      end
+      csv << []
+      csv << [ "報告担当者：尾ノ上裕美", "連絡先：09041779036" ]
     end.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
   end
 
