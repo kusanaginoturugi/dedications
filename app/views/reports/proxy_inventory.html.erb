@@ -121,14 +121,20 @@
         </tr>
       </thead>
       <tbody>
-        <% @inventory_rows.each do |row| %>
+        <% @inventory_rows.each_with_index do |row, index| %>
           <tr>
             <td><%= row[:label] %></td>
-            <td class="text-right"><%= amount.call(row[:stock_count]) %></td>
-            <td class="text-right"><%= amount.call(row[:order_total]) %></td>
-            <td class="text-right"><%= amount.call(row[:proxy_quantity]) %></td>
-            <td class="text-right"><%= amount.call(row[:pre_event_quantity]) %></td>
-            <td class="text-right"><%= amount.call(row[:remaining_count]) %></td>
+            <% %w[stock_count order_total proxy_quantity pre_event_quantity remaining_count].each do |field_name| %>
+              <td>
+                <input
+                  type="number"
+                  min="0"
+                  value="<%= row[field_name.to_sym] %>"
+                  name="inventory_checks[<%= index %>][<%= field_name %>]"
+                  class="report-input inventory-check-input"
+                >
+              </td>
+            <% end %>
           </tr>
         <% end %>
       </tbody>
@@ -223,6 +229,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 .proxy-quantity-input {
   min-width: 5.5rem;
+}
+
+.inventory-check-input {
+  min-width: 5rem;
 }
 
 .report-document-head {

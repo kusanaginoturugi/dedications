@@ -126,7 +126,10 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".proxy-summary-table", text: /② 代理奉納合計.*※聖院分.*として.*入金.*弥勒寺分/
     assert_select ".proxy-summary-table", text: /①前日・当日売上合計.*聖院分.*弥勒寺分/
     assert_select ".proxy-summary-table", text: /地護摩供売上総合計（①＋②）.*聖院還付.*合計.*弥勒寺分.*合計/
-    assert_select ".inventory-check-table tbody tr:nth-child(6)", text: /幟.*61.*15.*43.*3/
+    assert_select "input[name='inventory_checks[5][stock_count]'][value='61']"
+    assert_select "input[name='inventory_checks[5][proxy_quantity]'][value='15']"
+    assert_select "input[name='inventory_checks[5][pre_event_quantity]'][value='43']"
+    assert_select "input[name='inventory_checks[5][remaining_count]'][value='3']"
   end
 
   test "saves proxy inventory quantities for the current event" do
@@ -151,6 +154,45 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[name='quantities[0]'][value='7']"
     assert_select "input[name='quantities[1]']", count: 0
     assert_select "input[name='quantities[5]'][value='14']"
+  end
+
+  test "saves inventory check quantities for the current event" do
+    sign_in_as(users(:admin))
+
+    post save_proxy_inventory_reports_path, params: {
+      quantities: {
+        "0" => "7",
+        "5" => "14"
+      },
+      inventory_checks: {
+        "0" => {
+          "order_total" => "60",
+          "proxy_quantity" => "7",
+          "pre_event_quantity" => "53",
+          "remaining_count" => ""
+        },
+        "5" => {
+          "stock_count" => "61",
+          "proxy_quantity" => "15",
+          "pre_event_quantity" => "43",
+          "remaining_count" => "3"
+        }
+      }
+    }
+
+    assert_redirected_to proxy_inventory_reports_path
+    assert_equal 60, events(:one).inventory_check_quantities.find_by!(item_index: 0, field_name: "order_total").quantity
+    assert_equal 7, events(:one).inventory_check_quantities.find_by!(item_index: 0, field_name: "proxy_quantity").quantity
+    assert_nil events(:one).inventory_check_quantities.find_by!(item_index: 0, field_name: "remaining_count").quantity
+    assert_equal 3, events(:one).inventory_check_quantities.find_by!(item_index: 5, field_name: "remaining_count").quantity
+
+    get proxy_inventory_reports_path
+
+    assert_response :success
+    assert_select "input[name='inventory_checks[0][order_total]'][value='60']"
+    assert_select "input[name='inventory_checks[0][proxy_quantity]'][value='7']"
+    assert_select "input[name='inventory_checks[0][remaining_count]'][value='']"
+    assert_select "input[name='inventory_checks[5][remaining_count]'][value='3']"
   end
 
   test "downloads proxy inventory csv and pdf" do

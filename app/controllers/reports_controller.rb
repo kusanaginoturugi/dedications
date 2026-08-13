@@ -39,6 +39,13 @@ class ReportsController < ApplicationController
     { label: "明王如意棒", order_total: 900, form_type: "wish_fulfillment_staff", pre_event_index: 12 },
     { label: "幟", stock_count: 61, proxy_quantity: 15, pre_event_index: 14 }
   ].freeze
+  INVENTORY_CHECK_FIELDS = %w[
+    stock_count
+    order_total
+    proxy_quantity
+    pre_event_quantity
+    remaining_count
+  ].freeze
 
   before_action :require_sign_in!
 
@@ -108,12 +115,13 @@ class ReportsController < ApplicationController
       return
     end
 
-    unless params[:quantities].present?
+    unless params[:quantities].present? || params[:inventory_checks].present?
       redirect_to proxy_inventory_reports_path, alert: "奉納数が送信されませんでした。もう一度入力して保存してください。"
       return
     end
 
     save_proxy_inventory_quantities
+    save_inventory_check_quantities
     redirect_to proxy_inventory_reports_path, notice: "代理・在庫の奉納数を保存しました。"
   end
 
@@ -348,8 +356,9 @@ class ReportsController < ApplicationController
     proxy_quantities_by_form_type = proxy_rows.index_by { |row| row[:form_type] }
     proxy_quantities_by_label = proxy_rows.index_by { |row| row[:label] }
     pre_event_quantities = pre_event_quantity_map
+    saved_inventory_checks = inventory_check_quantity_map
 
-    INVENTORY_CHECK_ITEMS.map do |item|
+    INVENTORY_CHECK_ITEMS.each_with_index.map do |item, index|
       proxy_quantity = if item[:form_type].present?
         proxy_quantities_by_form_type.dig(item[:form_type], :quantity).to_i
       elsif item[:proxy_quantity].present?
@@ -363,13 +372,57 @@ class ReportsController < ApplicationController
 
       {
         label: item.fetch(:label),
-        stock_count: item[:stock_count],
-        order_total: item[:order_total],
-        proxy_quantity: proxy_quantity.positive? ? proxy_quantity : nil,
-        pre_event_quantity: pre_event_quantity.positive? ? pre_event_quantity : nil,
-        remaining_count: remaining_count.positive? ? remaining_count : nil
+        item_index: index,
+        stock_count: inventory_check_value(saved_inventory_checks, index, "stock_count", item[:stock_count]),
+        order_total: inventory_check_value(saved_inventory_checks, index, "order_total", item[:order_total]),
+        proxy_quantity: inventory_check_value(saved_inventory_checks, index, "proxy_quantity", proxy_quantity.positive? ? proxy_quantity : nil),
+        pre_event_quantity: inventory_check_value(saved_inventory_checks, index, "pre_event_quantity", pre_event_quantity.positive? ? pre_event_quantity : nil),
+        remaining_count: inventory_check_value(saved_inventory_checks, index, "remaining_count", remaining_count.positive? ? remaining_count : nil)
       }
     end
+  end
+
+  def inventory_check_value(saved_inventory_checks, item_index, field_name, fallback)
+    key = [ item_index, field_name ]
+    return saved_inventory_checks[key] if saved_inventory_checks.key?(key)
+
+    fallback
+  end
+
+  def inventory_check_quantity_map
+    @inventory_check_quantity_map ||= begin
+      saved_quantities = current_event&.inventory_check_quantities || InventoryCheckQuantity.none
+      saved_quantities.each_with_object({}) do |record, quantities|
+        quantities[[ record.item_index, record.field_name ]] = record.quantity
+      end
+    end
+  end
+
+  def save_inventory_check_quantities
+    return unless current_event
+
+    normalized_inventory_check_quantities(params[:inventory_checks] || {}).each do |(item_index, field_name), quantity|
+      record = current_event.inventory_check_quantities.find_or_initialize_by(item_index: item_index, field_name: field_name)
+      record.quantity = quantity
+      record.save!
+    end
+  end
+
+  def normalized_inventory_check_quantities(raw_quantities)
+    unsafe_hash(raw_quantities).each_with_object({}) do |(index, fields), quantities|
+      item_index = index.to_i
+      next unless item_index.between?(0, INVENTORY_CHECK_ITEMS.size - 1)
+
+      unsafe_hash(fields).each do |field_name, value|
+        next unless INVENTORY_CHECK_FIELDS.include?(field_name)
+
+        quantities[[ item_index, field_name ]] = value.blank? ? nil : [ value.to_i, 0 ].max
+      end
+    end
+  end
+
+  def unsafe_hash(value)
+    value.respond_to?(:to_unsafe_h) ? value.to_unsafe_h : value.to_h
   end
 
   def pre_event_quantity_map

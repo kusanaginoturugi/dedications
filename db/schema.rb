@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_13_152000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_13_153000) do
   create_table "events", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "is_active"
@@ -26,6 +26,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_152000) do
     t.string "old_code"
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_fellowships_on_code", unique: true
+  end
+
+  create_table "inventory_check_quantities", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "event_id", null: false
+    t.string "field_name", null: false
+    t.integer "item_index", null: false
+    t.integer "quantity"
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "item_index", "field_name"], name: "idx_on_event_id_item_index_field_name_25d7085c7f", unique: true
+    t.index ["event_id"], name: "index_inventory_check_quantities_on_event_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -79,6 +90,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_152000) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "inventory_check_quantities", "events"
   add_foreign_key "orders", "events"
   add_foreign_key "orders", "fellowships"
   add_foreign_key "orders", "users"
