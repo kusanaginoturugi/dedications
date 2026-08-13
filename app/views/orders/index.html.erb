@@ -18,11 +18,26 @@
       orders = @orders.select { |order| order.form_type == form_type }
       next if orders.empty?
 
-      [ Order.form_definition_for(form_type).fetch(:label), orders ]
+      [ form_type, Order.form_definition_for(form_type).fetch(:label), orders ]
     end %>
 
-    <% grouped_orders.each do |label, orders| %>
-      <section class="order-group">
+    <nav class="order-tabs no-print" aria-label="申込種別">
+      <% grouped_orders.each_with_index do |(form_type, label, orders), index| %>
+        <button
+          type="button"
+          class="order-tab <%= "is-active" if index.zero? %>"
+          data-order-tab="<%= form_type %>"
+          aria-controls="order-panel-<%= form_type %>"
+          aria-selected="<%= index.zero? %>"
+        >
+          <span><%= label.to_s.gsub(/\s+/, "") %></span>
+          <strong><%= orders.sum { |order| order.total_quantity.to_i } %> 本</strong>
+        </button>
+      <% end %>
+    </nav>
+
+    <% grouped_orders.each_with_index do |(form_type, label, orders), index| %>
+      <section class="order-group" id="order-panel-<%= form_type %>" data-order-panel="<%= form_type %>" <%= "hidden" unless index.zero? %>>
         <header class="order-group-header">
           <h3><%= label.html_safe %></h3>
           <p><%= orders.size %>件</p>
@@ -117,3 +132,62 @@
     <p>まだ申込は登録されていません。</p>
   <% end %>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const tabs = document.querySelectorAll("[data-order-tab]");
+  const panels = document.querySelectorAll("[data-order-panel]");
+  if (!tabs.length) return;
+
+  const activate = (formType) => {
+    tabs.forEach(tab => {
+      const active = tab.dataset.orderTab === formType;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-selected", active ? "true" : "false");
+    });
+
+    panels.forEach(panel => {
+      panel.hidden = panel.dataset.orderPanel !== formType;
+    });
+  };
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => activate(tab.dataset.orderTab));
+  });
+});
+</script>
+
+<style>
+.order-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.order-tab {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  white-space: nowrap;
+}
+
+.order-tab.is-active {
+  border-color: var(--accent);
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+
+.order-tab span {
+  font-weight: 700;
+}
+
+.order-tab strong {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+</style>

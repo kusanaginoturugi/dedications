@@ -20,6 +20,46 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "#{orders(:one).fellowship.code} #{orders(:one).fellowship.name}"
   end
 
+  test "order list separates form types with tabs on the same page" do
+    sign_in_as(users(:admin))
+    Order.create!(
+      page_number: 77,
+      fax_received_on: Date.current,
+      dedication_on: Date.current,
+      form_type: "sanki_reiboku",
+      offerer_name: "三期確認",
+      paid: true,
+      fellowship: fellowships(:tokyo),
+      user: users(:admin),
+      event: events(:one),
+      serial_number_start: 100,
+      serial_number_end: 107
+    )
+    Order.create!(
+      page_number: 78,
+      fax_received_on: Date.current,
+      dedication_on: Date.current,
+      form_type: "sankai_ryuge_pillar",
+      offerer_name: "三會確認",
+      paid: true,
+      fellowship: fellowships(:tokyo),
+      user: users(:admin),
+      event: events(:one),
+      serial_number_start: 200,
+      serial_number_end: 204
+    )
+
+    get orders_path
+
+    assert_response :success
+    assert_select "[data-order-tab='wish_fulfillment_staff']"
+    assert_select "[data-order-tab='sanki_reiboku']"
+    assert_select "[data-order-tab='sankai_ryuge_pillar']"
+    assert_select "[data-order-panel='wish_fulfillment_staff']"
+    assert_select "[data-order-panel='sanki_reiboku']"
+    assert_select "[data-order-panel='sankai_ryuge_pillar']"
+  end
+
   test "new order defaults fax received on to today" do
     sign_in_as(users(:admin))
 

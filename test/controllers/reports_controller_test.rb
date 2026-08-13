@@ -87,7 +87,21 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
   test "shows proxy inventory report" do
     sign_in_as(users(:admin))
     events(:one).proxy_inventory_quantities.create!(item_index: 0, quantity: 7)
+    events(:one).proxy_inventory_quantities.create!(item_index: 1, quantity: 999)
     events(:one).proxy_inventory_quantities.create!(item_index: 5, quantity: 14)
+    Order.create!(
+      page_number: 77,
+      fax_received_on: Date.current,
+      dedication_on: Date.current,
+      form_type: "sanki_reiboku",
+      offerer_name: "自動集計確認",
+      paid: true,
+      fellowship: fellowships(:tokyo),
+      user: users(:admin),
+      event: events(:one),
+      serial_number_start: 100,
+      serial_number_end: 107
+    )
 
     get proxy_inventory_reports_path
 
@@ -100,8 +114,12 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form#proxy-inventory-report-form[method='post'][action='#{save_proxy_inventory_reports_path}']"
     assert_select "form#proxy-inventory-report-form button.primary-button", text: "保存"
     assert_select "input[name='quantities[0]'][value='7']"
+    assert_select "input[name='quantities[1]']", count: 0
+    assert_select "input[name='quantities[2]']", count: 0
+    assert_select "input[name='quantities[4]']", count: 0
     assert_select "input[name='quantities[5]'][value='14']"
     assert_select ".proxy-report-table tbody tr:nth-child(1) [data-sales-display]", text: "28,000"
+    assert_select ".proxy-report-table tbody tr:nth-child(2) [data-auto-quantity-display]", text: "8"
     assert_select ".proxy-report-table tbody tr:nth-child(6) [data-sales-display]", text: "42,000"
   end
 
@@ -118,14 +136,14 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to proxy_inventory_reports_path
     assert_equal 7, events(:one).proxy_inventory_quantities.find_by!(item_index: 0).quantity
-    assert_equal 482, events(:one).proxy_inventory_quantities.find_by!(item_index: 1).quantity
+    assert_nil events(:one).proxy_inventory_quantities.find_by(item_index: 1)
     assert_equal 14, events(:one).proxy_inventory_quantities.find_by!(item_index: 5).quantity
 
     get proxy_inventory_reports_path
 
     assert_response :success
     assert_select "input[name='quantities[0]'][value='7']"
-    assert_select "input[name='quantities[1]'][value='482']"
+    assert_select "input[name='quantities[1]']", count: 0
     assert_select "input[name='quantities[5]'][value='14']"
   end
 

@@ -274,12 +274,12 @@ class ReportsController < ApplicationController
   end
 
   def proxy_inventory_quantity_for(item, index)
+    return proxy_quantity_from_orders(item) if item[:form_type].present?
+
     saved_quantities = proxy_inventory_quantity_map
     return saved_quantities[index] if saved_quantities.key?(index)
 
-    return nil if item[:form_type].blank?
-
-    scoped_orders.where(form_type: item.fetch(:form_type)).sum { |order| order.total_quantity.to_i }
+    nil
   end
 
   def proxy_inventory_quantity_map
@@ -295,6 +295,8 @@ class ReportsController < ApplicationController
     return unless current_event
 
     normalized_proxy_inventory_quantities(params[:quantities] || {}).each do |item_index, quantity|
+      next unless proxy_inventory_manual_item_index?(item_index)
+
       record = current_event.proxy_inventory_quantities.find_or_initialize_by(item_index: item_index)
       record.quantity = quantity
       record.save!
@@ -308,6 +310,14 @@ class ReportsController < ApplicationController
 
       quantities[item_index] = value.blank? ? nil : [ value.to_i, 0 ].max
     end
+  end
+
+  def proxy_inventory_manual_item_index?(item_index)
+    PROXY_INVENTORY_ITEMS[item_index]&.fetch(:form_type, nil).blank?
+  end
+
+  def proxy_quantity_from_orders(item)
+    scoped_orders.where(form_type: item.fetch(:form_type)).sum { |order| order.total_quantity.to_i }
   end
 
   def calculate_proxy_totals(rows)
