@@ -6,14 +6,14 @@
     <p class="section-lead">還付.ods の「前夜祭・当日」シート相当です。奉納数を入力すると自動計算されます。</p>
   </div>
   <div class="page-head-actions no-print" style="display: flex; gap: 0.5rem;">
-    <button class="primary-button" type="submit" form="pre-event-report-form" formmethod="post" formaction="<%= save_pre_event_reports_path %>" style="padding: 0.4rem 1rem;">保存</button>
-    <button class="secondary-button" type="submit" form="pre-event-report-form" formaction="<%= pre_event_reports_path(format: :csv) %>" style="padding: 0.4rem 1rem;">CSV</button>
-    <button class="secondary-button" type="submit" form="pre-event-report-form" formaction="<%= pre_event_reports_path(format: :pdf) %>" style="padding: 0.4rem 1rem;">PDF保存</button>
+    <button class="primary-button" type="submit" form="pre-event-report-form" style="padding: 0.4rem 1rem;">保存</button>
+    <button class="secondary-button" type="submit" form="pre-event-report-form" formmethod="get" formaction="<%= pre_event_reports_path(format: :csv) %>" style="padding: 0.4rem 1rem;">CSV</button>
+    <button class="secondary-button" type="submit" form="pre-event-report-form" formmethod="get" formaction="<%= pre_event_reports_path(format: :pdf) %>" style="padding: 0.4rem 1rem;">PDF保存</button>
   </div>
 </section>
 
 <section class="card" data-pre-event-report>
-  <form id="pre-event-report-form" action="<%= pre_event_reports_path %>" method="get">
+  <form id="pre-event-report-form" action="<%= save_pre_event_reports_path %>" method="post">
     <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
     <div class="table-wrap">
       <table class="report-table">
@@ -56,7 +56,7 @@
             <td>-</td>
             <td class="text-right" data-total-seiin><%= number_to_currency(@rows.sum { |row| row[:seiin_amount].to_i }, unit: "¥", precision: 0) %></td>
             <td>-</td>
-            <td class="text-right" data-total-miroku><%= number_to_currency(@rows.sum { |row| row[:miroku_amount].to_i }, unit: "¥", precision: 0) %></td>
+            <td>-</td>
           </tr>
         </tfoot>
       </table>
@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const totalQuantityDisplay = container.querySelector("[data-total-quantity]");
   const totalSalesDisplay = container.querySelector("[data-total-sales]");
   const totalSeiinDisplay = container.querySelector("[data-total-seiin]");
-  const totalMirokuDisplay = container.querySelector("[data-total-miroku]");
 
   const formatCurrency = (amount) => {
     return "¥" + amount.toLocaleString();
@@ -83,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let totalQty = 0;
     let totalSales = 0;
     let totalSeiin = 0;
-    let totalMiroku = 0;
 
     rows.forEach(row => {
       const qty = parseInt(row.querySelector("[data-quantity-input]").value) || 0;
@@ -102,13 +100,11 @@ document.addEventListener("DOMContentLoaded", () => {
       totalQty += qty;
       totalSales += sales;
       totalSeiin += seiinAmount;
-      totalMiroku += mirokuAmount;
     });
 
     totalQuantityDisplay.textContent = totalQty;
     totalSalesDisplay.textContent = formatCurrency(totalSales);
     totalSeiinDisplay.textContent = formatCurrency(totalSeiin);
-    totalMirokuDisplay.textContent = formatCurrency(totalMiroku);
   };
 
   container.querySelectorAll("[data-quantity-input]").forEach(input => {
