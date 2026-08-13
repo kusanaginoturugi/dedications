@@ -89,6 +89,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     events(:one).proxy_inventory_quantities.create!(item_index: 0, quantity: 7)
     events(:one).proxy_inventory_quantities.create!(item_index: 1, quantity: 999)
     events(:one).proxy_inventory_quantities.create!(item_index: 5, quantity: 14)
+    events(:one).pre_event_quantities.create!(item_index: 14, quantity: 43)
     Order.create!(
       page_number: 77,
       fax_received_on: Date.current,
@@ -121,6 +122,11 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".proxy-report-table tbody tr:nth-child(1) [data-sales-display]", text: "28,000"
     assert_select ".proxy-report-table tbody tr:nth-child(2) [data-auto-quantity-display]", text: "8"
     assert_select ".proxy-report-table tbody tr:nth-child(6) [data-sales-display]", text: "42,000"
+    assert_select ".proxy-report-table tfoot", count: 0
+    assert_select ".proxy-summary-table", text: /② 代理奉納合計.*※聖院分.*として.*入金.*弥勒寺分/
+    assert_select ".proxy-summary-table", text: /①前日・当日売上合計.*聖院分.*弥勒寺分/
+    assert_select ".proxy-summary-table", text: /地護摩供売上総合計（①＋②）.*聖院還付.*合計.*弥勒寺分.*合計/
+    assert_select ".inventory-check-table tbody tr:nth-child(6)", text: /幟.*61.*15.*43.*3/
   end
 
   test "saves proxy inventory quantities for the current event" do

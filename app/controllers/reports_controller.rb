@@ -37,7 +37,7 @@ class ReportsController < ApplicationController
     { label: "※三期滅劫之霊木", order_total: 830, form_type: "sanki_reiboku", pre_event_index: 2 },
     { label: "※三會龍華之御柱", order_total: 650, form_type: "sankai_ryuge_pillar", pre_event_index: 3 },
     { label: "明王如意棒", order_total: 900, form_type: "wish_fulfillment_staff", pre_event_index: 12 },
-    { label: "幟", stock_count: 61, pre_event_index: 14 }
+    { label: "幟", stock_count: 61, proxy_quantity: 15, pre_event_index: 14 }
   ].freeze
 
   before_action :require_sign_in!
@@ -352,6 +352,8 @@ class ReportsController < ApplicationController
     INVENTORY_CHECK_ITEMS.map do |item|
       proxy_quantity = if item[:form_type].present?
         proxy_quantities_by_form_type.dig(item[:form_type], :quantity).to_i
+      elsif item[:proxy_quantity].present?
+        item.fetch(:proxy_quantity)
       else
         proxy_quantities_by_label.dig(item[:label], :quantity).to_i
       end
@@ -434,17 +436,21 @@ class ReportsController < ApplicationController
           pdf_number(row[:miroku_unit]),
           pdf_number(row[:miroku_amount])
         ]
-      end + [
-        [ "※聖院分　② 代理奉納合計", "", "", yen(@proxy_totals[:sales]), "", yen(@proxy_totals[:seiin_amount]), "", yen(@proxy_totals[:miroku_amount]) ],
-        [ "①前日・当日売上合計", "", "", yen(@pre_event_totals[:sales]), "", yen(@pre_event_totals[:seiin_amount]), "", yen(@pre_event_totals[:miroku_amount]) ],
-        [ "地護摩供売上総合計（①＋②）", "", "", yen(@grand_totals[:sales]), "", yen(@grand_totals[:seiin_amount]), "", yen(@grand_totals[:miroku_amount]) ]
-      ]
+      end
 
       pdf.table(proxy_table_rows, header: true, width: pdf.bounds.width, cell_style: proxy_pdf_cell_style) do
         row(0).font_style = :bold
         row(0).background_color = "F3E6F2"
         columns(1..7).align = :right
-        rows((proxy_table_rows.size - 3)..(proxy_table_rows.size - 1)).font_style = :bold
+      end
+
+      pdf.move_down 6
+      pdf.table(proxy_summary_pdf_rows, width: pdf.bounds.width, cell_style: proxy_summary_pdf_cell_style) do
+        columns([ 1, 3, 5 ]).align = :right
+        columns([ 2, 4 ]).align = :center
+        cells.font_style = :bold
+        cells.border_width = 1.4
+        columns([ 0, 2, 4 ]).background_color = "F3E6F2"
       end
 
       pdf.move_down 8
@@ -478,6 +484,25 @@ class ReportsController < ApplicationController
   end
 
   def proxy_pdf_cell_style
+    {
+      size: 8.2,
+      padding: [ 4, 3 ],
+      border_color: "444444",
+      overflow: :shrink_to_fit,
+      min_font_size: 5.5,
+      valign: :center
+    }
+  end
+
+  def proxy_summary_pdf_rows
+    [
+      [ "② 代理奉納合計", yen(@proxy_totals[:sales]), "※聖院分\nとして\n入金", yen(@proxy_totals[:seiin_amount]), "弥勒寺分", yen(@proxy_totals[:miroku_amount]) ],
+      [ "①前日・当日売上合計", yen(@pre_event_totals[:sales]), "聖院分", yen(@pre_event_totals[:seiin_amount]), "弥勒寺分", yen(@pre_event_totals[:miroku_amount]) ],
+      [ "地護摩供売上総合計（①＋②）", yen(@grand_totals[:sales]), "聖院還付\n合計", yen(@grand_totals[:seiin_amount]), "弥勒寺分\n合計", yen(@grand_totals[:miroku_amount]) ]
+    ]
+  end
+
+  def proxy_summary_pdf_cell_style
     {
       size: 8.2,
       padding: [ 4, 3 ],
