@@ -23,12 +23,12 @@ class ReportsController < ApplicationController
   ].freeze
 
   PROXY_INVENTORY_ITEMS = [
-    { label: "弥勒収円大護摩板", unit_price: 4000, refund_unit: 2000, miroku_unit: 2000 },
+    { label: "弥勒収円大護摩板", unit_price: 4000, refund_unit: 2000, miroku_unit: 2000, pre_event_index: 0 },
     { label: "三期滅劫之霊木", unit_price: 800, refund_unit: 100, miroku_unit: 700, form_type: "sanki_reiboku" },
     { label: "三會龍華之御柱", unit_price: 500, refund_unit: 150, miroku_unit: 350, form_type: "sankai_ryuge_pillar" },
     { label: "特別祈祷", unit_price: 5000, refund_unit: 1000, miroku_unit: 4000 },
     { label: "明王如意棒", unit_price: 2000, refund_unit: 800, miroku_unit: 1200, form_type: "wish_fulfillment_staff" },
-    { label: "幟", unit_price: 3000, refund_unit: nil, miroku_unit: 3000 }
+    { label: "幟", unit_price: 3000, refund_unit: nil, miroku_unit: 3000, pre_event_index: 14 }
   ].freeze
 
   INVENTORY_CHECK_ITEMS = [
@@ -258,6 +258,10 @@ class ReportsController < ApplicationController
   end
 
   def proxy_inventory_quantity_for(item)
+    if item[:pre_event_index].present?
+      return pre_event_quantity_map.fetch(item.fetch(:pre_event_index), 0)
+    end
+
     return nil if item[:form_type].blank?
 
     scoped_orders.where(form_type: item.fetch(:form_type)).sum { |order| order.total_quantity.to_i }

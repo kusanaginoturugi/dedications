@@ -15,10 +15,30 @@
 
 <section class="card proxy-inventory-sheet">
   <header class="report-document-head">
-    <h3>聖明王院 <%= current_event&.name %>八大明王護摩供 売上表</h3>
-    <p>代理奉納分は表②に記入（※各伝道会からの代理奉納報告書も一緒に提出をお願いします）</p>
-    <h4>表② 代理奉納（地方代理＝護摩センター振込分）</h4>
+    <div>
+      <h3>表② 代理奉納</h3>
+      <p>地方代理＝護摩センター振込分。代理奉納分は表②に記入します。</p>
+    </div>
   </header>
+
+  <div class="summary-totals summary-totals-overall">
+    <div class="summary-total-card text-right">
+      <span class="summary-total-label">代理奉納合計</span>
+      <strong><%= yen.call(@proxy_totals[:sales]) %></strong>
+    </div>
+    <div class="summary-total-card text-right">
+      <span class="summary-total-label">聖院分</span>
+      <strong><%= yen.call(@proxy_totals[:seiin_amount]) %></strong>
+    </div>
+    <div class="summary-total-card text-right">
+      <span class="summary-total-label">弥勒寺分</span>
+      <strong><%= yen.call(@proxy_totals[:miroku_amount]) %></strong>
+    </div>
+    <div class="summary-total-card text-right">
+      <span class="summary-total-label">総合計</span>
+      <strong><%= yen.call(@grand_totals[:sales]) %></strong>
+    </div>
+  </div>
 
   <div class="table-wrap">
     <table class="report-table proxy-report-table">
@@ -111,11 +131,11 @@
 </section>
 
 <style>
-.proxy-inventory-sheet {
-  background: white;
-}
-
 .report-document-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -133,13 +153,13 @@
   margin: 0 0 1rem;
 }
 
-.proxy-report-table tfoot td {
-  border-top: 2px solid var(--ink);
-}
-
 .total-row {
   font-weight: 800;
   background: var(--accent-soft);
+}
+
+.total-row td {
+  border-top: 2px solid var(--accent);
 }
 
 .inventory-heading {

@@ -86,15 +86,19 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
 
   test "shows proxy inventory report" do
     sign_in_as(users(:admin))
+    events(:one).pre_event_quantities.create!(item_index: 0, quantity: 7)
+    events(:one).pre_event_quantities.create!(item_index: 14, quantity: 14)
 
     get proxy_inventory_reports_path
 
     assert_response :success
     assert_includes response.body, "帳票: 代理・在庫"
-    assert_includes response.body, "表② 代理奉納（地方代理＝護摩センター振込分）"
+    assert_includes response.body, "表② 代理奉納"
     assert_includes response.body, "明王如意棒"
     assert_includes response.body, "道具数チェック"
     assert_includes response.body, "報告担当者：尾ノ上裕美"
+    assert_select "tr", text: /弥勒収円大護摩板.*7.*28,000/
+    assert_select "tr", text: /幟.*14.*42,000/
   end
 
   test "downloads proxy inventory csv and pdf" do
