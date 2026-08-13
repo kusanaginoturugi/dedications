@@ -15,6 +15,8 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, "帳票: 前夜祭・当日"
+    assert_includes response.body, "天地免劫護摩木"
+    assert_not_includes response.body, "天地免劫&lt;br&gt;護摩木"
   end
 
   test "downloads pre event csv and pdf" do
