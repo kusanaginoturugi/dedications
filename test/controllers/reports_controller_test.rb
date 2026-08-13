@@ -18,7 +18,8 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "天地免劫護摩木"
     assert_not_includes response.body, "天地免劫&lt;br&gt;護摩木"
     assert_select "form#pre-event-report-form[method='post'][action='#{save_pre_event_reports_path}']"
-    assert_select "[data-total-miroku]", count: 0
+    assert_select "[data-total-quantity]", count: 0
+    assert_select "[data-total-miroku]", count: 1
   end
 
   test "saves pre event quantities for the current event" do

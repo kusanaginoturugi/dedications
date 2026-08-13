@@ -259,12 +259,12 @@ class ReportsController < ApplicationController
     totals = [
       "合計",
       "-",
-      @rows.sum { |row| row[:quantity].to_i },
+      "-",
       yen(@rows.sum { |row| row[:sales].to_i }),
       "-",
       yen(@rows.sum { |row| row[:seiin_amount].to_i }),
       "-",
-      "-"
+      yen(@rows.sum { |row| row[:miroku_amount].to_i })
     ]
 
     generate_full_page_table_pdf("帳票: 前夜祭・当日", "還付.ods の「前夜祭・当日」シート相当です。", headers, rows, totals)
@@ -457,12 +457,12 @@ class ReportsController < ApplicationController
       csv << [
         "合計",
         "-",
-        @rows.sum { |row| row[:quantity].to_i },
+        "-",
         @rows.sum { |row| row[:sales].to_i },
         "-",
         @rows.sum { |row| row[:seiin_amount].to_i },
         "-",
-        "-"
+        @rows.sum { |row| row[:miroku_amount].to_i }
       ]
     end.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
   end

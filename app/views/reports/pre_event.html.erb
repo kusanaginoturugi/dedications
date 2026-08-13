@@ -51,12 +51,12 @@
         <tfoot>
           <tr class="total-row">
             <td colspan="2">合計</td>
-            <td class="text-right" data-total-quantity><%= @rows.sum { |row| row[:quantity].to_i } %></td>
+            <td>-</td>
             <td class="text-right" data-total-sales><%= number_to_currency(@rows.sum { |row| row[:sales].to_i }, unit: "¥", precision: 0) %></td>
             <td>-</td>
             <td class="text-right" data-total-seiin><%= number_to_currency(@rows.sum { |row| row[:seiin_amount].to_i }, unit: "¥", precision: 0) %></td>
             <td>-</td>
-            <td>-</td>
+            <td class="text-right" data-total-miroku><%= number_to_currency(@rows.sum { |row| row[:miroku_amount].to_i }, unit: "¥", precision: 0) %></td>
           </tr>
         </tfoot>
       </table>
@@ -70,18 +70,18 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!container) return;
 
   const rows = container.querySelectorAll("tbody tr");
-  const totalQuantityDisplay = container.querySelector("[data-total-quantity]");
   const totalSalesDisplay = container.querySelector("[data-total-sales]");
   const totalSeiinDisplay = container.querySelector("[data-total-seiin]");
+  const totalMirokuDisplay = container.querySelector("[data-total-miroku]");
 
   const formatCurrency = (amount) => {
     return "¥" + amount.toLocaleString();
   };
 
   const updateCalculations = () => {
-    let totalQty = 0;
     let totalSales = 0;
     let totalSeiin = 0;
+    let totalMiroku = 0;
 
     rows.forEach(row => {
       const qty = parseInt(row.querySelector("[data-quantity-input]").value) || 0;
@@ -97,14 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
       row.querySelector("[data-seiin-amount-display]").textContent = formatCurrency(seiinAmount);
       row.querySelector("[data-miroku-amount-display]").textContent = formatCurrency(mirokuAmount);
 
-      totalQty += qty;
       totalSales += sales;
       totalSeiin += seiinAmount;
+      totalMiroku += mirokuAmount;
     });
 
-    totalQuantityDisplay.textContent = totalQty;
     totalSalesDisplay.textContent = formatCurrency(totalSales);
     totalSeiinDisplay.textContent = formatCurrency(totalSeiin);
+    totalMirokuDisplay.textContent = formatCurrency(totalMiroku);
   };
 
   container.querySelectorAll("[data-quantity-input]").forEach(input => {
