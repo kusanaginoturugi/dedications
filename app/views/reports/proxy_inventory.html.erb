@@ -63,45 +63,35 @@
           </tr>
         <% end %>
       </tbody>
-    </table>
-  </div>
-
-  <div class="table-wrap proxy-summary-wrap">
-    <table class="proxy-summary-table">
-      <colgroup>
-        <col class="proxy-summary-label-column">
-        <col class="proxy-summary-amount-column">
-        <col class="proxy-summary-note-column">
-        <col class="proxy-summary-amount-column">
-        <col class="proxy-summary-note-column">
-        <col class="proxy-summary-amount-column">
-      </colgroup>
-      <tbody>
-        <tr>
-          <th>② 代理奉納合計</th>
+      <tfoot>
+        <tr class="proxy-summary-row">
+          <td></td>
+          <th colspan="2">② 代理奉納合計</th>
           <td class="text-right" data-proxy-total-sales><%= yen.call(@proxy_totals[:sales]) %></td>
           <th class="proxy-summary-note">※聖院分<br>として<br>入金</th>
           <td class="text-right" data-proxy-total-seiin><%= yen.call(@proxy_totals[:seiin_amount]) %></td>
           <th class="proxy-summary-note">弥勒寺分</th>
           <td class="text-right" data-proxy-total-miroku><%= yen.call(@proxy_totals[:miroku_amount]) %></td>
         </tr>
-        <tr>
-          <th>①前日・当日売上合計</th>
+        <tr class="proxy-summary-row">
+          <td></td>
+          <th colspan="2">①前日・当日売上合計</th>
           <td class="text-right"><%= yen.call(@pre_event_totals[:sales]) %></td>
           <th class="proxy-summary-note">聖院分</th>
           <td class="text-right"><%= yen.call(@pre_event_totals[:seiin_amount]) %></td>
           <th class="proxy-summary-note">弥勒寺分</th>
           <td class="text-right"><%= yen.call(@pre_event_totals[:miroku_amount]) %></td>
         </tr>
-        <tr>
-          <th>地護摩供売上総合計（①＋②）</th>
+        <tr class="proxy-summary-row">
+          <td></td>
+          <th colspan="2">地護摩供売上総合計（①＋②）</th>
           <td class="text-right" data-grand-total-sales><%= yen.call(@grand_totals[:sales]) %></td>
           <th class="proxy-summary-note">聖院還付<br>合計</th>
           <td class="text-right" data-grand-total-seiin><%= yen.call(@grand_totals[:seiin_amount]) %></td>
           <th class="proxy-summary-note">弥勒寺分<br>合計</th>
           <td class="text-right" data-grand-total-miroku><%= yen.call(@grand_totals[:miroku_amount]) %></td>
         </tr>
-      </tbody>
+      </tfoot>
     </table>
   </div>
 
@@ -274,51 +264,17 @@ document.addEventListener("DOMContentLoaded", () => {
   border-top: 2px solid var(--accent);
 }
 
-.proxy-summary-wrap {
-  margin-top: 1rem;
-}
-
-.proxy-summary-table {
-  width: 100%;
-  border-collapse: collapse;
-  color: var(--ink);
-  table-layout: fixed;
-}
-
-.proxy-summary-table th,
-.proxy-summary-table td {
-  border: 3px solid var(--ink);
-  font-weight: 800;
-  padding: 0.75rem 0.65rem;
-  vertical-align: middle;
-}
-
-.proxy-summary-table th {
+.proxy-summary-row th,
+.proxy-summary-row td {
   background: var(--accent-soft);
-  text-align: left;
-}
-
-.proxy-summary-table td {
-  background: #fff;
-  font-size: 1.35rem;
-  white-space: nowrap;
+  border-top: 3px solid var(--ink);
+  font-weight: 800;
+  vertical-align: middle;
 }
 
 .proxy-summary-note {
   text-align: center;
   line-height: 1.15;
-}
-
-.proxy-summary-label-column {
-  width: 28%;
-}
-
-.proxy-summary-amount-column {
-  width: 16%;
-}
-
-.proxy-summary-note-column {
-  width: 8%;
 }
 
 .inventory-heading {

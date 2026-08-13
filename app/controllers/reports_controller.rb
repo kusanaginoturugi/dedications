@@ -490,21 +490,16 @@ class ReportsController < ApplicationController
           pdf_number(row[:miroku_unit]),
           pdf_number(row[:miroku_amount])
         ]
-      end
+      end + proxy_summary_table_rows
 
       pdf.table(proxy_table_rows, header: true, width: pdf.bounds.width, cell_style: proxy_pdf_cell_style) do
         row(0).font_style = :bold
         row(0).background_color = "F3E6F2"
         columns(1..7).align = :right
-      end
-
-      pdf.move_down 6
-      pdf.table(proxy_summary_pdf_rows, width: pdf.bounds.width, cell_style: proxy_summary_pdf_cell_style) do
-        columns([ 1, 3, 5 ]).align = :right
-        columns([ 2, 4 ]).align = :center
-        cells.font_style = :bold
-        cells.border_width = 1.4
-        columns([ 0, 2, 4 ]).background_color = "F3E6F2"
+        rows((proxy_table_rows.size - 3)..(proxy_table_rows.size - 1)).font_style = :bold
+        rows((proxy_table_rows.size - 3)..(proxy_table_rows.size - 1)).background_color = "F3E6F2"
+        columns([ 3, 5, 7 ]).align = :right
+        columns([ 4, 6 ]).align = :center
       end
 
       pdf.move_down 8
@@ -548,23 +543,12 @@ class ReportsController < ApplicationController
     }
   end
 
-  def proxy_summary_pdf_rows
+  def proxy_summary_table_rows
     [
-      [ "② 代理奉納合計", yen(@proxy_totals[:sales]), "※聖院分\nとして\n入金", yen(@proxy_totals[:seiin_amount]), "弥勒寺分", yen(@proxy_totals[:miroku_amount]) ],
-      [ "①前日・当日売上合計", yen(@pre_event_totals[:sales]), "聖院分", yen(@pre_event_totals[:seiin_amount]), "弥勒寺分", yen(@pre_event_totals[:miroku_amount]) ],
-      [ "地護摩供売上総合計（①＋②）", yen(@grand_totals[:sales]), "聖院還付\n合計", yen(@grand_totals[:seiin_amount]), "弥勒寺分\n合計", yen(@grand_totals[:miroku_amount]) ]
+      [ "", "② 代理奉納合計", "", yen(@proxy_totals[:sales]), "※聖院分\nとして\n入金", yen(@proxy_totals[:seiin_amount]), "弥勒寺分", yen(@proxy_totals[:miroku_amount]) ],
+      [ "", "①前日・当日売上合計", "", yen(@pre_event_totals[:sales]), "聖院分", yen(@pre_event_totals[:seiin_amount]), "弥勒寺分", yen(@pre_event_totals[:miroku_amount]) ],
+      [ "", "地護摩供売上総合計（①＋②）", "", yen(@grand_totals[:sales]), "聖院還付\n合計", yen(@grand_totals[:seiin_amount]), "弥勒寺分\n合計", yen(@grand_totals[:miroku_amount]) ]
     ]
-  end
-
-  def proxy_summary_pdf_cell_style
-    {
-      size: 8.2,
-      padding: [ 4, 3 ],
-      border_color: "444444",
-      overflow: :shrink_to_fit,
-      min_font_size: 5.5,
-      valign: :center
-    }
   end
 
   def pdf_number(value)
@@ -762,9 +746,9 @@ class ReportsController < ApplicationController
           row[:miroku_amount]
         ]
       end
-      csv << [ "※聖院分　② 代理奉納合計", "", "", @proxy_totals[:sales], "", @proxy_totals[:seiin_amount], "", @proxy_totals[:miroku_amount] ]
-      csv << [ "①前日・当日売上合計", "", "", @pre_event_totals[:sales], "", @pre_event_totals[:seiin_amount], "", @pre_event_totals[:miroku_amount] ]
-      csv << [ "地護摩供売上総合計（①＋②）", "", "", @grand_totals[:sales], "", @grand_totals[:seiin_amount], "", @grand_totals[:miroku_amount] ]
+      csv << [ "", "② 代理奉納合計", "", @proxy_totals[:sales], "※聖院分として入金", @proxy_totals[:seiin_amount], "弥勒寺分", @proxy_totals[:miroku_amount] ]
+      csv << [ "", "①前日・当日売上合計", "", @pre_event_totals[:sales], "聖院分", @pre_event_totals[:seiin_amount], "弥勒寺分", @pre_event_totals[:miroku_amount] ]
+      csv << [ "", "地護摩供売上総合計（①＋②）", "", @grand_totals[:sales], "聖院還付合計", @grand_totals[:seiin_amount], "弥勒寺分合計", @grand_totals[:miroku_amount] ]
       csv << []
       csv << [ "※令和元年より、代理奉納の聖院還付は、みろく寺の道具請求(平成27年度までの未入金分）の方へ当てさせていただくことになりました。（4月18日の通達参照）" ]
       csv << []

@@ -122,10 +122,15 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".proxy-report-table tbody tr:nth-child(1) [data-sales-display]", text: "28,000"
     assert_select ".proxy-report-table tbody tr:nth-child(2) [data-auto-quantity-display]", text: "8"
     assert_select ".proxy-report-table tbody tr:nth-child(6) [data-sales-display]", text: "42,000"
-    assert_select ".proxy-report-table tfoot", count: 0
-    assert_select ".proxy-summary-table", text: /② 代理奉納合計.*※聖院分.*として.*入金.*弥勒寺分/
-    assert_select ".proxy-summary-table", text: /①前日・当日売上合計.*聖院分.*弥勒寺分/
-    assert_select ".proxy-summary-table", text: /地護摩供売上総合計（①＋②）.*聖院還付.*合計.*弥勒寺分.*合計/
+    assert_select ".proxy-summary-table", count: 0
+    assert_select ".proxy-report-table tfoot tr:nth-child(1) th[colspan='2']", text: "② 代理奉納合計"
+    assert_select ".proxy-report-table tfoot tr:nth-child(1) [data-proxy-total-sales]", text: /¥/
+    assert_select ".proxy-report-table tfoot tr:nth-child(1) th:nth-child(4)", text: /※聖院分.*として.*入金/
+    assert_select ".proxy-report-table tfoot tr:nth-child(1) [data-proxy-total-seiin]", text: /¥/
+    assert_select ".proxy-report-table tfoot tr:nth-child(1) th:nth-child(6)", text: "弥勒寺分"
+    assert_select ".proxy-report-table tfoot tr:nth-child(1) [data-proxy-total-miroku]", text: /¥/
+    assert_select ".proxy-report-table tfoot tr:nth-child(2) th[colspan='2']", text: "①前日・当日売上合計"
+    assert_select ".proxy-report-table tfoot tr:nth-child(3) th[colspan='2']", text: "地護摩供売上総合計（①＋②）"
     assert_select ".inventory-check-table tbody tr:nth-child(2) td:nth-child(2)", text: "／"
     assert_select ".inventory-check-table tbody tr:nth-child(3) td:nth-child(2)", text: "／"
     assert_select ".inventory-check-table tbody tr:nth-child(4) td:nth-child(2)", text: "／"
