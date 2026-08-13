@@ -55,6 +55,19 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 9, events(:one).pre_event_quantities.find_by!(item_index: 0).quantity
   end
 
+  test "does not report save success without a current event" do
+    sign_in_as(users(:admin))
+    PreEventQuantity.delete_all
+    Order.update_all(event_id: nil)
+    Event.delete_all
+
+    post save_pre_event_reports_path, params: { quantities: { "0" => "3" } }
+
+    assert_redirected_to pre_event_reports_path
+    follow_redirect!
+    assert_includes response.body, "保存先の回次がありません。管理者に確認してください。"
+  end
+
   test "downloads pre event csv and pdf" do
     sign_in_as(users(:admin))
 

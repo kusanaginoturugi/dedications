@@ -45,6 +45,11 @@ class ReportsController < ApplicationController
   end
 
   def save_pre_event
+    unless current_event
+      redirect_to pre_event_reports_path, alert: "保存先の回次がありません。管理者に確認してください。"
+      return
+    end
+
     unless params[:quantities].present?
       redirect_to pre_event_reports_path, alert: "奉納数が送信されませんでした。もう一度入力して保存してください。"
       return
