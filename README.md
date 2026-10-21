@@ -61,16 +61,16 @@ bin/rails test
 
 前提:
 
-- サーバ配置先: `/home/ubuntu/dedications`
+- サーバ配置先: `/home/admin/dedications` (nspawn コンテナ)
 - systemd サービス: `dedications.service`
-- アセット出力先: `/home/ubuntu/dedications/public/assets`
 - サーバ上で `sudo systemctl restart dedications.service` が通ること
+
+SSH ポートは公開していない。runner は `tailscale/github-action` で tailnet に一時参加 (`tag:ci`) し、`admin@showway-t4g.tailb46b1.ts.net` の `65522` 番へ SSH する。構成は liberation と同じ。
 
 必要な GitHub Secrets:
 
-- `EC2_HOST`
-- `EC2_PORT`
-- `EC2_SSH_KEY`
+- `TS_OAUTH_CLIENT_ID` / `TS_OAUTH_SECRET`: Tailscale OAuth client (Auth Keys の Write、タグ `tag:ci`)
+- `EC2_SSH_KEY`: CI 専用 SSH 秘密鍵 (ed25519、コメント `dedications-ci`)。公開鍵はコンテナの `admin` の `~/.ssh/authorized_keys` に登録してある
 
 デプロイ処理本体は `scripts/deploy.sh` です。
 

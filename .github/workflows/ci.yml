@@ -79,19 +79,25 @@ jobs:
       - test
     runs-on: ubuntu-latest
 
+    timeout-minutes: 20
+
     steps:
-      - name: Deploy to production server
-        uses: appleboy/ssh-action@v1.2.5
+      - uses: tailscale/github-action@v3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          port: ${{ secrets.EC2_PORT }}
-          username: admin
-          key: ${{ secrets.EC2_SSH_KEY }}
-          command_timeout: 20m
-          debug: true
-          script: |
-            set -euo pipefail
-            cd /home/admin/dedications
-            git config core.fileMode false
-            git fetch origin
-            git show origin/main:scripts/deploy.sh | bash
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Deploy
+        env:
+          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          install -m 600 /dev/null ~/deploy_key
+          printf '%s\n' "$SSH_KEY" > ~/deploy_key
+          ssh -i ~/deploy_key -p 65522 -o StrictHostKeyChecking=accept-new admin@showway-t4g.tailb46b1.ts.net << 'EOF'
+          set -euo pipefail
+          cd /home/admin/dedications
+          git config core.fileMode false
+          git fetch origin
+          git show origin/main:scripts/deploy.sh | bash
+          EOF

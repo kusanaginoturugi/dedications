@@ -24,3 +24,10 @@
 - 管理者は Authentik の `myouou-admins` で決まる。アプリのユーザー管理画面で `is_admin` を立てても、次のサインインで上書きされる。
 - 本番は `/etc/dedications/authentik.env` と `dedications.service` の drop-in (`authentik.conf`) で値を渡す。無効化は drop-in を外して `daemon-reload` → restart。
 - Workers 移植版 (`kusanaginoturugi/dedications-worker`) は 2026-06-21 の骨組みで止まっている。移るときは Authentik のアプリケーション `dedications` をそちらへ向け直す。
+
+## 追記: CI デプロイを Tailscale 経由に変更
+
+- 本番の公開 SSH ポートが閉じていて、`appleboy/ssh-action` の deploy が `dial tcp ... i/o timeout` で失敗していた。
+- liberation と同じく、`tailscale/github-action@v3` で tailnet に参加してから `admin@showway-t4g.tailb46b1.ts.net:65522` へ SSH する形にした。
+- Secrets は `TS_OAUTH_CLIENT_ID` / `TS_OAUTH_SECRET` (新規 OAuth client、`tag:ci`) と `EC2_SSH_KEY` (新規 ed25519、コメント `dedications-ci`)。
+- 旧 Secrets の `EC2_HOST` / `EC2_PORT` はもう使っていない。
