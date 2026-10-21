@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resource :session, only: [ :new, :create, :destroy ]
+  get "auth/authentik", to: "sessions#authentik", as: :authentik_login
+  get "auth/callback", to: "sessions#callback", as: :authentik_callback
   resources :orders, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
     collection do
       get :summary

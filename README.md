@@ -25,6 +25,15 @@ mise run server
 
 必要なら `DEFAULT_PASSWORD` 環境変数で seed 時の初期パスワードを変更できます。
 
+## Authentik サインイン
+
+`AUTHENTIK_CLIENT_ID` と `AUTHENTIK_CLIENT_SECRET` が両方あると Authentik (OIDC) サインインだけになり、パスワードサインインは止まる。どちらか欠けていると従来のパスワードサインインのまま。
+
+- Authentik 側: OAuth2/OpenID Provider (Confidential)、Redirect URI は `https://dedications.showway.biz/auth/callback`。使わせたい人だけをアプリケーションにバインドする。
+- 既存ユーザーとは `sub` → メールアドレスの順で紐付く。該当がなければ新規作成する。
+- `dedications-admin` か `myouou-admins` グループに入っていれば管理者。サインインのたびに `is_admin` を Authentik のグループで上書きする。
+- 本番はサーバの `/etc/dedications/authentik.env` に 2 つの値を書き、`dedications.service` の drop-in (`/etc/systemd/system/dedications.service.d/authentik.conf`) に `EnvironmentFile=/etc/dedications/authentik.env` を書いて `daemon-reload` → restart。
+
 ## 主な仕様
 
 - 申込入力はサインイン済みユーザーのみ

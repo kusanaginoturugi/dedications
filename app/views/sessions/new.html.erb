@@ -4,17 +4,21 @@
   <h2>サインイン</h2>
   <p class="section-lead">申込入力はサインイン済みユーザーのみ利用できます。</p>
 
-  <%= form_with url: session_path, class: "stack-form" do |form| %>
-    <div class="field">
-      <%= form.label :email, "メールアドレス" %>
-      <%= form.email_field :email, required: true, autofocus: true, autocomplete: "email" %>
-    </div>
+  <% if AuthentikClient.configured? %>
+    <%= link_to "Authentikでサインイン", authentik_login_path, class: "primary-button" %>
+  <% else %>
+    <%= form_with url: session_path, class: "stack-form" do |form| %>
+      <div class="field">
+        <%= form.label :email, "メールアドレス" %>
+        <%= form.email_field :email, required: true, autofocus: true, autocomplete: "email" %>
+      </div>
 
-    <div class="field">
-      <%= form.label :password, "パスワード" %>
-      <%= form.password_field :password, required: true, autocomplete: "current-password" %>
-    </div>
+      <div class="field">
+        <%= form.label :password, "パスワード" %>
+        <%= form.password_field :password, required: true, autocomplete: "current-password" %>
+      </div>
 
-    <%= form.submit "サインイン", class: "primary-button" %>
+      <%= form.submit "サインイン", class: "primary-button" %>
+    <% end %>
   <% end %>
 </section>
