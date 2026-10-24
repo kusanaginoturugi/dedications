@@ -65,7 +65,7 @@
   </section>
 </form>
 
-<script>
+<%= javascript_tag nonce: true do %>
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector("[data-pre-event-report]");
   if (!container) return;
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateCalculations();
 });
-</script>
+<% end %>
 
 <style>
 .report-input {

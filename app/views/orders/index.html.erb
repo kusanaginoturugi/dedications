@@ -133,7 +133,7 @@
   <% end %>
 </section>
 
-<script>
+<%= javascript_tag nonce: true do %>
 document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll("[data-order-tab]");
   const panels = document.querySelectorAll("[data-order-panel]");
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tab.addEventListener("click", () => activate(tab.dataset.orderTab));
   });
 });
-</script>
+<% end %>
 
 <style>
 .order-tabs {

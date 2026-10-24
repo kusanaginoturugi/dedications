@@ -63,7 +63,7 @@
   <% end %>
 </div>
 
-<script>
+<%= javascript_tag nonce: true do %>
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".masters-sync form").forEach((form) => {
       form.addEventListener("submit", () => {
@@ -81,4 +81,4 @@
       });
     });
   });
-</script>
+<% end %>
