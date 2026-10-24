@@ -16,3 +16,10 @@
 /vendor/cache
 /資料/*
 !/資料/伝道会番号.csv
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
+
+/config/master.key
+/config/credentials/*.key

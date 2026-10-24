@@ -6,6 +6,8 @@ RUBY_BIN="/home/admin/.local/share/mise/installs/ruby/3.4.8/bin"
 MISE_BIN="/home/admin/.local/bin"
 SERVICE_NAME="dedications.service"
 HEALTHCHECK_URL="http://127.0.0.1:3003/up"
+# master.key は git に入れず、repo の外に置いたものを毎回コピーする
+MASTER_KEY_SOURCE="/home/admin/.config/dedications/master.key"
 
 log() {
   printf '\n[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"
@@ -32,10 +34,16 @@ export BUNDLE_PATH="$APP_ROOT/vendor/bundle"
 
 git config core.fileMode false
 
+if [ ! -s "$MASTER_KEY_SOURCE" ]; then
+  echo "[deploy] $MASTER_KEY_SOURCE がありません" >&2
+  exit 1
+fi
+
 log "Fetching latest code"
 git fetch origin
 git status --short || true
 git reset --hard origin/main
+install -m 600 "$MASTER_KEY_SOURCE" config/master.key
 
 log "Installing gems"
 bundle config set deployment true
