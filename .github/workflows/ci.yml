@@ -5,6 +5,12 @@ on:
   pull_request:
   push:
     branches: [ main ]
+  schedule:
+    # 新しい advisory を週次で検出する (deploy ジョブは push / workflow_dispatch だけで動く)
+    - cron: "0 0 * * 1"
+
+permissions:
+  contents: read
 
 jobs:
   scan_ruby:
@@ -12,10 +18,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
         with:
           ruby-version: .ruby-version
           bundler-cache: true
@@ -23,14 +31,19 @@ jobs:
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bin/brakeman --no-pager
 
+      - name: Scan gems for known vulnerabilities
+        run: bundle exec bundler-audit check --update
+
   lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
         with:
           ruby-version: .ruby-version
           bundler-cache: true
@@ -46,16 +59,18 @@ jobs:
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
         with:
           ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Set up Chrome
-        uses: browser-actions/setup-chrome@v2
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
 
       - name: Run tests
         env:
@@ -64,7 +79,7 @@ jobs:
         run: bin/rails db:test:prepare test test:system
 
       - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: failure()
         with:
           name: screenshots
@@ -82,7 +97,7 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - uses: tailscale/github-action@v3
+      - uses: tailscale/github-action@6cae46e2d796f265265cfcf628b72a32b4d7cade # v3.3.0
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}

@@ -1,21 +1,5 @@
 # Security Policy
 
-## Supported Versions
+脆弱性を見つけた場合は、公開の Issue ではなく GitHub の [Report a vulnerability](https://github.com/kusanaginoturugi/dedications/security/advisories/new) から非公開で報告してください。
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
-
-## Reporting a Vulnerability
-
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+サポートしているのは `main` ブランチ (本番に反映されている版) だけです。
