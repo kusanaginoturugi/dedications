@@ -99,9 +99,8 @@ jobs:
     steps:
       - uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
+          # Tailnet Lock が有効なので、OAuth client ではなく署名済みの認証キーで参加する
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
           ping: showway-t4g.tailb46b1.ts.net
 
       - name: Deploy

@@ -31,3 +31,10 @@
 - liberation と同じく、`tailscale/github-action@v3` で tailnet に参加してから `admin@showway-t4g.tailb46b1.ts.net:65522` へ SSH する形にした。
 - Secrets は `TS_OAUTH_CLIENT_ID` / `TS_OAUTH_SECRET` (新規 OAuth client、`tag:ci`) と `EC2_SSH_KEY` (新規 ed25519、コメント `dedications-ci`)。
 - 旧 Secrets の `EC2_HOST` / `EC2_PORT` はもう使っていない。
+
+## 追記: Tailnet Lock 対応 (2026-11-25)
+
+- 11/3 ごろ tailnet で Tailnet Lock を有効にしてから、OAuth client で参加した runner は署名がないため他のノードと通信できず、deploy の ssh がタイムアウトしていた。
+- liberation と同じく、`tag:ci`・Reusable・Ephemeral の認証キーを署名ノードで `tailscale lock sign` したものを `TAILSCALE_AUTHKEY` に登録して使う。`TS_OAUTH_CLIENT_ID` / `TS_OAUTH_SECRET` はもう使っていない。
+- 認証キーは最長 90 日で失効する。期限前に作り直して署名し、liberation と dedications の両方の Secret を更新する。
+- ubuntu-26.04 の runner では sudo が `-E` を無視するため、`tailscale/github-action` は v4 以上を使う。
