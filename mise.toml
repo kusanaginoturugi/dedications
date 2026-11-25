@@ -1,5 +1,5 @@
 [tools]
-ruby = "3.4.8"
+ruby = "3.4.13"
 
 [env]
 BUNDLE_PATH = "vendor/bundle"

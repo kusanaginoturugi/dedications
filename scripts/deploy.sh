@@ -2,7 +2,7 @@
 set -euxo pipefail
 
 APP_ROOT="/home/admin/dedications"
-RUBY_BIN="/home/admin/.local/share/mise/installs/ruby/3.4.8/bin"
+RUBY_BIN="/home/admin/.local/share/mise/installs/ruby/3.4.13/bin"
 MISE_BIN="/home/admin/.local/bin"
 SERVICE_NAME="dedications.service"
 HEALTHCHECK_URL="http://127.0.0.1:3003/up"
